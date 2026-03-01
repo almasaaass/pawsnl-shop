@@ -48,7 +48,7 @@ export default function ProductCard({ product }: Props) {
             </span>
           )}
           {product.featured && (
-            <span className="badge-orange text-xs">⭐ Uitgelicht</span>
+            <span className="badge-orange text-xs">Uitgelicht</span>
           )}
         </div>
       </Link>
@@ -69,24 +69,29 @@ export default function ProductCard({ product }: Props) {
         </p>
 
         {/* Prijs + knop */}
-        <div className="flex items-center justify-between gap-2 mt-auto">
-          <div>
-            <span className="text-lg font-bold text-orange-500">{formatPrice(product.price)}</span>
-            {product.compare_price && product.compare_price > product.price && (
-              <span className="text-xs text-gray-400 line-through ml-1.5">
-                {formatPrice(product.compare_price)}
+        <div className="mt-auto">
+          {product.compare_price && product.compare_price > product.price && (
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-xs text-gray-400 line-through">
+                Waarde {formatPrice(product.compare_price)}
               </span>
-            )}
+              <span className="text-xs font-bold text-emerald-600">
+                Bespaar {formatPrice(product.compare_price - product.price)}
+              </span>
+            </div>
+          )}
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-lg font-bold text-orange-500">{formatPrice(product.price)}</span>
+            <button
+              onClick={() => addItem(product)}
+              disabled={product.stock === 0}
+              className="flex items-center gap-1.5 bg-orange-500 hover:bg-orange-600 disabled:bg-gray-200 disabled:text-gray-400 text-white font-medium text-sm py-2 px-3 rounded-xl transition-colors"
+              aria-label={`Voeg ${product.name} toe aan winkelwagen`}
+            >
+              <ShoppingCart className="w-4 h-4" />
+              <span className="hidden sm:block">Toevoegen</span>
+            </button>
           </div>
-          <button
-            onClick={() => addItem(product)}
-            disabled={product.stock === 0}
-            className="flex items-center gap-1.5 bg-orange-500 hover:bg-orange-600 disabled:bg-gray-200 disabled:text-gray-400 text-white font-medium text-sm py-2 px-3 rounded-xl transition-colors"
-            aria-label={`Voeg ${product.name} toe aan winkelwagen`}
-          >
-            <ShoppingCart className="w-4 h-4" />
-            <span className="hidden sm:block">Toevoegen</span>
-          </button>
         </div>
       </div>
     </div>

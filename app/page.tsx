@@ -4,6 +4,7 @@ import HeroBanner from '@/components/shop/HeroBanner'
 import FeaturedProducts from '@/components/shop/FeaturedProducts'
 import CategoryOverview from '@/components/shop/CategoryOverview'
 import TrustBadges from '@/components/shop/TrustBadges'
+import GuaranteeBanner from '@/components/shop/GuaranteeBanner'
 
 export const revalidate = 60
 
@@ -31,6 +32,7 @@ export default async function HomePage() {
       <HeroBanner />
       <TrustBadges />
       <FeaturedProducts products={featuredProducts} />
+      <GuaranteeBanner />
       <CategoryOverview />
     </div>
   )

@@ -7,6 +7,7 @@ import AddToCartButton from '@/components/cart/AddToCartButton'
 import ReviewsSection from '@/components/shop/ReviewsSection'
 import { Truck, RotateCcw, ShieldCheck, Tag } from 'lucide-react'
 import ProductCard from '@/components/shop/ProductCard'
+import GuaranteeBadge from '@/components/shop/GuaranteeBadge'
 
 export const revalidate = 60
 
@@ -83,20 +84,27 @@ export default async function ProductDetailPage({ params }: PageProps) {
           <h1 className="text-3xl font-bold text-gray-900 mb-4">{product.name}</h1>
 
           {/* Prijs */}
-          <div className="flex items-center gap-3 mb-6">
-            <span className="text-4xl font-bold text-orange-500">{formatPrice(product.price)}</span>
-            {product.compare_price && product.compare_price > product.price && (
-              <>
-                <span className="text-xl text-gray-400 line-through">
-                  {formatPrice(product.compare_price)}
-                </span>
-                {discount && (
-                  <span className="flex items-center gap-1 badge-green font-bold">
-                    <Tag className="w-3.5 h-3.5" />
-                    -{discount}%
+          <div className="mb-6">
+            <div className="flex items-center gap-3">
+              <span className="text-4xl font-bold text-orange-500">{formatPrice(product.price)}</span>
+              {product.compare_price && product.compare_price > product.price && (
+                <>
+                  <span className="text-xl text-gray-400 line-through">
+                    {formatPrice(product.compare_price)}
                   </span>
-                )}
-              </>
+                  {discount && (
+                    <span className="flex items-center gap-1 badge-green font-bold">
+                      <Tag className="w-3.5 h-3.5" />
+                      -{discount}%
+                    </span>
+                  )}
+                </>
+              )}
+            </div>
+            {product.compare_price && product.compare_price > product.price && (
+              <p className="text-sm text-emerald-600 font-medium mt-1">
+                Je bespaart {formatPrice(product.compare_price - product.price)}
+              </p>
             )}
           </div>
 
@@ -133,6 +141,11 @@ export default async function ProductDetailPage({ params }: PageProps) {
               <ShieldCheck className="w-5 h-5 text-orange-500 flex-shrink-0" />
               <span><strong>Veilig betalen</strong> via iDEAL, Creditcard of Bancontact</span>
             </div>
+          </div>
+
+          {/* Garantie badge */}
+          <div className="mt-4">
+            <GuaranteeBadge />
           </div>
         </div>
       </div>
