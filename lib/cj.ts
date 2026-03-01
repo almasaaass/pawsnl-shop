@@ -64,7 +64,7 @@ export async function searchCJProducts(keyword: string, page = 1, pageSize = 20)
   const token = await getCJToken()
 
   const res = await fetch(
-    `${CJ_BASE}/v1/product/listV2?keyWord=${encodeURIComponent(keyword)}&page=${page}&size=${pageSize}`,
+    `${CJ_BASE}/v1/product/list?productNameEn=${encodeURIComponent(keyword)}&pageNum=${page}&pageSize=${pageSize}`,
     { headers: { 'CJ-Access-Token': token } }
   )
 
