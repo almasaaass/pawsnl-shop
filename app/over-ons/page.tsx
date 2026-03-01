@@ -6,31 +6,10 @@ export const metadata = {
 }
 
 const stats = [
-  { label: 'Tevreden klanten', value: '250+', icon: Users },
-  { label: 'Producten', value: '20+', icon: Package },
-  { label: 'Gemiddelde beoordeling', value: '4.9 ★', icon: Star },
+  { label: 'Producten', value: '30+', icon: Package },
   { label: 'Categorieën', value: '4', icon: Heart },
-]
-
-const team = [
-  {
-    name: 'Sophie de Vries',
-    role: 'Oprichter & CEO',
-    bio: 'Hondenliefhebber en ondernemer met een passie voor dierenwelzijn.',
-    emoji: '👩‍💼',
-  },
-  {
-    name: 'Mark Jansen',
-    role: 'Productspecialist',
-    bio: 'Veterinaire achtergrond, zorgt voor kwaliteitscontrole van elk product.',
-    emoji: '👨‍⚕️',
-  },
-  {
-    name: 'Lisa Bakker',
-    role: 'Klantenservice',
-    bio: 'Altijd klaar om je te helpen met al je vragen en zorgen.',
-    emoji: '👩‍💻',
-  },
+  { label: 'Retourrecht', value: '30 dagen', icon: Star },
+  { label: 'Verzending', value: 'Gratis 35+', icon: Users },
 ]
 
 export default function OverOnsPage() {
@@ -75,18 +54,18 @@ export default function OverOnsPage() {
               <h2 className="text-3xl font-bold text-gray-900 mb-5">Ons verhaal</h2>
               <div className="space-y-4 text-gray-600 leading-relaxed">
                 <p>
-                  PawsNL begon in 2019 als een klein project van Sophie de Vries, een echte
-                  hondenliefhebber die gefrustreerd was door het gebrek aan kwalitatieve
-                  huisdierproducten in Nederland.
+                  PawsNL is ontstaan vanuit een simpele frustratie: waarom is het zo moeilijk om
+                  goede, betaalbare huisdierproducten te vinden in Nederland? Overal dezelfde producten
+                  tegen hoge prijzen — terwijl er internationaal zoveel meer keuze is.
                 </p>
                 <p>
-                  Wat begon als een persoonlijke zoektocht naar de beste producten voor haar
-                  golden retriever Max, groeide uit tot een volledig assortiment dat nu duizenden
-                  huisdierbezitters in Nederland bedient.
+                  Daarom hebben wij PawsNL opgericht. Wij zoeken wereldwijd naar de beste producten
+                  voor honden, katten, vogels en knaagdieren. Elk product wordt zorgvuldig geselecteerd
+                  op kwaliteit, veiligheid en prijs-kwaliteitverhouding.
                 </p>
                 <p>
-                  Elk product dat we verkopen is persoonlijk getest en goedgekeurd door ons team.
-                  Wij geloven dat jouw huisdier alleen het beste verdient.
+                  Als klein Nederlands bedrijf staan wij dicht bij onze klanten. Heb je een vraag?
+                  Je krijgt altijd persoonlijk antwoord — geen chatbot, geen wachtrij.
                 </p>
               </div>
             </div>
@@ -95,7 +74,7 @@ export default function OverOnsPage() {
               <blockquote className="text-lg italic text-gray-700">
                 &ldquo;Een gelukkig huisdier maakt een gelukkig gezin.&rdquo;
               </blockquote>
-              <p className="text-sm text-gray-500 mt-3">– Sophie de Vries, oprichter</p>
+              <p className="text-sm text-gray-500 mt-3">– Team PawsNL</p>
             </div>
           </div>
         </div>
@@ -133,17 +112,20 @@ export default function OverOnsPage() {
         </div>
       </section>
 
-      {/* Team */}
+      {/* Waarom PawsNL */}
       <section className="py-16 px-4">
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-3xl font-bold text-gray-900 text-center mb-10">Ons team</h2>
+          <h2 className="text-3xl font-bold text-gray-900 text-center mb-10">Waarom PawsNL?</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {team.map((member) => (
-              <div key={member.name} className="card p-6 text-center">
-                <div className="text-5xl mb-4">{member.emoji}</div>
-                <h3 className="text-lg font-bold text-gray-900">{member.name}</h3>
-                <p className="text-orange-500 text-sm font-medium mb-3">{member.role}</p>
-                <p className="text-gray-500 text-sm">{member.bio}</p>
+            {[
+              { emoji: '🔍', title: 'Zorgvuldig geselecteerd', text: 'Wij testen en controleren elk product voordat het in de shop komt. Geen rommel, alleen kwaliteit.' },
+              { emoji: '💰', title: 'Eerlijke prijzen', text: 'Geen woekerprijzen. Wij kopen direct in bij leveranciers en geven de besparing door aan jou.' },
+              { emoji: '📦', title: 'Gratis verzending', text: 'Vanaf €35 betaal je geen verzendkosten. Binnen 5-12 werkdagen in huis met track & trace.' },
+            ].map((item) => (
+              <div key={item.title} className="card p-6 text-center">
+                <div className="text-4xl mb-4">{item.emoji}</div>
+                <h3 className="text-lg font-bold text-gray-900 mb-3">{item.title}</h3>
+                <p className="text-gray-500 text-sm leading-relaxed">{item.text}</p>
               </div>
             ))}
           </div>

@@ -12,9 +12,9 @@ const shopLinks = [
 const serviceLinks = [
   { href: '/contact', label: 'Contact' },
   { href: '/over-ons', label: 'Over ons' },
-  { href: '#', label: 'Veelgestelde vragen' },
-  { href: '#', label: 'Retourneren' },
-  { href: '#', label: 'Bezorging & verzending' },
+  { href: '/veelgestelde-vragen', label: 'Veelgestelde vragen' },
+  { href: '/retourbeleid', label: 'Retourneren' },
+  { href: '/verzendbeleid', label: 'Bezorging & verzending' },
 ]
 
 export default function Footer() {
@@ -123,12 +123,12 @@ export default function Footer() {
           <div className="flex flex-col md:flex-row gap-1 md:gap-4 text-center">
             <span>© {new Date().getFullYear()} PawsNL. Alle rechten voorbehouden.</span>
             <span className="hidden md:block">|</span>
-            <span>KvK: 12345678 · BTW: NL123456789B01</span>
+            <span>KvK: 94028374 · BTW: NL004738291B01</span>
           </div>
           <div className="flex gap-4">
-            <Link href="#" className="hover:text-orange-400 transition-colors">Privacybeleid</Link>
-            <Link href="#" className="hover:text-orange-400 transition-colors">Algemene voorwaarden</Link>
-            <Link href="#" className="hover:text-orange-400 transition-colors">Cookiebeleid</Link>
+            <Link href="/privacybeleid" className="hover:text-orange-400 transition-colors">Privacybeleid</Link>
+            <Link href="/algemene-voorwaarden" className="hover:text-orange-400 transition-colors">Algemene voorwaarden</Link>
+            <Link href="/privacybeleid#cookies" className="hover:text-orange-400 transition-colors">Cookiebeleid</Link>
           </div>
         </div>
       </div>
