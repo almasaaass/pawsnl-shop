@@ -1,11 +1,12 @@
 import Link from 'next/link'
-import { LayoutDashboard, Package, ShoppingCart, Users, LogOut, Music, BarChart2, Download, TrendingUp } from 'lucide-react'
+import { LayoutDashboard, Package, ShoppingCart, Users, LogOut, Music, BarChart2, Download, TrendingUp, Shield } from 'lucide-react'
 
 const navItems = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/admin/analytics', label: 'Analytics', icon: BarChart2 },
   { href: '/admin/importeren', label: 'Importeren', icon: Download },
   { href: '/admin/trending', label: 'Trending', icon: TrendingUp },
+  { href: '/admin/quality', label: 'Quality Check', icon: Shield },
   { href: '/admin/producten', label: 'Producten', icon: Package },
   { href: '/admin/bestellingen', label: 'Bestellingen', icon: ShoppingCart },
   { href: '/admin/klanten', label: 'Klanten', icon: Users },
