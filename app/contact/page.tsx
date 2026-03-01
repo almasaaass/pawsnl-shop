@@ -51,10 +51,10 @@ export default function ContactPage() {
                 <div>
                   <p className="font-medium text-gray-900">E-mail</p>
                   <a
-                    href="mailto:info@pawsnl.nl"
+                    href="mailto:info@pawsshop.nl"
                     className="text-gray-500 hover:text-orange-500 transition-colors text-sm"
                   >
-                    info@pawsnl.nl
+                    info@pawsshop.nl
                   </a>
                 </div>
               </div>

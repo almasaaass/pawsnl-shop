@@ -1,11 +1,14 @@
 import Link from 'next/link'
-import { LayoutDashboard, Package, ShoppingCart, Users, LogOut } from 'lucide-react'
+import { LayoutDashboard, Package, ShoppingCart, Users, LogOut, Music, BarChart2, Download } from 'lucide-react'
 
 const navItems = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/admin/analytics', label: 'Analytics', icon: BarChart2 },
+  { href: '/admin/importeren', label: 'Importeren', icon: Download },
   { href: '/admin/producten', label: 'Producten', icon: Package },
   { href: '/admin/bestellingen', label: 'Bestellingen', icon: ShoppingCart },
   { href: '/admin/klanten', label: 'Klanten', icon: Users },
+  { href: '/admin/tiktok', label: 'TikTok Scripts', icon: Music },
 ]
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

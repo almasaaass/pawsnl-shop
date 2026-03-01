@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { stripe } from '@/lib/stripe'
 import { createAdminClient } from '@/lib/supabase'
+import { sendOrderConfirmation, sendAdminNewOrder } from '@/lib/email'
 import Stripe from 'stripe'
 
 export async function POST(request: NextRequest) {
@@ -107,4 +108,19 @@ async function handleSuccessfulPayment(session: Stripe.Checkout.Session) {
       total_spent: total,
     })
   }
+
+  // Stuur emails (niet-blokkerend — fouten stoppen de verwerking niet)
+  const emailData = {
+    customerName,
+    customerEmail,
+    orderId: session.id,
+    items,
+    total,
+    shippingAddress,
+  }
+
+  await Promise.allSettled([
+    sendOrderConfirmation(emailData),
+    sendAdminNewOrder(emailData),
+  ])
 }

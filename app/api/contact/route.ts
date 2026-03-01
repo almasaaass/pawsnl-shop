@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { sendContactFormToAdmin } from '@/lib/email'
 
 export async function POST(request: NextRequest) {
   try {
@@ -8,17 +9,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Alle velden zijn verplicht' }, { status: 400 })
     }
 
-    // Hier kun je een e-mailservice koppelen zoals Resend of SendGrid
-    // Voorbeeld met Resend:
-    // const resend = new Resend(process.env.RESEND_API_KEY)
-    // await resend.emails.send({
-    //   from: 'PawsNL <noreply@pawsnl.nl>',
-    //   to: 'info@pawsnl.nl',
-    //   subject: `Nieuw bericht: ${onderwerp}`,
-    //   html: `<p>Van: ${naam} (${email})</p><p>${bericht}</p>`,
-    // })
-
-    console.log('Contactformulier ontvangen:', { naam, email, onderwerp, bericht })
+    await sendContactFormToAdmin({ naam, email, onderwerp, bericht })
 
     return NextResponse.json({ success: true })
   } catch (error) {

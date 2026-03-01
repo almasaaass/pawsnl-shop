@@ -1,15 +1,15 @@
 import { Heart, Package, Star, Users } from 'lucide-react'
 
 export const metadata = {
-  title: 'Over Ons',
-  description: 'Leer meer over PawsNL en onze passie voor huisdieren.',
+  title: 'Over Ons | PawsShop.nl',
+  description: 'Leer meer over PawsShop.nl en onze passie voor huisdieren.',
 }
 
 const stats = [
-  { label: 'Tevreden klanten', value: '10.000+', icon: Users },
-  { label: 'Producten', value: '500+', icon: Package },
-  { label: 'Gemiddelde beoordeling', value: '4.8 ★', icon: Star },
-  { label: 'Jaar ervaring', value: '5+', icon: Heart },
+  { label: 'Tevreden klanten', value: '250+', icon: Users },
+  { label: 'Producten', value: '20+', icon: Package },
+  { label: 'Gemiddelde beoordeling', value: '4.9 ★', icon: Star },
+  { label: 'Categorieën', value: '4', icon: Heart },
 ]
 
 const team = [

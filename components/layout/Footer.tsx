@@ -6,6 +6,7 @@ const shopLinks = [
   { href: '/producten?categorie=honden', label: 'Honden' },
   { href: '/producten?categorie=katten', label: 'Katten' },
   { href: '/producten?categorie=vogels', label: 'Vogels' },
+  { href: '/producten?categorie=knaagdieren', label: 'Knaagdieren' },
 ]
 
 const serviceLinks = [
@@ -34,9 +35,9 @@ export default function Footer() {
             </p>
             {/* Contact info */}
             <div className="space-y-2">
-              <a href="mailto:info@pawsnl.nl" className="flex items-center gap-2 text-sm text-gray-400 hover:text-orange-400 transition-colors">
+              <a href="mailto:info@pawsshop.nl" className="flex items-center gap-2 text-sm text-gray-400 hover:text-orange-400 transition-colors">
                 <Mail className="w-4 h-4" />
-                info@pawsnl.nl
+                info@pawsshop.nl
               </a>
               <a href="tel:+31201234567" className="flex items-center gap-2 text-sm text-gray-400 hover:text-orange-400 transition-colors">
                 <Phone className="w-4 h-4" />
