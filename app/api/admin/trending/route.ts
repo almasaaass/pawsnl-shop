@@ -1,0 +1,107 @@
+import { NextRequest, NextResponse } from 'next/server'
+import { cookies } from 'next/headers'
+
+function checkAuth() {
+  try {
+    const cookieStore = cookies()
+    const auth = cookieStore.get('admin-auth')
+    return auth?.value === process.env.ADMIN_SECRET || !!auth?.value
+  } catch {
+    return false
+  }
+}
+
+// ─── Trending producten database ──────────────────────────────────────────────
+
+export interface TrendingProduct {
+  id: number
+  name: string
+  category: 'honden' | 'katten' | 'vogels' | 'knaagdieren'
+  trendScore: number
+  season: 'lente' | 'zomer' | 'herfst' | 'winter' | 'altijd'
+  tiktokHashtags: string[]
+  searchTerms: string[]
+  estimatedMargin: 'laag' | 'midden' | 'hoog'
+  difficulty: 'makkelijk' | 'gemiddeld' | 'moeilijk'
+  tip: string
+}
+
+const TRENDING_PRODUCTS: TrendingProduct[] = [
+  // ─── HONDEN ─────────────────────────────────────────────────────
+  { id: 1, name: 'Anti-trek tuigje', category: 'honden', trendScore: 95, season: 'altijd', tiktokHashtags: ['#dogharness', '#nopullharness', '#dogtok', '#hondenleven'], searchTerms: ['dog harness no pull', 'no pull dog harness'], estimatedMargin: 'hoog', difficulty: 'makkelijk', tip: 'Bestseller op TikTok — maak een voor/na video met een trekkende hond' },
+  { id: 2, name: 'Slow feeder voerbak', category: 'honden', trendScore: 88, season: 'altijd', tiktokHashtags: ['#slowfeeder', '#dogbowl', '#dogtok', '#hondvoer'], searchTerms: ['slow feeder dog bowl', 'puzzle dog bowl'], estimatedMargin: 'hoog', difficulty: 'makkelijk', tip: 'Toon de hond die 3x langzamer eet — virale content' },
+  { id: 3, name: 'LED halsband', category: 'honden', trendScore: 82, season: 'herfst', tiktokHashtags: ['#ledcollar', '#dogwalk', '#nightwalk', '#hondenuitlaten'], searchTerms: ['dog led collar', 'light up dog collar'], estimatedMargin: 'hoog', difficulty: 'makkelijk', tip: 'Film in het donker voor maximaal effect — herfst/winter seizoen' },
+  { id: 4, name: 'Koelmat voor honden', category: 'honden', trendScore: 90, season: 'zomer', tiktokHashtags: ['#coolingmat', '#dogsummer', '#hondenzomer', '#dogtok'], searchTerms: ['dog cooling mat', 'pet cooling pad'], estimatedMargin: 'hoog', difficulty: 'makkelijk', tip: 'Seizoensproduct — start promotie in april/mei voor zomerpiek' },
+  { id: 5, name: 'Likmat met zuignap', category: 'honden', trendScore: 86, season: 'altijd', tiktokHashtags: ['#lickmat', '#dogbath', '#dogtok', '#hondentraining'], searchTerms: ['lick mat dog', 'dog lick pad suction'], estimatedMargin: 'hoog', difficulty: 'makkelijk', tip: 'Film je hond in bad die kalm likt — super virale content' },
+  { id: 6, name: 'GPS tracker halsband', category: 'honden', trendScore: 78, season: 'altijd', tiktokHashtags: ['#gpstracker', '#dogtracker', '#dogsafety', '#hondgps'], searchTerms: ['pet gps tracker', 'dog gps collar tracker'], estimatedMargin: 'midden', difficulty: 'gemiddeld', tip: 'Premium product — benadruk het veiligheidsaspect voor eigenaars' },
+  { id: 7, name: 'Snuffle mat', category: 'honden', trendScore: 84, season: 'altijd', tiktokHashtags: ['#snufflemat', '#dogtoy', '#nosework', '#hondenspeelgoed'], searchTerms: ['snuffle mat dog', 'dog nose work mat'], estimatedMargin: 'hoog', difficulty: 'makkelijk', tip: 'Honden worden er rustig van — toon het verschil in energie voor/na' },
+  { id: 8, name: 'Hondenzwemvest', category: 'honden', trendScore: 75, season: 'zomer', tiktokHashtags: ['#doglifejacket', '#dogswimming', '#dogsummer', '#hondzwemmen'], searchTerms: ['dog life jacket', 'dog swimming vest'], estimatedMargin: 'midden', difficulty: 'makkelijk', tip: 'Seizoensproduct zomer — focus op veiligheid en schattige beelden' },
+  { id: 9, name: 'Automatische ballenwerper', category: 'honden', trendScore: 72, season: 'altijd', tiktokHashtags: ['#dogballlauncher', '#dogtoy', '#dogtok', '#hondenspel'], searchTerms: ['automatic dog ball launcher', 'dog ball thrower'], estimatedMargin: 'midden', difficulty: 'gemiddeld', tip: 'Toon de hond die zelf leert ballen terugbrengen — virale potentie' },
+  { id: 10, name: 'Regenjas voor honden', category: 'honden', trendScore: 80, season: 'herfst', tiktokHashtags: ['#dograincoat', '#dogtok', '#hondenregenjas', '#petfashion'], searchTerms: ['dog raincoat', 'waterproof dog jacket'], estimatedMargin: 'hoog', difficulty: 'makkelijk', tip: 'Nederland = regen — toon hond die droog thuiskomt' },
+  { id: 11, name: 'Poot reiniger beker', category: 'honden', trendScore: 77, season: 'herfst', tiktokHashtags: ['#pawcleaner', '#dogtok', '#mudpaws', '#hondenpoten'], searchTerms: ['dog paw cleaner', 'paw washer cup'], estimatedMargin: 'hoog', difficulty: 'makkelijk', tip: 'Perfect voor regenachtig weer — toon vieze poten → schone poten' },
+  { id: 12, name: 'Anti-blaf apparaat', category: 'honden', trendScore: 70, season: 'altijd', tiktokHashtags: ['#antibark', '#dogtraining', '#dogtok', '#hondentraining'], searchTerms: ['anti bark device', 'ultrasonic dog bark control'], estimatedMargin: 'hoog', difficulty: 'gemiddeld', tip: 'Controversieel = engagement — laat zien dat het diervriendelijk is' },
+  // ─── KATTEN ─────────────────────────────────────────────────────
+  { id: 13, name: 'Kattenwaterfontein', category: 'katten', trendScore: 92, season: 'altijd', tiktokHashtags: ['#catwaterfountain', '#cattok', '#kattendrinkfontein', '#cathack'], searchTerms: ['cat water fountain', 'pet water fountain'], estimatedMargin: 'hoog', difficulty: 'makkelijk', tip: 'Topproduct — katten drinken meer = gezonder. Maak ASMR video van stromend water' },
+  { id: 14, name: 'Automatisch laserspeeltje', category: 'katten', trendScore: 89, season: 'altijd', tiktokHashtags: ['#catlaser', '#cattoy', '#cattok', '#kattenspeelgoed'], searchTerms: ['automatic cat laser toy', 'cat laser pointer automatic'], estimatedMargin: 'hoog', difficulty: 'makkelijk', tip: 'Katten worden gek — film de reactie vanuit vogelperspectief' },
+  { id: 15, name: 'Raam hangmat voor katten', category: 'katten', trendScore: 85, season: 'altijd', tiktokHashtags: ['#catwindowperch', '#cathammock', '#cattok', '#kattenbed'], searchTerms: ['cat window perch', 'cat window hammock'], estimatedMargin: 'hoog', difficulty: 'makkelijk', tip: 'Installatie + kat die erin springt = perfecte video content' },
+  { id: 16, name: 'Interactief voerpuzzel kat', category: 'katten', trendScore: 81, season: 'altijd', tiktokHashtags: ['#catpuzzle', '#cattoy', '#cattok', '#kattenspeelgoed'], searchTerms: ['cat puzzle feeder', 'interactive cat toy feeder'], estimatedMargin: 'hoog', difficulty: 'makkelijk', tip: 'Slimme kat content doet het altijd goed — toon de kat die het oplost' },
+  { id: 17, name: 'Zelfverwarmend kattenbed', category: 'katten', trendScore: 79, season: 'winter', tiktokHashtags: ['#catheatedbed', '#catbed', '#cattok', '#kattenbed'], searchTerms: ['self heating cat bed', 'thermal cat bed'], estimatedMargin: 'midden', difficulty: 'makkelijk', tip: 'Winterseizoen — toon de kat die instant in slaap valt' },
+  { id: 18, name: 'Kattendeur met chip', category: 'katten', trendScore: 68, season: 'altijd', tiktokHashtags: ['#catdoor', '#catflap', '#cattok', '#kattenluik'], searchTerms: ['microchip cat door', 'smart cat flap'], estimatedMargin: 'midden', difficulty: 'moeilijk', tip: 'Premium product — benadruk dat alleen jouw kat naar binnen kan' },
+  { id: 19, name: 'Kattentunnel opvouwbaar', category: 'katten', trendScore: 76, season: 'altijd', tiktokHashtags: ['#cattunnel', '#cattoy', '#cattok', '#kattenspel'], searchTerms: ['cat tunnel', 'collapsible cat tunnel toy'], estimatedMargin: 'hoog', difficulty: 'makkelijk', tip: 'Film de kat die er doorheen rent — simpele maar effectieve content' },
+  // ─── VOGELS ─────────────────────────────────────────────────────
+  { id: 20, name: 'Vogel trainingsset', category: 'vogels', trendScore: 74, season: 'altijd', tiktokHashtags: ['#birdtraining', '#birdtok', '#parrottok', '#vogeltraining'], searchTerms: ['bird training toys', 'parrot training set'], estimatedMargin: 'hoog', difficulty: 'gemiddeld', tip: 'Parkiet die trucjes leert = virale content. Toon de progressie' },
+  { id: 21, name: 'Vogelspeelgoed set (10-delig)', category: 'vogels', trendScore: 80, season: 'altijd', tiktokHashtags: ['#birdtoys', '#birdtok', '#parrottok', '#vogelspeelgoed'], searchTerms: ['bird toys set', 'parrot cage toys bundle'], estimatedMargin: 'hoog', difficulty: 'makkelijk', tip: 'Bundel = hogere orderwaarde. Toon de vogel die elk speeltje uitprobeert' },
+  { id: 22, name: 'Vogelbadje met fontein', category: 'vogels', trendScore: 71, season: 'zomer', tiktokHashtags: ['#birdbath', '#birdtok', '#vogelbad', '#parrotbath'], searchTerms: ['bird bath fountain', 'parrot shower bath'], estimatedMargin: 'midden', difficulty: 'makkelijk', tip: 'Vogels die baden = instant likes. ASMR water + vogelgeluiden' },
+  { id: 23, name: 'Vogelvoeder automaat', category: 'vogels', trendScore: 69, season: 'altijd', tiktokHashtags: ['#birdfeeder', '#birdtok', '#vogelvoer', '#automaticfeeder'], searchTerms: ['automatic bird feeder', 'bird food dispenser cage'], estimatedMargin: 'midden', difficulty: 'makkelijk', tip: 'Handig voor vakantie — benadruk het gemak' },
+  // ─── KNAAGDIEREN ────────────────────────────────────────────────
+  { id: 24, name: 'Hamster looprad (stil)', category: 'knaagdieren', trendScore: 83, season: 'altijd', tiktokHashtags: ['#hamsterwheel', '#hamstertok', '#hamsterleven', '#knaagdier'], searchTerms: ['silent hamster wheel', 'quiet hamster running wheel'], estimatedMargin: 'hoog', difficulty: 'makkelijk', tip: 'Benadruk het stille aspect — toon verschil met normaal piepend wiel' },
+  { id: 25, name: 'Konijnen tunnelsysteem', category: 'knaagdieren', trendScore: 78, season: 'altijd', tiktokHashtags: ['#rabbittunnel', '#bunnytok', '#konijn', '#konijnspeelgoed'], searchTerms: ['rabbit tunnel toy', 'bunny play tunnel'], estimatedMargin: 'hoog', difficulty: 'makkelijk', tip: 'Konijnen door tunnels = schattige content. Bouw een parcours' },
+  { id: 26, name: 'Hamster klimparcours', category: 'knaagdieren', trendScore: 76, season: 'altijd', tiktokHashtags: ['#hamsterplayground', '#hamstertok', '#hamsterparcours', '#knaagdier'], searchTerms: ['hamster climbing toy', 'hamster playground wood'], estimatedMargin: 'hoog', difficulty: 'makkelijk', tip: 'Hamster obstacle course video gaat altijd viraal op TikTok' },
+  { id: 27, name: 'Cavia hangmat', category: 'knaagdieren', trendScore: 72, season: 'altijd', tiktokHashtags: ['#guineapig', '#caviatok', '#guineapighammock', '#cavia'], searchTerms: ['guinea pig hammock', 'guinea pig bed hanging'], estimatedMargin: 'hoog', difficulty: 'makkelijk', tip: "Cavia die in hangmat klimt = instant viral. Film het moment" },
+  { id: 28, name: 'Knaagdieren koelplaat', category: 'knaagdieren', trendScore: 67, season: 'zomer', tiktokHashtags: ['#hamstercooling', '#hamstertok', '#knaagdierzomer'], searchTerms: ['hamster cooling plate', 'small pet cooling stone'], estimatedMargin: 'midden', difficulty: 'makkelijk', tip: 'Zomerproduct — toon hamster die er blij op gaat liggen' },
+  // ─── EXTRA TRENDING ─────────────────────────────────────────────
+  { id: 29, name: 'Huisdier camera met traktatie', category: 'honden', trendScore: 87, season: 'altijd', tiktokHashtags: ['#petcamera', '#dogcamera', '#furbocamera', '#hondencamera'], searchTerms: ['pet camera treat dispenser', 'dog camera wifi'], estimatedMargin: 'midden', difficulty: 'gemiddeld', tip: 'Film de reactie van je hond als je op afstand een snoepje gooit' },
+  { id: 30, name: 'Automatische voerbak', category: 'katten', trendScore: 85, season: 'altijd', tiktokHashtags: ['#automaticfeeder', '#catfeeder', '#cattok', '#kattenvoer'], searchTerms: ['automatic pet feeder', 'smart cat feeder timer'], estimatedMargin: 'midden', difficulty: 'gemiddeld', tip: 'Handig voor werkende katteneigenaars — benadruk het gemak' },
+  { id: 31, name: 'Hondenfohn stofzuiger', category: 'honden', trendScore: 73, season: 'altijd', tiktokHashtags: ['#dogdryer', '#doggrooming', '#dogtok', '#hondenverzorging'], searchTerms: ['dog dryer blower', 'pet grooming dryer'], estimatedMargin: 'midden', difficulty: 'gemiddeld', tip: 'De reactie van de hond op de föhn = grappige content' },
+  { id: 32, name: 'Krabpaal cactus', category: 'katten', trendScore: 82, season: 'altijd', tiktokHashtags: ['#catscratcher', '#cactucat', '#cattok', '#krabpaal'], searchTerms: ['cactus cat scratching post', 'cat scratcher cactus'], estimatedMargin: 'hoog', difficulty: 'makkelijk', tip: 'Esthetisch mooi — spreekt de interieur-bewuste katteneigenaar aan' },
+  { id: 33, name: 'Draagtas voor kleine honden', category: 'honden', trendScore: 79, season: 'altijd', tiktokHashtags: ['#dogcarrier', '#dogbag', '#smalldog', '#hondendraagtas'], searchTerms: ['small dog carrier bag', 'pet carrier sling'], estimatedMargin: 'hoog', difficulty: 'makkelijk', tip: 'Kleine hond in draagtas door de stad = lifestyle content' },
+  { id: 34, name: 'Kattenmuur klimelementen', category: 'katten', trendScore: 77, season: 'altijd', tiktokHashtags: ['#catwall', '#catshelves', '#cattok', '#kattenwand'], searchTerms: ['cat wall shelves', 'cat climbing wall furniture'], estimatedMargin: 'midden', difficulty: 'moeilijk', tip: 'Montage video + kat die het parcours test = populaire content' },
+  { id: 35, name: 'Hondentandenborstel speeltje', category: 'honden', trendScore: 83, season: 'altijd', tiktokHashtags: ['#dogdental', '#dogtoothbrush', '#dogtok', '#hondentanden'], searchTerms: ['dog toothbrush toy', 'dog dental chew toy'], estimatedMargin: 'hoog', difficulty: 'makkelijk', tip: 'Toon de voor/na van hondentanden — educatief + viraal' },
+  { id: 36, name: 'Kattenharnas met riem', category: 'katten', trendScore: 80, season: 'lente', tiktokHashtags: ['#catharness', '#catwalk', '#cattok', '#kattentuigje'], searchTerms: ['cat harness leash', 'escape proof cat harness'], estimatedMargin: 'hoog', difficulty: 'makkelijk', tip: 'Kat uitlaten op straat = mensen stoppen en kijken. Film de reacties' },
+  { id: 37, name: 'Hondenzwembad opvouwbaar', category: 'honden', trendScore: 76, season: 'zomer', tiktokHashtags: ['#dogpool', '#dogsummer', '#dogtok', '#hondenzwembad'], searchTerms: ['foldable dog pool', 'pet swimming pool'], estimatedMargin: 'hoog', difficulty: 'makkelijk', tip: 'Zomerseizoen — hond springt in zwembad = instant virale hit' },
+  { id: 38, name: 'Kattenrugzak met raam', category: 'katten', trendScore: 86, season: 'altijd', tiktokHashtags: ['#catbackpack', '#catbubble', '#cattok', '#kattenrugzak'], searchTerms: ['cat backpack bubble', 'cat carrier backpack window'], estimatedMargin: 'hoog', difficulty: 'makkelijk', tip: 'Kat in rugzak door de stad lopen — mensen reageren altijd. Film het' },
+  { id: 39, name: 'Puppy training pads herbruikbaar', category: 'honden', trendScore: 71, season: 'altijd', tiktokHashtags: ['#puppytraining', '#puppypad', '#dogtok', '#puppyopvoeding'], searchTerms: ['reusable puppy training pads', 'washable pee pads dog'], estimatedMargin: 'midden', difficulty: 'makkelijk', tip: 'Duurzaam alternatief — benadruk milieuvriendelijk en besparend' },
+  { id: 40, name: 'Vogelharnas voor parkieten', category: 'vogels', trendScore: 73, season: 'lente', tiktokHashtags: ['#birdharness', '#birdtok', '#parrottok', '#vogeltuigje'], searchTerms: ['bird harness parrot', 'bird flight harness small'], estimatedMargin: 'hoog', difficulty: 'gemiddeld', tip: 'Parkiet buiten uitlaten = extreem unieke content. Mensen geloven hun ogen niet' },
+  { id: 41, name: 'Hamsterhuisje keramiek', category: 'knaagdieren', trendScore: 70, season: 'altijd', tiktokHashtags: ['#hamsterhouse', '#hamstertok', '#hamsterhuisje', '#knaagdier'], searchTerms: ['ceramic hamster house', 'hamster hideout cool'], estimatedMargin: 'hoog', difficulty: 'makkelijk', tip: 'Hamster die zijn huisje inricht = schattige content' },
+  { id: 42, name: 'Hondenjas winter', category: 'honden', trendScore: 85, season: 'winter', tiktokHashtags: ['#dogcoat', '#dogwinter', '#dogtok', '#hondenjas'], searchTerms: ['dog winter jacket', 'warm dog coat waterproof'], estimatedMargin: 'hoog', difficulty: 'makkelijk', tip: 'Mode + functioneel — toon de transformatie van rillerig naar warm' },
+  { id: 43, name: 'Kat GPS tracker mini', category: 'katten', trendScore: 74, season: 'altijd', tiktokHashtags: ['#cattracker', '#cattok', '#catgps', '#kattengps'], searchTerms: ['cat gps tracker small', 'mini pet tracker cat'], estimatedMargin: 'midden', difficulty: 'gemiddeld', tip: 'Toon de route van je kat op de kaart — mensen zijn altijd nieuwsgierig' },
+  { id: 44, name: 'Honden intelligentie speelgoed', category: 'honden', trendScore: 81, season: 'altijd', tiktokHashtags: ['#dogpuzzle', '#smartdog', '#dogtok', '#hondenpuzzel'], searchTerms: ['dog puzzle toy', 'dog intelligence toy treat'], estimatedMargin: 'hoog', difficulty: 'makkelijk', tip: 'Is jouw hond slim genoeg? Challenge format werkt op TikTok' },
+  { id: 45, name: 'Katten krabmat sisal', category: 'katten', trendScore: 69, season: 'altijd', tiktokHashtags: ['#catscratcher', '#catmat', '#cattok', '#krabmat'], searchTerms: ['cat scratch mat sisal', 'cat scratching pad floor'], estimatedMargin: 'hoog', difficulty: 'makkelijk', tip: 'Goedkoop alternatief voor krabpaal — benadruk de prijs' },
+  { id: 46, name: 'Hondensokken anti-slip', category: 'honden', trendScore: 78, season: 'winter', tiktokHashtags: ['#dogsocks', '#dogtok', '#funnydogs', '#hondensokken'], searchTerms: ['dog socks anti slip', 'dog grip socks indoor'], estimatedMargin: 'hoog', difficulty: 'makkelijk', tip: 'Honden leren lopen met sokken = hilarische content. Gegarandeerd viraal' },
+  { id: 47, name: 'Konijnen speelgoed set', category: 'knaagdieren', trendScore: 71, season: 'altijd', tiktokHashtags: ['#bunnytoys', '#rabbittok', '#konijn', '#konijnspeelgoed'], searchTerms: ['rabbit toy set', 'bunny chew toys natural'], estimatedMargin: 'hoog', difficulty: 'makkelijk', tip: 'Konijnen zijn populair op TikTok — toon ze spelen met elk item' },
+  { id: 48, name: 'Honden autostoel', category: 'honden', trendScore: 75, season: 'altijd', tiktokHashtags: ['#dogcarseat', '#dogtok', '#dogtravel', '#hondenautostoel'], searchTerms: ['dog car seat', 'dog booster car seat small'], estimatedMargin: 'midden', difficulty: 'makkelijk', tip: 'Veiligheid + schattigheid — hond kijkt uit het raam vanuit stoeltje' },
+  { id: 49, name: 'Kattenlaserlicht automatisch', category: 'katten', trendScore: 84, season: 'altijd', tiktokHashtags: ['#catlaser', '#cattok', '#funnycat', '#kattenlaser'], searchTerms: ['automatic cat laser toy rotating', 'cat laser pointer toy'], estimatedMargin: 'hoog', difficulty: 'makkelijk', tip: 'Kat die achter laserlicht aanrent = altijd grappig. Film vanuit boven' },
+  { id: 50, name: 'Huisdier haarborstel zelfreinigend', category: 'honden', trendScore: 80, season: 'lente', tiktokHashtags: ['#petbrush', '#dogtok', '#doggrooming', '#hondenborstel'], searchTerms: ['self cleaning pet brush', 'dog brush deshedding'], estimatedMargin: 'hoog', difficulty: 'makkelijk', tip: 'Lente = verharing seizoen. Toon de berg haar die eraf komt — satisfying content' },
+]
+
+export async function GET(request: NextRequest) {
+  if (!checkAuth()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  const { searchParams } = new URL(request.url)
+  const category = searchParams.get('category')
+  const season = searchParams.get('season')
+
+  let filtered = [...TRENDING_PRODUCTS]
+
+  if (category) {
+    filtered = filtered.filter((p) => p.category === category)
+  }
+  if (season) {
+    filtered = filtered.filter((p) => p.season === season || p.season === 'altijd')
+  }
+
+  // Sorteer op trendScore (hoogste eerst)
+  filtered.sort((a, b) => b.trendScore - a.trendScore)
+
+  return NextResponse.json({ products: filtered, total: filtered.length })
+}

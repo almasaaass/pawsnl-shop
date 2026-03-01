@@ -1,7 +1,8 @@
 'use client'
 
-import { useState } from 'react'
-import { Search, Plus, Check, AlertCircle, ExternalLink, RefreshCw, Tag, TrendingUp } from 'lucide-react'
+import { useState, useEffect, Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
+import { Search, Plus, Check, AlertCircle, ExternalLink, RefreshCw, Tag, TrendingUp, Link2 } from 'lucide-react'
 
 interface CJProduct {
   pid: string
@@ -52,13 +53,33 @@ interface ImportModal {
 }
 
 export default function ImporterenPage() {
+  return (
+    <Suspense fallback={<div className="text-center py-16 text-gray-400">Laden...</div>}>
+      <ImporterenContent />
+    </Suspense>
+  )
+}
+
+function ImporterenContent() {
   const [query, setQuery] = useState('')
+  const [pidInput, setPidInput] = useState('')
   const [results, setResults] = useState<CJProduct[]>([])
   const [loading, setLoading] = useState(false)
+  const [pidLoading, setPidLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [importModal, setImportModal] = useState<ImportModal | null>(null)
   const [importing, setImporting] = useState(false)
   const [imported, setImported] = useState<Set<string>>(new Set())
+  const searchParams = useSearchParams()
+
+  // Auto-zoek als ?q= in URL staat (vanuit trending pagina)
+  useEffect(() => {
+    const q = searchParams.get('q')
+    if (q) {
+      setQuery(q)
+      search(q)
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   async function search(keyword?: string) {
     const q = keyword ?? query
@@ -76,6 +97,32 @@ export default function ImporterenPage() {
       setError(e.message)
     } finally {
       setLoading(false)
+    }
+  }
+
+  async function fetchByPid(value?: string) {
+    const input = value ?? pidInput
+    if (!input.trim()) return
+    setPidLoading(true)
+    setError(null)
+    try {
+      const res = await fetch(`/api/admin/cj?pid=${encodeURIComponent(input.trim())}`)
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error)
+      setResults(data.products)
+    } catch (e: any) {
+      setError(e.message)
+    } finally {
+      setPidLoading(false)
+    }
+  }
+
+  function handlePidPaste(e: React.ClipboardEvent<HTMLInputElement>) {
+    const pasted = e.clipboardData.getData('text')
+    if (pasted.includes('cjdropshipping.com') || /^[A-Za-z0-9-]{8,}$/.test(pasted.trim())) {
+      e.preventDefault()
+      setPidInput(pasted.trim())
+      setTimeout(() => fetchByPid(pasted.trim()), 100)
     }
   }
 
@@ -124,6 +171,36 @@ export default function ImporterenPage() {
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-gray-900">📦 Producten importeren</h1>
         <p className="text-gray-500 mt-1">Zoek producten op CJdropshipping en importeer ze direct naar jouw shop</p>
+      </div>
+
+      {/* PID / URL import */}
+      <div className="bg-white rounded-2xl shadow-sm border border-emerald-100 p-5 mb-4">
+        <p className="text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+          <Link2 className="w-4 h-4 text-emerald-600" />
+          Direct importeren via CJ Product URL of PID
+        </p>
+        <div className="flex gap-3">
+          <div className="flex-1 relative">
+            <input
+              type="text"
+              value={pidInput}
+              onChange={(e) => setPidInput(e.target.value)}
+              onPaste={handlePidPaste}
+              onKeyDown={(e) => e.key === 'Enter' && fetchByPid()}
+              placeholder="Plak URL (bijv. cjdropshipping.com/product/...) of PID"
+              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+            />
+          </div>
+          <button
+            onClick={() => fetchByPid()}
+            disabled={pidLoading || !pidInput.trim()}
+            className="flex items-center gap-2 bg-emerald-600 text-white px-5 py-2.5 rounded-xl font-medium text-sm hover:bg-emerald-700 transition-colors disabled:opacity-60"
+          >
+            <RefreshCw className={`w-4 h-4 ${pidLoading ? 'animate-spin' : ''}`} />
+            {pidLoading ? 'Ophalen...' : 'Ophalen'}
+          </button>
+        </div>
+        <p className="text-xs text-gray-400 mt-2">Tip: kopieer de URL van een product op cjdropshipping.com en plak het hier — het wordt automatisch opgehaald</p>
       </div>
 
       {/* Zoekbalk */}
