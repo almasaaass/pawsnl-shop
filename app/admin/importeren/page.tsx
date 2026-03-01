@@ -119,7 +119,10 @@ function ImporterenContent() {
 
   function handlePidPaste(e: React.ClipboardEvent<HTMLInputElement>) {
     const pasted = e.clipboardData.getData('text')
-    if (pasted.includes('cjdropshipping.com') || /^[A-Za-z0-9-]{8,}$/.test(pasted.trim())) {
+    const isCJUrl = pasted.includes('cjdropshipping.com')
+    const isSku = /^CJ[A-Z0-9]{6,}$/i.test(pasted.trim())
+    const isPid = /^\d{10,}$/.test(pasted.trim())
+    if (isCJUrl || isSku || isPid) {
       e.preventDefault()
       setPidInput(pasted.trim())
       setTimeout(() => fetchByPid(pasted.trim()), 100)
@@ -177,7 +180,7 @@ function ImporterenContent() {
       <div className="bg-white rounded-2xl shadow-sm border border-emerald-100 p-5 mb-4">
         <p className="text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
           <Link2 className="w-4 h-4 text-emerald-600" />
-          Direct importeren via CJ Product URL of PID
+          Direct importeren via CJ Product URL
         </p>
         <div className="flex gap-3">
           <div className="flex-1 relative">
@@ -187,7 +190,7 @@ function ImporterenContent() {
               onChange={(e) => setPidInput(e.target.value)}
               onPaste={handlePidPaste}
               onKeyDown={(e) => e.key === 'Enter' && fetchByPid()}
-              placeholder="Plak URL (bijv. cjdropshipping.com/product/...) of PID"
+              placeholder="Plak CJ product URL (bijv. cjdropshipping.com/product/...)"
               className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
             />
           </div>
@@ -200,7 +203,7 @@ function ImporterenContent() {
             {pidLoading ? 'Ophalen...' : 'Ophalen'}
           </button>
         </div>
-        <p className="text-xs text-gray-400 mt-2">Tip: kopieer de URL van een product op cjdropshipping.com en plak het hier — het wordt automatisch opgehaald</p>
+        <p className="text-xs text-gray-400 mt-2">Tip: kopieer de volledige URL uit je browser van een product op cjdropshipping.com en plak het hier</p>
       </div>
 
       {/* Zoekbalk */}

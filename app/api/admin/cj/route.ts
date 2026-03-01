@@ -18,6 +18,9 @@ function checkAuth() {
 
 function extractPID(input: string): string {
   const trimmed = input.trim()
+  // URL: https://www.cjdropshipping.com/slug-name-p-1711605389739315200
+  const slugMatch = trimmed.match(/-p-(\d+)/)
+  if (slugMatch) return slugMatch[1]
   // URL: https://cjdropshipping.com/product/detail/XXXXXX.html
   const detailMatch = trimmed.match(/cjdropshipping\.com\/product\/detail\/([A-Za-z0-9-]+)\.html/)
   if (detailMatch) return detailMatch[1]
@@ -62,7 +65,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    // PID/URL modus: direct product ophalen
+    // URL/PID modus: direct product ophalen
     if (pidParam) {
       const pid = extractPID(pidParam)
       const product = await getCJProductDetail(pid)

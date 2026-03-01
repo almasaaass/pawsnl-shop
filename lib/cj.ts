@@ -91,6 +91,55 @@ export async function searchCJProducts(keyword: string, page = 1, pageSize = 20)
 
 // ─── Product details ──────────────────────────────────────────────────────────
 
+export async function getCJProductBySku(sku: string): Promise<CJProduct> {
+  const token = await getCJToken()
+
+  // Methode 1: Direct query via productSku en variantSku
+  for (const param of ['productSku', 'variantSku']) {
+    const res = await fetch(`${CJ_BASE}/v1/product/query?${param}=${encodeURIComponent(sku)}`, {
+      headers: { 'CJ-Access-Token': token },
+    })
+    const data = await res.json()
+    if (data.result && data.data) {
+      const p = data.data
+      return mapCJResponse(p)
+    }
+  }
+
+  // Methode 2: Zoek via product/list met productSku filter
+  const res = await fetch(
+    `${CJ_BASE}/v1/product/list?productSku=${encodeURIComponent(sku)}&pageNum=1&pageSize=1`,
+    { headers: { 'CJ-Access-Token': token } }
+  )
+  const data = await res.json()
+  if (data.result && data.data?.list?.length > 0) {
+    return mapCJResponse(data.data.list[0])
+  }
+
+  throw new Error(`CJ product niet gevonden voor SKU: ${sku}`)
+}
+
+function mapCJResponse(p: any): CJProduct {
+  return {
+    pid: p.pid,
+    productName: p.productNameEn ?? p.productName,
+    productNameEn: p.productNameEn,
+    productSku: p.productSku,
+    sellPrice: parseFloat(p.sellPrice ?? '0'),
+    categoryName: p.categoryName ?? '',
+    productImage: p.productImage ?? '',
+    productImageSet: (p.productImageSet ?? [p.productImage]).filter(Boolean),
+    description: p.description ?? '',
+    variants: (p.variants ?? []).map((v: any) => ({
+      vid: v.vid,
+      variantSku: v.variantSku,
+      variantSellPrice: parseFloat(v.variantSellPrice ?? p.sellPrice ?? '0'),
+      variantImage: v.variantImage ?? p.productImage,
+      variantProperty: v.variantProperty ?? '',
+    })),
+  }
+}
+
 export async function getCJProductDetail(pid: string): Promise<CJProduct> {
   const token = await getCJToken()
 
