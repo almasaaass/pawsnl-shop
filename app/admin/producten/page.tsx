@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { Product } from '@/lib/types'
-import { formatPrice } from '@/lib/utils'
+import { formatPrice, getImageSrc } from '@/lib/utils'
 import { Plus, Pencil, Trash2, Search, X, Check } from 'lucide-react'
 import Image from 'next/image'
 
@@ -163,11 +163,12 @@ export default function AdminProductenPage() {
                         <div className="w-10 h-10 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
                           {product.images[0] ? (
                             <Image
-                              src={product.images[0]}
+                              src={getImageSrc(product.images[0])}
                               alt={product.name}
                               width={40}
                               height={40}
                               className="object-cover w-full h-full"
+                              unoptimized
                             />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center text-lg">🐾</div>

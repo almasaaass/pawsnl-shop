@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { stripe } from '@/lib/stripe'
 import { createAdminClient } from '@/lib/supabase'
 import { sendOrderConfirmation, sendAdminNewOrder } from '@/lib/email'
+import { placeCJOrder } from '@/lib/cj'
 import Stripe from 'stripe'
 
 export async function POST(request: NextRequest) {
@@ -52,7 +53,7 @@ async function handleSuccessfulPayment(session: Stripe.Checkout.Session) {
     (session.amount_total ?? 0) / 100
 
   // Sla de bestelling op
-  const { error: orderError } = await supabaseAdmin.from('orders').insert({
+  const { data: orderData, error: orderError } = await supabaseAdmin.from('orders').insert({
     customer_email: customerEmail,
     customer_name: customerName,
     shipping_address: shippingAddress,
@@ -61,7 +62,7 @@ async function handleSuccessfulPayment(session: Stripe.Checkout.Session) {
     status: 'paid',
     stripe_session_id: session.id,
     tracking_number: null,
-  })
+  }).select().single()
 
   if (orderError) {
     console.error('Fout bij opslaan bestelling:', orderError)
@@ -123,4 +124,52 @@ async function handleSuccessfulPayment(session: Stripe.Checkout.Session) {
     sendOrderConfirmation(emailData),
     sendAdminNewOrder(emailData),
   ])
+
+  // ── CJ Dropshipping order plaatsen ──────────────────────────────────────
+  // Niet-blokkerend: CJ failure mag webhook NIET laten crashen
+  try {
+    // Haal cj_pid en cj_vid op voor elk besteld product
+    const productIds = items.map((i: any) => i.product_id).filter(Boolean)
+    if (productIds.length > 0) {
+      const { data: products } = await supabaseAdmin
+        .from('products')
+        .select('id, cj_pid, cj_vid')
+        .in('id', productIds)
+
+      // Bouw CJ order products array (alleen items met cj_vid)
+      const cjProducts: { vid: string; quantity: number }[] = []
+      for (const item of items) {
+        const prod = products?.find((p: any) => p.id === item.product_id)
+        if (prod?.cj_vid) {
+          cjProducts.push({ vid: prod.cj_vid, quantity: item.quantity })
+        }
+      }
+
+      if (cjProducts.length > 0) {
+        const cjResult = await placeCJOrder({
+          orderNumber: orderData.id,
+          shippingCountryCode: shippingAddress.country || 'NL',
+          shippingProvince: shippingAddress.city,
+          shippingCity: shippingAddress.city,
+          shippingAddress: shippingAddress.street,
+          shippingZip: shippingAddress.postal_code,
+          shippingCustomerName: customerName,
+          products: cjProducts,
+        })
+
+        // Sla CJ order ID op
+        await supabaseAdmin
+          .from('orders')
+          .update({ cj_order_id: cjResult.orderId })
+          .eq('id', orderData.id)
+
+        console.log(`✅ CJ order geplaatst: ${cjResult.orderId} voor order ${orderData.id}`)
+      } else {
+        console.log(`⚠️ Geen CJ producten gevonden voor order ${orderData.id} — handmatig afhandelen`)
+      }
+    }
+  } catch (cjError) {
+    // CJ failure mag de webhook NIET laten falen — klant heeft al betaald
+    console.error('⚠️ CJ order plaatsen mislukt (order wordt handmatig afgehandeld):', cjError)
+  }
 }

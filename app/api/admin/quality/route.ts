@@ -1,16 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { cookies } from 'next/headers'
 import { createAdminClient } from '@/lib/supabase'
-
-function checkAuth() {
-  try {
-    const cookieStore = cookies()
-    const auth = cookieStore.get('admin-auth')
-    return auth?.value === process.env.ADMIN_SECRET || !!auth?.value
-  } catch {
-    return false
-  }
-}
+import { verifyAdmin } from '@/lib/auth'
 
 interface QualityIssue {
   type: 'error' | 'warning'
@@ -99,7 +89,7 @@ function auditProduct(product: any): QualityIssue[] {
 }
 
 export async function GET(request: NextRequest) {
-  if (!checkAuth()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  if (!verifyAdmin(request)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const supabase = createAdminClient()
   const { data: products, error } = await supabase

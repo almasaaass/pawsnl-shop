@@ -20,10 +20,10 @@ interface TikTokScript {
   product: string
   category: string
   hook: string
-  script: string
-  cta: string
+  retain: string
+  reward: string
   hashtags: string[]
-  filmtips: string[]
+  filmtips: { hook: string[]; retain: string[]; reward: string[] }
   duration: string
 }
 
@@ -43,49 +43,56 @@ const FORMATS: ScriptFormat[] = [
   'top3',
 ]
 
-// ─── Hooks per categorie ──────────────────────────────────────────────────────
+// ─── Hormozi-stijl hooks (0-3 sec) ──────────────────────────────────────────
 
 function getHooks(product: Product): string[] {
-  const { name, category, compare_price, price } = product
+  const { category, compare_price, price } = product
   const discount = compare_price ? Math.round(((compare_price - price) / compare_price) * 100) : 0
+  const priceStr = `€${price.toFixed(2).replace('.', ',')}`
+  const savingsPerYear = Math.round(price * 3)
 
-  const hooksMap: Record<string, string[]> = {
+  // Hormozi-stijl openers — pattern interrupts
+  const hormoziHooks = [
+    `STOP! Als je een ${category.slice(0, -2)} hebt MOET je dit zien`,
+    `Ik wou dat iemand mij dit eerder had verteld over dit product`,
+    `Dit kost ${priceStr} maar bespaart je €${savingsPerYear} per jaar`,
+    `De #1 fout die ${category}baasjes maken (en hoe je het fixt)`,
+    `Ik heb €500+ uitgegeven aan ${category}producten. Dit is de ENIGE die werkt`,
+  ]
+
+  const categoryHooks: Record<string, string[]> = {
     honden: [
-      `Dit veranderde mijn leven als hondenbaasje voor altijd 🐶`,
-      `Mijn hond FLIPT uit elke keer dat ik dit pak 😂`,
-      `Als jouw hond dit nog niet heeft, mis je écht iets`,
-      `Hoe ik het trekken aan de riem in 3 dagen stopte ✅`,
-      `Dit is waarom mijn hond de beste verzorgd is in de buurt 💅`,
+      `Elke dierenarts raadt dit aan maar niemand vertelt je waarom 🐶`,
+      `Mijn hond FLIPT uit elke keer dat ik dit pak`,
+      `97% van hondenbaasjes weet dit niet over hun hond`,
     ],
     katten: [
-      `Mijn kat gebruikt dit de hele dag — en ik snap waarom 🐱`,
-      `Dit catproduct heeft mijn leven veranderd (geen grap)`,
+      `Je kat haat je in stilte als je dit niet hebt 🐱`,
       `POV: je kat wil NOOIT meer stoppen met spelen`,
-      `Dit is het enige kattenspeelgoed dat mijn kat wél leuk vindt`,
-      `Waarom iedere kattenbaasje dit in huis zou moeten hebben`,
+      `Dit is waarom je kat 's nachts zo raar doet`,
     ],
     vogels: [
       `Mijn vogel werd zoveel gelukkiger na dit ding 🐦`,
-      `Dit vergat ik 3 jaar te kopen als vogelbaasje...`,
+      `Vogelbaasjes slaan dit ALTIJD over (grote fout)`,
     ],
     knaagdieren: [
-      `Mijn hamster heeft nu het luxe leven dat hij verdient 🐹`,
+      `Je knaagdier verdient beter dan wat je nu hebt 🐹`,
       `Dit maakte mijn knaagdier 10x gelukkiger`,
     ],
     vissen: [
-      `Mijn aquarium ziet er nu uit als een professionele setup 🐟`,
-      `Dit heeft mijn vissen echt blij gemaakt`,
+      `Je aquarium mist dit ene ding 🐟`,
+      `Professionele aquariumhouders zweren bij dit product`,
     ],
   }
 
   const discountHooks = discount >= 20
-    ? [`${discount}% korting op dit product — maar niet voor lang ⚡`]
+    ? [`${discount}% korting — maar ALLEEN deze week ⚡`]
     : []
 
-  return [...(hooksMap[category] ?? hooksMap.honden), ...discountHooks]
+  return [...hormoziHooks, ...(categoryHooks[category] ?? []), ...discountHooks]
 }
 
-// ─── Script generator per format ─────────────────────────────────────────────
+// ─── Script generator: Hook → Retain → Reward ──────────────────────────────
 
 function generateScript(product: Product, format: ScriptFormat, dayIndex: number): TikTokScript {
   const hooks = getHooks(product)
@@ -94,51 +101,65 @@ function generateScript(product: Product, format: ScriptFormat, dayIndex: number
     ? Math.round(((product.compare_price - product.price) / product.compare_price) * 100)
     : 0
   const priceStr = `€${product.price.toFixed(2).replace('.', ',')}`
+  const compareStr = product.compare_price ? `€${product.compare_price.toFixed(2).replace('.', ',')}` : ''
   const url = 'pawsshop.nl'
+  const animal = product.category.slice(0, -2)
 
   const animalEmoji: Record<string, string> = {
     honden: '🐶', katten: '🐱', vogels: '🐦', knaagdieren: '🐹', vissen: '🐟',
   }
   const emoji = animalEmoji[product.category] ?? '🐾'
 
-  const scripts: Record<ScriptFormat, { script: string; filmtips: string[]; duration: string }> = {
+  interface ScriptParts {
+    retain: string
+    reward: string
+    filmtips: { hook: string[]; retain: string[]; reward: string[] }
+    duration: string
+  }
+
+  const scripts: Record<ScriptFormat, ScriptParts> = {
 
     pov: {
-      script: `[Tekst op scherm: "${hook}"]
+      retain: `[Tekst op scherm: "${hook}"]
 
-Serieus, luister even.
-
-Ik heb de ${product.name} gekocht voor mijn ${product.category.slice(0, -2)} en ik ga je precies laten zien waarom dit een gamechanger is.
+Serieus, luister even. Ik heb de ${product.name} gekocht voor mijn ${animal} en ik ga je precies laten zien waarom dit een gamechanger is.
 
 [Laat het product zien vanuit je hand]
 
 Kijk. Dit is 'm. ${product.name}.
 
-[Demonstreer het product 10-15 seconden]
+[Demonstreer het product 10-15 seconden — laat details zien]
 
-Zie je dit? Mijn ${product.category.slice(0, -2)} went er binnen 5 minuten aan. En dat is normaal — want dit is echt goed ontworpen.
+Zie je dit? Mijn ${animal} went er binnen 5 minuten aan. En dat is normaal — want dit is echt goed ontworpen.
 
-Voor ${priceStr}${discount > 0 ? ` (was ${product.compare_price ? '€' + product.compare_price.toFixed(2).replace('.', ',') : ''})` : ''} is dit echt een no-brainer.
+[Laat reactie van je huisdier zien]
 
-Link in bio! ⬆️`,
-      filmtips: [
-        'Film in portretmodus (9:16) met goede belichting',
-        'Begin met close-up van het product in je hand',
-        'Laat je huisdier reageren op het product',
-        'Voeg trending geluid toe uit TikTok bibliotheek',
-      ],
+Het verschil met andere producten? Dit gaat ECHT lang mee. Ik gebruik het nu al weken en het ziet er nog als nieuw uit.
+
+Voor ${priceStr}${discount > 0 ? ` (was ${compareStr})` : ''} is dit echt een no-brainer.`,
+      reward: `[Kijk in camera — urgentie]
+
+Link in mijn bio! ⬆️ En volg voor meer ${animal}tips — ik test elke week nieuwe producten.
+
+${discount > 0 ? `LET OP: die ${discount}% korting is tijdelijk!` : 'Dit product is regelmatig uitverkocht, dus wees er snel bij.'}`,
+      filmtips: {
+        hook: ['Begin met close-up van het product in je hand — 2 seconden max', 'Gebruik tekst-overlay met de hook-zin'],
+        retain: ['Film in portretmodus (9:16) met daglicht', 'Laat je huisdier reageren op het product — DIT is de gouden content', 'Toon het product vanuit meerdere hoeken'],
+        reward: ['Eindig met oogcontact in de camera', 'Wijs naar boven (richting bio link)', 'Voeg trending geluid toe op laag volume'],
+      },
       duration: '30-45 seconden',
     },
 
     problem_solution: {
-      script: `[Begin met probleem — kijk gefrustreerd in camera]
+      retain: `[Begin met probleem — kijk gefrustreerd in camera]
 
 Okaaay. Ik was het ZAT.
 
-[Vertel het probleem in 5-10 sec]
 ${product.category === 'honden'
-  ? 'Mijn hond trok altijd aan de riem, blafte continu, of verveelde zich de hele dag. Niemand vertelde me wat ik moest doen.'
-  : 'Mijn kat was altijd chagrijnig, verveeld, of dronk te weinig water. Tot ik dit vond.'}
+  ? 'Mijn hond trok altijd aan de riem, blafte continu, of verveelde zich de hele dag. Ik heb alles geprobeerd — YouTube tips, dure trainers, andere producten. Niks werkte.'
+  : product.category === 'katten'
+    ? 'Mijn kat was altijd chagrijnig, verveeld, of dronk te weinig water. Ik zag haar gezondheid achteruitgaan en ik wist niet wat ik moest doen.'
+    : `Mijn ${animal} had problemen en ik wist niet hoe ik het moest oplossen. Tot ik dit vond.`}
 
 [Dramatische pauze — houd product op]
 
@@ -146,166 +167,202 @@ TOT. IK. DIT. VOND.
 
 [Laat product zien — enthousiastisch]
 
-De ${product.name}. Dit lost het probleem letterlijk op.
+De ${product.name}. Kijk, dit is waarom het werkt:
 
-[Demonstreer 10-15 seconden]
+[Demonstreer stap voor stap — 15 seconden]
+1. Je pakt het uit de verpakking
+2. Je zet het klaar voor je ${animal}
+3. En dan... kijk maar naar de reactie ${emoji}
 
-En nu? Geen probleem meer. Echt niet. Mijn ${product.category.slice(0, -2)} is zo veel gelukkiger ${emoji}
+[Film de reactie van je huisdier]
 
-Staat in de link in mijn bio voor maar ${priceStr}!`,
-      filmtips: [
-        'Maak een "before/after" sfeer — begin chagrijnig, eindig blij',
-        'Gebruik split-screen effect als je dat kunt',
-        'Film je huisdier tijdens gebruik van het product',
-        'Trending geluid: zoek op "problem solution" in TikTok',
-      ],
+Het verschil was DIRECT zichtbaar. Geen gelieg — mijn ${animal} is zo veel gelukkiger.`,
+      reward: `Dit kost maar ${priceStr}${discount > 0 ? ` (normaal ${compareStr})` : ''}.
+
+Sla dit op 🔖 en klik de link in mijn bio voordat het uitverkocht is.
+
+Volg mij voor meer tips die ECHT werken! ${emoji}`,
+      filmtips: {
+        hook: ['Begin met een gefrustreerde gezichtsuitdrukking', 'Gebruik "before" footage als je dat hebt'],
+        retain: ['Maak een before/after sfeer', 'Film de echte reactie van je huisdier', 'Gebruik split-screen als je kunt (CapCut)'],
+        reward: ['Eindig met een glimlach + product in beeld', 'Voeg "sla dit op" tekst-sticker toe'],
+      },
       duration: '30-60 seconden',
     },
 
     educational: {
-      script: `[Tekst op scherm: "3 dingen die ik wens dat ik wist als ${product.category.slice(0, -2)}baasje"]
+      retain: `[Tekst op scherm: "3 dingen die ik wens dat ik wist als ${animal}baasje"]
 
 Nummer 1 ${emoji}
-
-[Vertel tip 1 — gerelateerd aan het product]
 ${product.category === 'honden'
-  ? 'Honden hebben dagelijks mentale én fysieke stimulatie nodig. Zonder dat worden ze destructief.'
-  : 'Katten drinken van nature liever bewegend water. Stagnant water drinken ze minder — en dat veroorzaakt nierproblemen.'}
+  ? 'Honden hebben dagelijks mentale én fysieke stimulatie nodig. Zonder dat worden ze destructief. De meeste gedragsproblemen komen door VERVELING, niet door slechte opvoeding.'
+  : product.category === 'katten'
+    ? 'Katten drinken van nature liever bewegend water. Stilstaand water drinken ze minder — en dat veroorzaakt nierproblemen op de lange termijn.'
+    : `De meeste ${animal}baasjes onderschatten hoeveel stimulatie hun ${animal} nodig heeft.`}
 
 Nummer 2 🎯
-
-[Vertel tip 2]
-De meeste baasjes besteden te weinig aan goede verzorging. Maar goedkoop = duurkoop bij je huisdier.
+De meeste baasjes besteden te weinig aan de juiste producten. Maar goedkoop = duurkoop bij je huisdier. Een goed product kan je honderden euro's aan dierenarts kosten besparen.
 
 Nummer 3 ✅
+[Introduceer product als de oplossing]
+Daarom gebruik ik de ${product.name}. Dit lost precies probleem #1 op.
 
-[Introduceer product als oplossing]
-Daarom gebruik ik de ${product.name}. Dit lost precies dat probleem op — voor ${priceStr}.
+[Laat het product zien en demonstreer het]
 
-Sla dit op voor later! 🔖 En link in bio.`,
-      filmtips: [
-        'Gebruik tekst-overlays op elk punt (1, 2, 3)',
-        'Spreek duidelijk en snel — TikTok publiek haakt af bij te veel pauzes',
-        'Zet captions aan in TikTok voor meer bereik',
-        'Thumbnail: gebruik het getal "3" of een emoji',
-      ],
+Kijk, zo simpel is het. Mijn ${animal} is er dol op en het kost maar ${priceStr}.`,
+      reward: `Sla dit op voor later! 🔖
+
+Wil je de ${product.name}? Link in mijn bio → ${url}
+
+Volg voor meer ${animal}tips — ik post elke dag! ${emoji}`,
+      filmtips: {
+        hook: ['Gebruik grote tekst "3 DINGEN..." als eerste frame', 'Kijk verbaasd/geschokt in de camera'],
+        retain: ['Gebruik nummering met tekst-overlays (1, 2, 3)', 'Spreek snel en duidelijk — geen lange pauzes', 'Zet captions aan in TikTok voor meer bereik'],
+        reward: ['Gebruik een "sla dit op" animatie', 'Wijs naar je bio-link', 'Thumbnail tip: gebruik het getal "3" groot in beeld'],
+      },
       duration: '45-60 seconden',
     },
 
     review: {
-      script: `[Houd product op naar camera]
+      retain: `[Houd product op naar camera]
 
 Eerlijke review van de ${product.name} — na 2 weken gebruik.
 
 [Laat product van alle kanten zien]
 
-Ik heb dit product ${product.compare_price ? `voor ${priceStr} gekocht (normaal €${product.compare_price.toFixed(2).replace('.', ',')})` : `voor ${priceStr} gekocht`} en hier is wat ik vind:
+Ik heb dit product ${product.compare_price ? `voor ${priceStr} gekocht (normaal ${compareStr})` : `voor ${priceStr} gekocht`}. Hier is mijn eerlijke mening:
 
-DE GOEDE DINGEN: ${emoji}
-[Noem 3 positieve punten]
-✅ Mijn ${product.category.slice(0, -2)} is er dol op
-✅ Makkelijk te gebruiken
-✅ Goede kwaliteit voor de prijs
+DE GOEDE DINGEN ${emoji}
+[Noem 3 positieve punten met beelden]
+✅ Mijn ${animal} is er dol op — kijk maar [toon reactie]
+✅ Super makkelijk te gebruiken — geen handleiding nodig
+✅ Goede kwaliteit materiaal — voelt stevig aan
 
 VERBETERPUNTEN:
-[Noem eerlijk 1 klein minpuntje — maakt je geloofwaardiger]
+[Eerlijk 1 klein minpunt — dit maakt je geloofwaardiger]
 ⚠️ De verpakking had handiger gekund
 
-Mijn verdict: 9/10 — absoluut een aanrader voor elk ${product.category.slice(0, -2)}baasje!
+MAAR HIER IS HET DING:
+Voor ${priceStr} vind je NIKS beters. Echt niet. Ik heb gezocht.
 
-Link in bio 🔗`,
-      filmtips: [
-        'Gebruik thumbs up/down gebaren voor de review',
-        'Film van dichtbij tijdens de productdetails',
-        'Wees eerlijk — authentieke reviews doen het beter op TikTok',
-        'Voeg "sterren" animatie toe in bewerking',
-      ],
+Mijn eindoordeel: 9/10 — absoluut een aanrader voor elk ${animal}baasje.`,
+      reward: `Wil je hem zelf proberen? Link in mijn bio 🔗
+
+Comment "REVIEW" en ik stuur je de link!
+
+Volg voor meer eerlijke reviews — geen gesponsorde onzin ${emoji}`,
+      filmtips: {
+        hook: ['Houd het product naast je gezicht', 'Gebruik "Eerlijke review" als tekst-overlay'],
+        retain: ['Film close-ups van materiaal en details', 'Laat je huisdier het product gebruiken', 'Wees ECHT eerlijk — dat scoort beter'],
+        reward: ['Houd het product omhoog als "aanbevolen"', 'Voeg sterren-rating animatie toe in edit'],
+      },
       duration: '45-60 seconden',
     },
 
     trending: {
-      script: `[Open met trending geluid — begin direct met actie]
+      retain: `[Open met trending geluid — begin direct met actie]
 
-Dingen die leven veranderden in ${new Date().getFullYear()}:
+Dingen die mijn leven veranderden in ${new Date().getFullYear()}:
 
-[Lijst opbouwen — snel knippen]
-🧴 Mijn nieuwe huidverzorging...
-📱 Mijn nieuwe telefoon...
-🐾 De ${product.name} voor mijn ${product.category.slice(0, -2)}...
+[Snel knippen — 2 sec per item]
+🧴 Mijn nieuwe huidverzorging... nee
+📱 Mijn nieuwe telefoon... nee
+🏋️ Mijn gym routine... nee
+🐾 De ${product.name} voor mijn ${animal}... JA!
 
-[Close-up van blij huisdier met product]
+[Close-up van blij huisdier met product — 5-8 seconden]
 
-Dat laatste is veruit het beste. Geen discussie. ${emoji}
+Dit. Dit is de winner. Geen discussie ${emoji}
 
-Mijn ${product.category.slice(0, -2)} is er GEK op en ik betaalde maar ${priceStr}.
+Mijn ${animal} is er GEK op. Kijk maar...
 
-Link in mijn bio als je het wilt weten 🔗`,
-      filmtips: [
-        'Kies een trending geluid dat op dit moment viral gaat',
-        'Film in hoog tempo — snel knippen per item',
-        'Gebruik CapCut-templaten voor dit soort "lijst" video\'s',
-        'Voeg sticker-animaties toe voor extra engagement',
-      ],
+[Toon de beste reactie van je huisdier]
+
+En ik betaalde maar ${priceStr}${discount > 0 ? ` (${discount}% korting nu!)` : ''}.`,
+      reward: `Sla dit op en klik de link in mijn bio als je het wilt ${emoji}
+
+Dit product is STEEDS uitverkocht dus wees er snel bij!
+
+Volg voor meer van dit soort vondsten 🔗`,
+      filmtips: {
+        hook: ['Gebruik een trending geluid dat NU viral gaat', 'Eerste frame moet meteen actie hebben'],
+        retain: ['Film in hoog tempo — max 2 sec per item', 'Gebruik CapCut-templates voor lijst-video\'s', 'De huisdier-reactie is je gouden moment'],
+        reward: ['Voeg urgentie toe: "bijna uitverkocht"', 'Gebruik sticker-animaties voor engagement'],
+      },
       duration: '15-30 seconden',
     },
 
     unboxing: {
-      script: `[Film de doos/verpakking — opwinding in stem]
+      retain: `[Film de doos/verpakking — bouw spanning op]
 
-Mijn nieuwe bestelling is binnen! Laten we unboxen 📦
+Mijn nieuwe bestelling van PawsNL is binnen! Laten we unboxen 📦
 
-[Open de verpakking langzaam en duidelijk]
+[Open de verpakking langzaam — ASMR-achtig]
 
-Okaaay, dit is 'm. De ${product.name}.
+Okaaay, eerste indruk van de verpakking... netjes. Goed ingepakt.
 
-[Haal product eruit — laat zien]
+[Haal product eruit]
 
-Oh wow, de kwaliteit ziet er goed uit! Kijk naar dit...
+Dit is 'm. De ${product.name}.
 
-[Detailopnames — textures, materialen, afmetingen]
+[Detailopnames — draai het rond, laat materiaal zien]
 
-En dan nu de echte test — wat vindt mijn ${product.category.slice(0, -2)} ervan? ${emoji}
+Wow, de kwaliteit is echt beter dan verwacht voor ${priceStr}. Kijk naar dit materiaal... [voel eraan]
 
-[Film de reactie van je huisdier]
+Het ruikt ook goed — geen chemische geur of zo.
 
-[Positieve reactie]: JA! Geslaagd! Dit was ${priceStr} heel goed besteed.
+[Nu de ultieme test]
 
-Wil je ook? Link in mijn bio! ⬆️`,
-      filmtips: [
-        'Film alles in één take voor authenticiteit',
-        'Zorg voor goede belichting — daglicht werkt het beste',
-        'Film de reactie van je huisdier — dat is de beste content',
-        'Voeg "unboxing" en "haul" toe aan je hashtags',
-      ],
+Maar de echte vraag is: wat vindt mijn ${animal} ervan? ${emoji}
+
+[Film de reactie van je huisdier — dit is het hoogtepunt!]
+
+KIJK! Direct goedgekeurd door de echte expert in huis 😂`,
+      reward: `${priceStr}${discount > 0 ? ` (normaal ${compareStr} — dus ${discount}% korting!)` : ''} voor deze kwaliteit? Absoluut waard.
+
+Link in mijn bio! ⬆️ Volg voor meer unboxings elke week.
+
+Comment wat ik hierna moet unboxen! ${emoji}`,
+      filmtips: {
+        hook: ['Film de doos/pakket in je handen — close-up', 'Bouw spanning op met je stem'],
+        retain: ['Film ASMR-achtig: langzaam openen, geluiden', 'Toon details van het product van dichtbij', 'De huisdier-reactie is het BELANGRIJKSTE deel'],
+        reward: ['Houd product + huisdier samen in beeld', 'Vraag om comments voor engagement'],
+      },
       duration: '45-90 seconden',
     },
 
     top3: {
-      script: `[Tekst op scherm: "Top 3 producten voor ${product.category.slice(0, -2)}baasjes in ${new Date().getFullYear()}"]
+      retain: `[Tekst op scherm: "Top 3 ${animal}producten in ${new Date().getFullYear()}"]
 
-Nummer 3 ${emoji}
-[Noem een ander product uit dezelfde categorie]
+Nummer 3 🥉
+[Noem een basis product uit de categorie]
+Een goed [voerbak/speeltje/verzorgingsproduct] — €10-15, doet z'n werk.
 
 Nummer 2 🥈
-[Noem een tweede product]
+[Noem een premium alternatief]
+Een [premium optie] — €20-30, betere kwaliteit maar duurder.
 
-Maar nummer 1? Dit wint altijd.
+Maar nummer 1? Dit wint ALTIJD. Klaar?
 
-[Dramatische intro van het product]
+[Dramatische intro]
 
-De ${product.name}.
+De ${product.name} ${emoji}
 
-[Demonstreer 15-20 seconden enthousiast]
+[Demonstreer 15-20 seconden — laat zien WAAROM dit de beste is]
 
-Voor ${priceStr} is dit het beste wat je kunt kopen voor je ${product.category.slice(0, -2)}.
+Dit is de perfecte balans: goede kwaliteit, eerlijke prijs, en mijn ${animal} is er dol op.
 
-Alle producten staan via de link in mijn bio 🔗 Sla dit op! 🔖`,
-      filmtips: [
-        'Gebruik countdown-animatie (3-2-1) in CapCut',
-        'Zorg dat product #1 de meeste schermtijd krijgt',
-        'Sluit af met een duidelijke CTA naar je bio-link',
-        'Sla trending "countdown" geluiden op in je TikTok favorieten',
-      ],
+Voor ${priceStr}${discount > 0 ? ` (en nu met ${discount}% korting!)` : ''} is dit veruit de beste deal.`,
+      reward: `Alle 3 producten staan via de link in mijn bio 🔗
+
+Sla dit op! 🔖 En volg voor elke week een nieuwe top 3.
+
+Comment welke categorie ik hierna moet doen! ${emoji}`,
+      filmtips: {
+        hook: ['Gebruik "TOP 3" als grote tekst in eerste frame', 'Begin met een countdown-gebaar'],
+        retain: ['Gebruik countdown-animatie (3→2→1) in CapCut', 'Geef product #1 de meeste schermtijd', 'Toon het product in gebruik bij je huisdier'],
+        reward: ['Eindig met duidelijke CTA naar bio-link', 'Vraag om comments voor algoritme-boost'],
+      },
       duration: '30-60 seconden',
     },
   }
@@ -353,8 +410,8 @@ Alle producten staan via de link in mijn bio 🔗 Sla dit op! 🔖`,
     product: product.name,
     category: product.category,
     hook,
-    script: s.script,
-    cta: `🔗 Link in bio → ${url}`,
+    retain: s.retain,
+    reward: s.reward,
     hashtags,
     filmtips: s.filmtips,
     duration: s.duration,

@@ -1,7 +1,7 @@
 'use client'
 
 import { useCart } from '@/components/cart/CartContext'
-import { formatPrice } from '@/lib/utils'
+import { formatPrice, getImageSrc } from '@/lib/utils'
 import { Trash2, Plus, Minus, ShoppingBag, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -71,13 +71,18 @@ export default function WinkelwagenPage() {
               <div className="relative w-24 h-24 rounded-xl overflow-hidden flex-shrink-0 bg-gray-100">
                 {item.product.images[0] ? (
                   <Image
-                    src={item.product.images[0]}
+                    src={getImageSrc(item.product.images[0])}
                     alt={item.product.name}
                     fill
                     className="object-cover"
+                    unoptimized
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none'
+                    }}
                   />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-3xl">🐾</div>
+                ) : null}
+                {!item.product.images[0] && (
+                  <div className="w-full h-full flex items-center justify-center text-3xl bg-orange-50">🐾</div>
                 )}
               </div>
 

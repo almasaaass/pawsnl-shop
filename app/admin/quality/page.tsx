@@ -177,10 +177,15 @@ export default function QualityPage() {
         >
           <div className="flex items-start gap-4">
             {/* Thumbnail */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={p.images[0] || ''}
+              src={p.images[0] ? `/api/image-proxy?url=${encodeURIComponent(p.images[0])}` : ''}
               alt={p.name}
-              className="w-16 h-16 rounded-xl object-cover flex-shrink-0"
+              className="w-16 h-16 rounded-xl object-cover flex-shrink-0 bg-orange-50"
+              onError={(e) => {
+                e.currentTarget.src = ''
+                e.currentTarget.alt = '🐾'
+              }}
             />
 
             <div className="flex-1 min-w-0">

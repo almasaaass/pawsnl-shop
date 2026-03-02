@@ -20,6 +20,8 @@ CREATE TABLE IF NOT EXISTS products (
   category      TEXT NOT NULL,
   stock         INTEGER NOT NULL DEFAULT 0 CHECK (stock >= 0),
   featured      BOOLEAN NOT NULL DEFAULT FALSE,
+  cj_pid        TEXT,
+  cj_vid        TEXT,
   created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
@@ -41,6 +43,7 @@ CREATE TABLE IF NOT EXISTS orders (
                        CHECK (status IN ('pending', 'paid', 'shipped', 'delivered', 'cancelled')),
   stripe_session_id  TEXT UNIQUE,
   tracking_number    TEXT,
+  cj_order_id        TEXT,
   created_at         TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 

@@ -2,12 +2,23 @@
 
 import { useRouter, usePathname, useSearchParams } from 'next/navigation'
 import { useCallback } from 'react'
-import { X } from 'lucide-react'
+import { X, Dog, Cat, Bird, Rabbit, Fish, Snail } from 'lucide-react'
+import { LucideIcon } from 'lucide-react'
+
+const iconMap: Record<string, LucideIcon> = {
+  Dog,
+  Cat,
+  Bird,
+  Rabbit,
+  Fish,
+  Snail,
+}
 
 interface Category {
   slug: string
   label: string
   emoji: string
+  icon?: string
 }
 
 interface Props {
@@ -64,7 +75,7 @@ export default function ProductFilters({ categories, activeCategory, minPrijs, m
       {hasFilters && (
         <button
           onClick={clearAll}
-          className="flex items-center gap-2 text-sm text-orange-500 hover:text-orange-600 font-medium"
+          className="flex items-center gap-2 text-sm text-accent-500 hover:text-accent-600 font-medium"
         >
           <X className="w-4 h-4" />
           Filters wissen
@@ -81,26 +92,33 @@ export default function ProductFilters({ categories, activeCategory, minPrijs, m
             onClick={() => setCategory('')}
             className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
               !activeCategory
-                ? 'bg-orange-500 text-white'
+                ? 'bg-accent-500 text-white'
                 : 'text-gray-700 hover:bg-gray-100'
             }`}
           >
             Alle categorieën
           </button>
-          {categories.map((cat) => (
-            <button
-              key={cat.slug}
-              onClick={() => setCategory(cat.slug)}
-              className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
-                activeCategory === cat.slug
-                  ? 'bg-orange-500 text-white'
-                  : 'text-gray-700 hover:bg-gray-100'
-              }`}
-            >
-              <span>{cat.emoji}</span>
-              {cat.label}
-            </button>
-          ))}
+          {categories.map((cat) => {
+            const Icon = cat.icon ? iconMap[cat.icon] : null
+            return (
+              <button
+                key={cat.slug}
+                onClick={() => setCategory(cat.slug)}
+                className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
+                  activeCategory === cat.slug
+                    ? 'bg-accent-500 text-white'
+                    : 'text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                {Icon ? (
+                  <Icon className={`w-4 h-4 ${activeCategory === cat.slug ? 'text-white' : 'text-accent-500'}`} />
+                ) : (
+                  <span>{cat.emoji}</span>
+                )}
+                {cat.label}
+              </button>
+            )
+          })}
         </div>
       </div>
 
@@ -123,7 +141,7 @@ export default function ProductFilters({ categories, activeCategory, minPrijs, m
                 onClick={() => setPriceRange(range.min, range.max)}
                 className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                   isActive
-                    ? 'bg-orange-500 text-white'
+                    ? 'bg-accent-500 text-white'
                     : 'text-gray-700 hover:bg-gray-100'
                 }`}
               >

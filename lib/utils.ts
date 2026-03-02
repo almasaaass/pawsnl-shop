@@ -21,3 +21,34 @@ export function slugify(text: string): string {
     .replace(/-+/g, '-')
     .trim()
 }
+
+/**
+ * Controleer of een afbeelding URL van CJ Dropshipping CDN komt.
+ * CJ CDN blokkeert hotlinking — deze moeten via onze proxy geladen worden.
+ */
+const CJ_CDN_HOSTS = [
+  'cc-west-usa.oss-us-west-1.aliyuncs.com',
+  'cbu01.alicdn.com',
+  'cf.cjdropshipping.com',
+  'img.cjdropshipping.com',
+  'www.cjdropshipping.com',
+  'cjdropshipping.com',
+  'cc-west-usa.oss-accelerate.aliyuncs.com',
+  'oss-cf.cjdropshipping.com',
+]
+
+export function getImageSrc(url: string): string {
+  if (!url || typeof url !== 'string') return ''
+  try {
+    const parsed = new URL(url)
+    const isCJ = CJ_CDN_HOSTS.some(
+      (host) => parsed.hostname === host || parsed.hostname.endsWith(`.${host}`)
+    )
+    if (isCJ) {
+      return `/api/image-proxy?url=${encodeURIComponent(url)}`
+    }
+    return url
+  } catch {
+    return url
+  }
+}

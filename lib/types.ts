@@ -9,6 +9,8 @@ export interface Product {
   category: string
   stock: number
   featured: boolean
+  cj_pid?: string | null
+  cj_vid?: string | null
   created_at: string
 }
 
@@ -37,6 +39,7 @@ export interface Order {
   status: 'pending' | 'paid' | 'shipped' | 'delivered' | 'cancelled'
   stripe_session_id: string
   tracking_number: string | null
+  cj_order_id?: string | null
   created_at: string
 }
 
@@ -72,10 +75,10 @@ export const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
 }
 
 export const CATEGORIES = [
-  { slug: 'honden', label: 'Honden', emoji: '🐕' },
-  { slug: 'katten', label: 'Katten', emoji: '🐈' },
-  { slug: 'vogels', label: 'Vogels', emoji: '🐦' },
-  { slug: 'knaagdieren', label: 'Knaagdieren', emoji: '🐹' },
-  { slug: 'vissen', label: 'Vissen', emoji: '🐠' },
-  { slug: 'reptielen', label: 'Reptielen', emoji: '🦎' },
+  { slug: 'honden', label: 'Honden', emoji: '🐕', icon: 'Dog' },
+  { slug: 'katten', label: 'Katten', emoji: '🐈', icon: 'Cat' },
+  { slug: 'vogels', label: 'Vogels', emoji: '🐦', icon: 'Bird' },
+  { slug: 'knaagdieren', label: 'Knaagdieren', emoji: '🐹', icon: 'Rabbit' },
+  { slug: 'vissen', label: 'Vissen', emoji: '🐠', icon: 'Fish' },
+  { slug: 'reptielen', label: 'Reptielen', emoji: '🦎', icon: 'Snail' },
 ]

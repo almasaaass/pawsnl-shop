@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { RefreshCw, Copy, Check, Download, Sparkles, Clock, Hash, Film, ChevronDown, ChevronUp } from 'lucide-react'
+import { RefreshCw, Copy, Check, Download, Sparkles, Clock, Hash, Film, ChevronDown, ChevronUp, Gift, Zap } from 'lucide-react'
 
 interface TikTokScript {
   day: string
@@ -9,10 +9,10 @@ interface TikTokScript {
   product: string
   category: string
   hook: string
-  script: string
-  cta: string
+  retain: string
+  reward: string
   hashtags: string[]
-  filmtips: string[]
+  filmtips: { hook: string[]; retain: string[]; reward: string[] }
   duration: string
 }
 
@@ -42,19 +42,22 @@ function ScriptCard({ script, index }: { script: TikTokScript; index: number }) 
 🛍️ Product: ${script.product}
 ⏱️ Duur: ${script.duration}
 
-🎣 HOOK (eerste 3 sec):
+🔴 HOOK (0-3 sec):
 ${script.hook}
 
-📝 SCRIPT:
-${script.script}
+🔵 RETAIN (3-45 sec):
+${script.retain}
 
-${script.cta}
+🟢 REWARD (laatste 5 sec):
+${script.reward}
 
 #️⃣ HASHTAGS:
 ${script.hashtags.join(' ')}
 
 🎬 FILMTIPS:
-${script.filmtips.map((t, i) => `${i + 1}. ${t}`).join('\n')}`
+Hook: ${script.filmtips.hook.map((t, i) => `${i + 1}. ${t}`).join('\n')}
+Retain: ${script.filmtips.retain.map((t, i) => `${i + 1}. ${t}`).join('\n')}
+Reward: ${script.filmtips.reward.map((t, i) => `${i + 1}. ${t}`).join('\n')}`
 
   function copyScript() {
     navigator.clipboard.writeText(fullText)
@@ -105,67 +108,94 @@ ${script.filmtips.map((t, i) => `${i + 1}. ${t}`).join('\n')}`
       {expanded && (
         <div className="px-5 pb-5 space-y-5 border-t border-gray-100 pt-4">
 
-          {/* Hook */}
+          {/* Phase indicator */}
+          <div className="flex items-center gap-2 text-xs font-medium">
+            <span className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-red-100 text-red-700">
+              <Zap className="w-3 h-3" /> Hook 0-3s
+            </span>
+            <span className="text-gray-300">→</span>
+            <span className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-blue-100 text-blue-700">
+              <Film className="w-3 h-3" /> Retain 3-45s
+            </span>
+            <span className="text-gray-300">→</span>
+            <span className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-green-100 text-green-700">
+              <Gift className="w-3 h-3" /> Reward 5s
+            </span>
+            <span className="ml-auto flex items-center gap-1 text-gray-400">
+              <Clock className="w-3 h-3" /> {script.duration}
+            </span>
+          </div>
+
+          {/* HOOK — Rood */}
           <div>
             <div className="flex items-center gap-1.5 mb-2">
-              <Sparkles className="w-4 h-4 text-pink-500" />
-              <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Hook — eerste 3 seconden</span>
+              <Zap className="w-4 h-4 text-red-500" />
+              <span className="text-xs font-semibold text-red-600 uppercase tracking-wide">Hook — Aandacht pakken (0-3 sec)</span>
             </div>
-            <p className="text-base font-medium text-gray-800 bg-pink-50 rounded-xl px-4 py-3 border border-pink-100">
+            <p className="text-base font-medium text-gray-800 bg-red-50 rounded-xl px-4 py-3 border border-red-100">
               {script.hook}
             </p>
+            <div className="mt-2 space-y-1">
+              {script.filmtips.hook.map((tip, i) => (
+                <p key={i} className="text-xs text-red-600 flex gap-1.5 items-start">
+                  <span className="flex-shrink-0 w-4 h-4 bg-red-100 text-red-600 rounded-full flex items-center justify-center text-[10px] font-bold mt-0.5">{i + 1}</span>
+                  {tip}
+                </p>
+              ))}
+            </div>
           </div>
 
-          {/* Script */}
+          {/* RETAIN — Blauw */}
           <div>
             <div className="flex items-center gap-1.5 mb-2">
-              <Film className="w-4 h-4 text-violet-500" />
-              <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Script</span>
-              <span className="ml-auto flex items-center gap-1 text-xs text-gray-400">
-                <Clock className="w-3 h-3" /> {script.duration}
-              </span>
+              <Film className="w-4 h-4 text-blue-500" />
+              <span className="text-xs font-semibold text-blue-600 uppercase tracking-wide">Retain — Waarde leveren (3-45 sec)</span>
             </div>
-            <pre className="text-sm text-gray-700 bg-gray-50 rounded-xl px-4 py-4 whitespace-pre-wrap font-sans leading-relaxed border border-gray-100">
-              {script.script}
+            <pre className="text-sm text-gray-700 bg-blue-50 rounded-xl px-4 py-4 whitespace-pre-wrap font-sans leading-relaxed border border-blue-100">
+              {script.retain}
             </pre>
+            <div className="mt-2 space-y-1">
+              {script.filmtips.retain.map((tip, i) => (
+                <p key={i} className="text-xs text-blue-600 flex gap-1.5 items-start">
+                  <span className="flex-shrink-0 w-4 h-4 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-[10px] font-bold mt-0.5">{i + 1}</span>
+                  {tip}
+                </p>
+              ))}
+            </div>
           </div>
 
-          {/* CTA */}
-          <div className="bg-emerald-50 border border-emerald-100 rounded-xl px-4 py-3">
-            <p className="text-sm font-medium text-emerald-800">{script.cta}</p>
+          {/* REWARD — Groen */}
+          <div>
+            <div className="flex items-center gap-1.5 mb-2">
+              <Gift className="w-4 h-4 text-green-500" />
+              <span className="text-xs font-semibold text-green-600 uppercase tracking-wide">Reward — Beloning + CTA (laatste 5 sec)</span>
+            </div>
+            <div className="text-sm text-gray-700 bg-green-50 rounded-xl px-4 py-4 whitespace-pre-wrap leading-relaxed border border-green-100">
+              {script.reward}
+            </div>
+            <div className="mt-2 space-y-1">
+              {script.filmtips.reward.map((tip, i) => (
+                <p key={i} className="text-xs text-green-600 flex gap-1.5 items-start">
+                  <span className="flex-shrink-0 w-4 h-4 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-[10px] font-bold mt-0.5">{i + 1}</span>
+                  {tip}
+                </p>
+              ))}
+            </div>
           </div>
 
           {/* Hashtags */}
           <div>
             <div className="flex items-center gap-1.5 mb-2">
-              <Hash className="w-4 h-4 text-blue-500" />
+              <Hash className="w-4 h-4 text-violet-500" />
               <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Hashtags</span>
             </div>
             <div className="flex flex-wrap gap-1.5">
               {script.hashtags.map((tag) => (
-                <span key={tag} className="text-xs bg-blue-50 text-blue-700 px-2.5 py-1 rounded-full border border-blue-100 font-medium">
+                <span key={tag} className="text-xs bg-violet-50 text-violet-700 px-2.5 py-1 rounded-full border border-violet-100 font-medium">
                   {tag}
                 </span>
               ))}
             </div>
-          </div>
-
-          {/* Filmtips */}
-          <div>
-            <div className="flex items-center gap-1.5 mb-2">
-              <Film className="w-4 h-4 text-amber-500" />
-              <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Filmtips</span>
-            </div>
-            <ul className="space-y-1.5">
-              {script.filmtips.map((tip, i) => (
-                <li key={i} className="text-sm text-gray-600 flex gap-2">
-                  <span className="flex-shrink-0 w-5 h-5 bg-amber-100 text-amber-700 rounded-full flex items-center justify-center text-xs font-bold">
-                    {i + 1}
-                  </span>
-                  {tip}
-                </li>
-              ))}
-            </ul>
           </div>
 
           {/* Actions */}
@@ -219,15 +249,15 @@ export default function TikTokPage() {
         (s, i) =>
           `${'='.repeat(60)}\n${i + 1}. ${s.day.toUpperCase()} — ${s.format}\n${'='.repeat(60)}\n\n` +
           `🛍️ Product: ${s.product}\n⏱️ Duur: ${s.duration}\n\n` +
-          `🎣 HOOK:\n${s.hook}\n\n` +
-          `📝 SCRIPT:\n${s.script}\n\n` +
-          `${s.cta}\n\n` +
+          `🔴 HOOK (0-3 sec):\n${s.hook}\n\n` +
+          `🔵 RETAIN (3-45 sec):\n${s.retain}\n\n` +
+          `🟢 REWARD (laatste 5 sec):\n${s.reward}\n\n` +
           `#️⃣ HASHTAGS:\n${s.hashtags.join(' ')}\n\n` +
-          `🎬 FILMTIPS:\n${s.filmtips.map((t, j) => `${j + 1}. ${t}`).join('\n')}\n`
+          `🎬 FILMTIPS:\nHook: ${s.filmtips.hook.join(' | ')}\nRetain: ${s.filmtips.retain.join(' | ')}\nReward: ${s.filmtips.reward.join(' | ')}\n`
       )
       .join('\n\n')
 
-    const blob = new Blob([`PawsNL — TikTok Scripts\nGegenereerd: ${new Date().toLocaleDateString('nl-NL')}\n\n${all}`], {
+    const blob = new Blob([`PawsNL — TikTok Scripts (Hook→Retain→Reward)\nGegenereerd: ${new Date().toLocaleDateString('nl-NL')}\n\n${all}`], {
       type: 'text/plain;charset=utf-8',
     })
     const url = URL.createObjectURL(blob)
@@ -247,8 +277,27 @@ export default function TikTokPage() {
           🎵 TikTok Scriptgenerator
         </h1>
         <p className="text-gray-500 mt-1">
-          Genereer 7 kant-en-klare TikTok scripts voor deze week — één per dag.
+          Hormozi Hook→Retain→Reward framework — 7 scripts per week.
         </p>
+      </div>
+
+      {/* Framework uitleg */}
+      <div className="grid grid-cols-3 gap-3 mb-6">
+        <div className="bg-red-50 border border-red-100 rounded-xl p-3 text-center">
+          <Zap className="w-5 h-5 text-red-500 mx-auto mb-1" />
+          <p className="text-xs font-bold text-red-700">HOOK</p>
+          <p className="text-[11px] text-red-500">0-3 sec · Aandacht</p>
+        </div>
+        <div className="bg-blue-50 border border-blue-100 rounded-xl p-3 text-center">
+          <Film className="w-5 h-5 text-blue-500 mx-auto mb-1" />
+          <p className="text-xs font-bold text-blue-700">RETAIN</p>
+          <p className="text-[11px] text-blue-500">3-45 sec · Waarde</p>
+        </div>
+        <div className="bg-green-50 border border-green-100 rounded-xl p-3 text-center">
+          <Gift className="w-5 h-5 text-green-500 mx-auto mb-1" />
+          <p className="text-xs font-bold text-green-700">REWARD</p>
+          <p className="text-[11px] text-green-500">Laatste 5 sec · CTA</p>
+        </div>
       </div>
 
       {/* Generate button */}
@@ -257,7 +306,7 @@ export default function TikTokPage() {
           <div>
             <h2 className="text-lg font-bold mb-1">Weekplanning genereren</h2>
             <p className="text-pink-100 text-sm leading-relaxed">
-              Klikt op de knop en krijg direct 7 professionele scripts op basis van jouw producten. Elke klik geeft een nieuwe set.
+              Elk script volgt het Hook→Retain→Reward framework met Hormozi-stijl openers, waardevolle content en sterke CTA&apos;s.
             </p>
             {generatedAt && (
               <p className="text-pink-200 text-xs mt-2">
@@ -305,14 +354,14 @@ export default function TikTokPage() {
 
           {/* Tips block */}
           <div className="mt-8 bg-amber-50 border border-amber-200 rounded-2xl p-5">
-            <h3 className="font-bold text-amber-900 mb-3">🚀 TikTok groeistrategie</h3>
+            <h3 className="font-bold text-amber-900 mb-3">🚀 Hormozi Content Strategie</h3>
             <ul className="space-y-2 text-sm text-amber-800">
+              <li>🔴 <strong>Hook:</strong> De eerste 3 seconden bepalen of iemand kijkt. Gebruik pattern interrupts, vragen of shockerende feiten.</li>
+              <li>🔵 <strong>Retain:</strong> Geef ECHTE waarde. Leer iets, toon iets, of vermaak. Hoe langer ze kijken, hoe meer het algoritme je pusht.</li>
+              <li>🟢 <strong>Reward:</strong> Beloon de kijker met een CTA + urgentie. &quot;Link in bio&quot; + &quot;bijna uitverkocht&quot; = conversie.</li>
               <li>📅 <strong>Post elke dag</strong> — consistentie is belangrijker dan perfectie</li>
-              <li>🕐 <strong>Beste posttijden:</strong> 7-9u, 12-14u, en 19-21u</li>
-              <li>🎵 <strong>Gebruik altijd trending geluid</strong> — dit verdubbelt je bereik</li>
-              <li>💬 <strong>Reageer op alle comments</strong> binnen 1 uur — goed voor het algoritme</li>
-              <li>🔗 <strong>Zet je bio-link</strong> op <code className="bg-amber-100 px-1 rounded">pawsshop.nl</code></li>
-              <li>📊 <strong>Check Creators Analytics</strong> wekelijks — verdubbel wat werkt</li>
+              <li>🕐 <strong>Beste tijden:</strong> 7-9u, 12-14u, en 19-21u</li>
+              <li>💬 <strong>Reageer op alle comments</strong> binnen 1 uur</li>
             </ul>
           </div>
         </>
@@ -322,8 +371,8 @@ export default function TikTokPage() {
       {scripts.length === 0 && !loading && (
         <div className="text-center py-20 text-gray-400">
           <div className="text-6xl mb-4">🎵</div>
-          <p className="text-lg font-medium text-gray-500">Klik op "Genereer scripts" om te beginnen</p>
-          <p className="text-sm mt-1">Je krijgt 7 kant-en-klare scripts op basis van jouw producten</p>
+          <p className="text-lg font-medium text-gray-500">Klik op &quot;Genereer scripts&quot; om te beginnen</p>
+          <p className="text-sm mt-1">Je krijgt 7 scripts met Hook→Retain→Reward structuur</p>
         </div>
       )}
 

@@ -1,6 +1,6 @@
 import { supabase } from '@/lib/supabase'
 import { Product } from '@/lib/types'
-import { formatPrice } from '@/lib/utils'
+import { formatPrice, getImageSrc } from '@/lib/utils'
 import Link from 'next/link'
 import Image from 'next/image'
 import { ShieldCheck, Tag, ArrowRight } from 'lucide-react'
@@ -170,14 +170,15 @@ export default async function BundelsPage() {
                       <div className="relative w-16 h-16 bg-gray-100 rounded-xl overflow-hidden flex-shrink-0">
                         {product.images[0] ? (
                           <Image
-                            src={product.images[0]}
+                            src={getImageSrc(product.images[0])}
                             alt={product.name}
                             fill
                             className="object-cover"
                             sizes="64px"
+                            unoptimized
                           />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center text-2xl">🐾</div>
+                          <div className="w-full h-full flex items-center justify-center text-2xl bg-orange-50">🐾</div>
                         )}
                       </div>
                       <div className="min-w-0">

@@ -199,6 +199,186 @@ export async function sendContactFormToAdmin(data: ContactEmailData) {
   })
 }
 
+// ─── Lead Magnet email (gratis gids) ─────────────────────────────────────────
+
+export async function sendLeadMagnetEmail(email: string) {
+  const pdfUrl = 'https://pawsshop.nl/gids-gelukkig-huisdier.pdf'
+
+  const html = `
+  <!DOCTYPE html>
+  <html lang="nl">
+  <head><meta charset="UTF-8"></head>
+  <body style="margin:0;padding:0;background:#f5f5f5;font-family:'Segoe UI',Arial,sans-serif;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5;padding:30px 0;">
+      <tr><td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;max-width:600px;width:100%;">
+
+          <!-- Header -->
+          <tr>
+            <td style="background:linear-gradient(135deg,#f97316,#f59e0b);padding:30px 40px;text-align:center;">
+              <h1 style="color:#ffffff;margin:0;font-size:28px;">🐾 PawsNL</h1>
+              <p style="color:#fff3cd;margin:8px 0 0;font-size:15px;">Jouw gratis gids is hier!</p>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:40px;">
+              <p style="font-size:16px;color:#333;margin-top:0;">Hoi!</p>
+              <p style="font-size:15px;color:#555;line-height:1.6;">
+                Bedankt voor je aanmelding! Hier is jouw gratis exemplaar van
+                <strong>"De Ultieme Gids voor een Gelukkig Huisdier"</strong>.
+              </p>
+
+              <!-- Download button -->
+              <div style="text-align:center;margin:32px 0;">
+                <a href="${pdfUrl}" style="display:inline-block;background:#f97316;color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:10px;font-weight:bold;font-size:16px;">
+                  📥 Download je gratis gids
+                </a>
+              </div>
+
+              <!-- Tips preview -->
+              <div style="background:#fff7ed;border-left:4px solid #f97316;padding:16px 20px;border-radius:0 8px 8px 0;margin:24px 0;">
+                <strong style="color:#9a3412;font-size:14px;">Wat je leert in de gids:</strong>
+                <ul style="margin:8px 0 0;padding-left:20px;color:#555;font-size:14px;line-height:1.8;">
+                  <li>De #1 fout die huisdierenbezitters maken</li>
+                  <li>Voeding tips voor een langer & gezonder leven</li>
+                  <li>Hoe je gedragsproblemen voorkomt</li>
+                  <li>De beste producten voor elke levensfase</li>
+                </ul>
+              </div>
+
+              <p style="font-size:14px;color:#555;line-height:1.6;">
+                We sturen je ook af en toe handige tips en exclusieve aanbiedingen.
+                Je kunt je altijd uitschrijven.
+              </p>
+
+              <!-- Shop CTA -->
+              <div style="text-align:center;margin:24px 0 0;">
+                <a href="https://pawsshop.nl/producten" style="display:inline-block;background:#16a34a;color:#ffffff;text-decoration:none;padding:12px 24px;border-radius:8px;font-weight:bold;font-size:14px;">
+                  🛍️ Bekijk onze producten
+                </a>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background:#f9fafb;padding:24px 40px;text-align:center;border-top:1px solid #e5e7eb;">
+              <p style="margin:0;font-size:13px;color:#9ca3af;">
+                © 2024 PawsNL · Dé webshop voor jouw huisdier 🐶🐱
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td></tr>
+    </table>
+  </body>
+  </html>`
+
+  return resend.emails.send({
+    from: FROM,
+    to: email,
+    subject: `🎁 Jouw gratis gids — De Ultieme Gids voor een Gelukkig Huisdier`,
+    html,
+  })
+}
+
+// ─── Tracking email (naar klant) ─────────────────────────────────────────────
+
+interface TrackingEmailData {
+  customerName: string
+  customerEmail: string
+  trackingNumber: string
+  items: OrderItem[]
+}
+
+export async function sendTrackingEmail(data: TrackingEmailData) {
+  const itemsList = data.items
+    .map((item) => `<li style="padding:4px 0;color:#333;">${item.name} (${item.quantity}×)</li>`)
+    .join('')
+
+  const trackingUrl = `https://t.17track.net/nl#nums=${encodeURIComponent(data.trackingNumber)}`
+
+  const html = `
+  <!DOCTYPE html>
+  <html lang="nl">
+  <head><meta charset="UTF-8"></head>
+  <body style="margin:0;padding:0;background:#f5f5f5;font-family:'Segoe UI',Arial,sans-serif;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5;padding:30px 0;">
+      <tr><td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;max-width:600px;width:100%;">
+
+          <!-- Header -->
+          <tr>
+            <td style="background:#2563eb;padding:30px 40px;text-align:center;">
+              <h1 style="color:#ffffff;margin:0;font-size:28px;">🐾 PawsNL</h1>
+              <p style="color:#bfdbfe;margin:8px 0 0;font-size:15px;">Je pakket is onderweg!</p>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:40px;">
+              <p style="font-size:16px;color:#333;margin-top:0;">Hoi ${data.customerName},</p>
+              <p style="font-size:15px;color:#555;line-height:1.6;">
+                Goed nieuws! Je bestelling is verzonden en onderweg naar jou.
+              </p>
+
+              <!-- Tracking info -->
+              <div style="background:#eff6ff;border-left:4px solid #2563eb;padding:16px 20px;border-radius:0 8px 8px 0;margin:24px 0;">
+                <strong style="color:#1e40af;font-size:14px;">Trackingnummer:</strong>
+                <p style="margin:8px 0 0;font-size:16px;font-weight:bold;color:#1e40af;">${data.trackingNumber}</p>
+              </div>
+
+              <div style="text-align:center;margin:24px 0;">
+                <a href="${trackingUrl}" style="display:inline-block;background:#2563eb;color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:10px;font-weight:bold;font-size:16px;">
+                  📦 Volg je pakket
+                </a>
+              </div>
+
+              <!-- Items -->
+              <div style="background:#f9fafb;border-radius:8px;padding:20px;margin:24px 0;">
+                <strong style="font-size:14px;color:#555;">Jouw producten:</strong>
+                <ul style="margin:8px 0 0;padding-left:20px;font-size:15px;line-height:1.8;">
+                  ${itemsList}
+                </ul>
+              </div>
+
+              <div style="background:#f0fdf4;border-left:4px solid #16a34a;padding:16px 20px;border-radius:0 8px 8px 0;margin:24px 0;">
+                <strong style="color:#166534;font-size:14px;">Verwachte bezorging: 5-10 werkdagen</strong>
+              </div>
+
+              <p style="font-size:14px;color:#777;margin:24px 0 0;">
+                Vragen? Neem contact op via <a href="https://pawsshop.nl/contact" style="color:#2563eb;">pawsshop.nl/contact</a>.
+              </p>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background:#f9fafb;padding:24px 40px;text-align:center;border-top:1px solid #e5e7eb;">
+              <p style="margin:0;font-size:13px;color:#9ca3af;">
+                &copy; 2024 PawsNL &middot; D&eacute; webshop voor jouw huisdier
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td></tr>
+    </table>
+  </body>
+  </html>`
+
+  return resend.emails.send({
+    from: FROM,
+    to: data.customerEmail,
+    subject: `📦 Je pakket is onderweg — PawsNL`,
+    html,
+  })
+}
+
 // ─── Dagelijks rapport (naar admin) ──────────────────────────────────────────
 
 interface DailyReportData {

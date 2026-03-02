@@ -32,11 +32,14 @@ export default function PrivacybeleidPage() {
               <div className="space-y-3 text-gray-600 leading-relaxed">
                 <p>
                   PawsNL is een Nederlandse webshop gespecialiseerd in producten voor huisdieren.
-                  Wij zijn gevestigd in Amsterdam en ingeschreven bij de Kamer van Koophandel.
+                  Wij zijn gevestigd in Gorinchem en ingeschreven bij de Kamer van Koophandel.
                 </p>
                 <ul className="list-none space-y-1 ml-2">
-                  <li><strong>Bedrijfsnaam:</strong> PawsNL</li>
-                  <li><strong>Vestigingsplaats:</strong> Amsterdam</li>
+                  <li><strong>Bedrijfsnaam:</strong> Multi Talent Service (h/o PawsNL)</li>
+                  <li><strong>Vestigingsadres:</strong> Weverstraat 227, 4204CB Gorinchem</li>
+                  <li><strong>KvK-nummer:</strong> 92754783</li>
+                  <li><strong>BTW-nummer:</strong> NL004974786B65</li>
+                  <li><strong>Telefoon:</strong> 06 - 814 73 561</li>
                   <li><strong>E-mail:</strong>{' '}
                     <a href="mailto:info@pawsshop.nl" className="text-orange-500 hover:underline font-medium">
                       info@pawsshop.nl

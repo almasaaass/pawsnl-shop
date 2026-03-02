@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
   // Haal alle producten op die een CJ pid hebben (slug bevat geen spaties = geïmporteerd)
   const { data: products, error } = await supabase
     .from('products')
-    .select('id, name, slug, stock')
+    .select('id, name, slug, stock, cj_pid')
 
   if (error || !products) {
     return NextResponse.json({ error: 'Database fout' }, { status: 500 })
@@ -58,26 +58,41 @@ export async function GET(request: NextRequest) {
   let outOfStock: string[] = []
 
   for (const product of products) {
-    // Kleine pauze tussen requests
     await new Promise(r => setTimeout(r, 300))
 
-    // Probeer CJ voorraad op te halen — we zoeken op productnaam als we geen pid opgeslagen hebben
-    // Voor nu: dropshipping = altijd op voorraad, maar markeer als uitverkocht bij CJ problemen
-    // In de toekomst: pid opslaan in products tabel voor directe lookup
+    // Skip manually disabled products
+    if (product.stock === 0) continue
 
-    // Standaard: als product stock < 10 was (handmatig op 0 gezet) → niet aanraken
-    // Als stock 999 was (dropshipping default) → laat op 999
-    if (product.stock === 0) {
-      // Handmatig uitgeschakeld, niet wijzigen
-      continue
-    }
+    // If product has a CJ pid, check real inventory
+    if (product.cj_pid) {
+      const cjStock = await getCJInventory(product.cj_pid, token)
 
-    // Dropshipping producten houden we op 999 (altijd beschikbaar)
-    // Als er voorraadproblemen zijn bij CJ, wordt dat pas duidelijk bij bestelling
-    if (product.stock !== 999) {
-      // Zet terug naar dropshipping standaard als het per ongeluk gewijzigd is
-      await supabase.from('products').update({ stock: 999 }).eq('id', product.id)
-      results.push({ name: product.name, oldStock: product.stock, newStock: 999 })
+      if (cjStock !== null) {
+        let newStock = product.stock
+
+        if (cjStock === 0) {
+          // Out of stock at CJ
+          newStock = 0
+          outOfStock.push(product.name)
+        } else if (cjStock < 10) {
+          // Low stock warning
+          newStock = cjStock
+        } else {
+          // In stock - set to dropshipping default
+          newStock = 999
+        }
+
+        if (newStock !== product.stock) {
+          await supabase.from('products').update({ stock: newStock }).eq('id', product.id)
+          results.push({ name: product.name, oldStock: product.stock, newStock })
+        }
+      }
+    } else {
+      // No CJ pid - keep at dropshipping default
+      if (product.stock !== 999) {
+        await supabase.from('products').update({ stock: 999 }).eq('id', product.id)
+        results.push({ name: product.name, oldStock: product.stock, newStock: 999 })
+      }
     }
   }
 

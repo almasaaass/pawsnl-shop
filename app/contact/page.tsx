@@ -63,10 +63,10 @@ export default function ContactPage() {
                 <div>
                   <p className="font-medium text-gray-900">Telefoon</p>
                   <a
-                    href="tel:+31201234567"
+                    href="tel:+31681473561"
                     className="text-gray-500 hover:text-orange-500 transition-colors text-sm"
                   >
-                    020 - 123 45 67
+                    06 - 814 73 561
                   </a>
                 </div>
               </div>
@@ -75,7 +75,7 @@ export default function ContactPage() {
                 <div>
                   <p className="font-medium text-gray-900">Adres</p>
                   <p className="text-gray-500 text-sm">
-                    Voorbeeldstraat 1<br />1234 AB Amsterdam
+                    Weverstraat 227<br />4204CB Gorinchem
                   </p>
                 </div>
               </div>

@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase'
+import { verifyAdmin } from '@/lib/auth'
 
 export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+  if (!verifyAdmin(request)) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
   const supabase = createAdminClient()
   const body = await request.json()
 
@@ -16,7 +20,10 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
   return NextResponse.json(data)
 }
 
-export async function DELETE(_: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+  if (!verifyAdmin(request)) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
   const supabase = createAdminClient()
 
   const { error } = await supabase.from('products').delete().eq('id', params.id)

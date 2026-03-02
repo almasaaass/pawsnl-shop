@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Mail, Phone, MapPin } from 'lucide-react'
+import { Mail, Phone, MapPin, Truck, RotateCcw, ShieldCheck, Star, PawPrint } from 'lucide-react'
 
 const shopLinks = [
   { href: '/producten', label: 'Alle producten' },
@@ -15,6 +15,14 @@ const serviceLinks = [
   { href: '/veelgestelde-vragen', label: 'Veelgestelde vragen' },
   { href: '/retourbeleid', label: 'Retourneren' },
   { href: '/verzendbeleid', label: 'Bezorging & verzending' },
+  { href: '/klachtenprocedure', label: 'Klachtenprocedure' },
+]
+
+const trustItems = [
+  { icon: Truck, text: 'Gratis verzending vanaf €35' },
+  { icon: RotateCcw, text: '30 dagen retourrecht' },
+  { icon: ShieldCheck, text: 'Veilig betalen via Stripe' },
+  { icon: Star, text: '4.8/5 klanttevredenheid' },
 ]
 
 export default function Footer() {
@@ -25,9 +33,9 @@ export default function Footer() {
           {/* Brand */}
           <div className="lg:col-span-1">
             <Link href="/" className="flex items-center gap-2 mb-4">
-              <span className="text-2xl">🐾</span>
-              <span className="text-xl font-bold text-white">
-                Paws<span className="text-orange-400">NL</span>
+              <PawPrint className="w-6 h-6 text-accent-400" />
+              <span className="text-xl font-heading font-bold text-white">
+                Paws<span className="text-accent-400">NL</span>
               </span>
             </Link>
             <p className="text-sm text-gray-400 leading-relaxed mb-5">
@@ -35,30 +43,30 @@ export default function Footer() {
             </p>
             {/* Contact info */}
             <div className="space-y-2">
-              <a href="mailto:info@pawsshop.nl" className="flex items-center gap-2 text-sm text-gray-400 hover:text-orange-400 transition-colors">
+              <a href="mailto:info@pawsshop.nl" className="flex items-center gap-2 text-sm text-gray-400 hover:text-accent-400 transition-colors">
                 <Mail className="w-4 h-4" />
                 info@pawsshop.nl
               </a>
-              <a href="tel:+31201234567" className="flex items-center gap-2 text-sm text-gray-400 hover:text-orange-400 transition-colors">
+              <a href="tel:+31681473561" className="flex items-center gap-2 text-sm text-gray-400 hover:text-accent-400 transition-colors">
                 <Phone className="w-4 h-4" />
-                020 - 123 45 67
+                06 - 814 73 561
               </a>
               <div className="flex items-center gap-2 text-sm text-gray-400">
                 <MapPin className="w-4 h-4" />
-                Amsterdam, Nederland
+                Weverstraat 227, 4204CB Gorinchem
               </div>
             </div>
           </div>
 
           {/* Shop */}
           <div>
-            <h3 className="font-semibold text-white mb-4">Winkel</h3>
+            <h3 className="font-heading font-semibold text-white mb-4">Winkel</h3>
             <ul className="space-y-2.5">
               {shopLinks.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-gray-400 hover:text-orange-400 transition-colors"
+                    className="text-sm text-gray-400 hover:text-accent-400 transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -69,13 +77,13 @@ export default function Footer() {
 
           {/* Klantenservice */}
           <div>
-            <h3 className="font-semibold text-white mb-4">Klantenservice</h3>
+            <h3 className="font-heading font-semibold text-white mb-4">Klantenservice</h3>
             <ul className="space-y-2.5">
               {serviceLinks.map((link) => (
                 <li key={link.label}>
                   <Link
                     href={link.href}
-                    className="text-sm text-gray-400 hover:text-orange-400 transition-colors"
+                    className="text-sm text-gray-400 hover:text-accent-400 transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -86,16 +94,11 @@ export default function Footer() {
 
           {/* Vertrouwen */}
           <div>
-            <h3 className="font-semibold text-white mb-4">Ons belofte</h3>
+            <h3 className="font-heading font-semibold text-white mb-4">Ons belofte</h3>
             <div className="space-y-3">
-              {[
-                { emoji: '🚚', text: 'Gratis verzending vanaf €35' },
-                { emoji: '↩️', text: '30 dagen retourrecht' },
-                { emoji: '🔒', text: 'Veilig betalen via Stripe' },
-                { emoji: '⭐', text: '4.8/5 klanttevredenheid' },
-              ].map((item) => (
+              {trustItems.map((item) => (
                 <div key={item.text} className="flex items-center gap-2 text-sm text-gray-400">
-                  <span>{item.emoji}</span>
+                  <item.icon className="w-4 h-4 text-trust-400 flex-shrink-0" />
                   <span>{item.text}</span>
                 </div>
               ))}
@@ -121,14 +124,14 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-500">
           <div className="flex flex-col md:flex-row gap-1 md:gap-4 text-center">
-            <span>© {new Date().getFullYear()} PawsNL. Alle rechten voorbehouden.</span>
+            <span>&copy; {new Date().getFullYear()} PawsNL. Alle rechten voorbehouden.</span>
             <span className="hidden md:block">|</span>
-            <span>KvK: 94028374 · BTW: NL004738291B01</span>
+            <span>KvK: 92754783 &middot; BTW: NL004974786B65</span>
           </div>
           <div className="flex gap-4">
-            <Link href="/privacybeleid" className="hover:text-orange-400 transition-colors">Privacybeleid</Link>
-            <Link href="/algemene-voorwaarden" className="hover:text-orange-400 transition-colors">Algemene voorwaarden</Link>
-            <Link href="/privacybeleid#cookies" className="hover:text-orange-400 transition-colors">Cookiebeleid</Link>
+            <Link href="/privacybeleid" className="hover:text-accent-400 transition-colors">Privacybeleid</Link>
+            <Link href="/algemene-voorwaarden" className="hover:text-accent-400 transition-colors">Algemene voorwaarden</Link>
+            <Link href="/privacybeleid#cookies" className="hover:text-accent-400 transition-colors">Cookiebeleid</Link>
           </div>
         </div>
       </div>

@@ -6,6 +6,7 @@ import { useCart } from '@/components/cart/CartContext'
 import { CheckCircle, Package, Mail, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import { Suspense } from 'react'
+import ReferralCard from '@/components/shop/ReferralCard'
 
 function BevestigingContent() {
   const searchParams = useSearchParams()
@@ -77,6 +78,11 @@ function BevestigingContent() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Referral Card */}
+      <div className="mb-8">
+        <ReferralCard sessionId={sessionId} />
       </div>
 
       <div className="flex flex-col sm:flex-row gap-3 justify-center">

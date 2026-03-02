@@ -51,8 +51,11 @@ export default function AlgemeneVoorwaardenPage() {
               <h2 className="text-2xl font-bold text-gray-900 mb-4">Artikel 2 — Identiteit van de ondernemer</h2>
               <div className="space-y-3 text-gray-600 leading-relaxed">
                 <ul className="list-none space-y-1 ml-2">
-                  <li><strong>Handelsnaam:</strong> PawsNL</li>
-                  <li><strong>Vestigingsplaats:</strong> Amsterdam</li>
+                  <li><strong>Handelsnaam:</strong> Multi Talent Service (h/o PawsNL)</li>
+                  <li><strong>Vestigingsadres:</strong> Weverstraat 227, 4204CB Gorinchem</li>
+                  <li><strong>KvK-nummer:</strong> 92754783</li>
+                  <li><strong>BTW-nummer:</strong> NL004974786B65</li>
+                  <li><strong>Telefoon:</strong> 06 - 814 73 561</li>
                   <li><strong>E-mail:</strong>{' '}
                     <a href="mailto:info@pawsshop.nl" className="text-orange-500 hover:underline font-medium">
                       info@pawsshop.nl
@@ -239,7 +242,7 @@ export default function AlgemeneVoorwaardenPage() {
                 </p>
                 <p>
                   Geschillen die voortvloeien uit of verband houden met een overeenkomst worden
-                  voorgelegd aan de bevoegde rechter in Amsterdam, tenzij de wet dwingend een
+                  voorgelegd aan de bevoegde rechter in Rotterdam, tenzij de wet dwingend een
                   andere rechter voorschrijft.
                 </p>
               </div>

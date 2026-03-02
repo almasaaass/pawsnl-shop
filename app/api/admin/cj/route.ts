@@ -7,8 +7,9 @@ function checkAuth() {
   try {
     const cookieStore = cookies()
     const auth = cookieStore.get('admin-auth')
-    // Check cookie value OR allow if no secret set (fallback)
-    return auth?.value === process.env.ADMIN_SECRET || !!auth?.value
+    const adminSecret = process.env.ADMIN_SECRET
+    if (!adminSecret) return false
+    return auth?.value === adminSecret
   } catch {
     return false
   }
@@ -111,6 +112,9 @@ export async function POST(request: NextRequest) {
     // Gebruik de mooiste afbeeldingen (max 4)
     const images = product.productImageSet.slice(0, 4)
 
+    // Eerste variant ID ophalen voor CJ order koppeling
+    const firstVid = product.variants?.[0]?.vid ?? null
+
     const { data, error } = await supabase.from('products').insert({
       name: nameNL,
       slug: finalSlug,
@@ -121,6 +125,8 @@ export async function POST(request: NextRequest) {
       category: category ?? mapCJCategory(product.categoryName),
       stock: 999, // Dropshipping = onbeperkte voorraad
       featured: false,
+      cj_pid: product.pid,
+      cj_vid: firstVid,
     }).select().single()
 
     if (error) throw error

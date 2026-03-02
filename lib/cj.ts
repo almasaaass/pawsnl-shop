@@ -174,6 +174,126 @@ export async function getCJProductDetail(pid: string): Promise<CJProduct> {
   }
 }
 
+// ─── Order plaatsen ──────────────────────────────────────────────────────────
+
+export interface CJOrderProduct {
+  vid: string
+  quantity: number
+}
+
+export interface CJOrderData {
+  orderNumber: string
+  shippingCountryCode: string
+  shippingProvince: string
+  shippingCity: string
+  shippingAddress: string
+  shippingZip: string
+  shippingCustomerName: string
+  shippingPhone?: string
+  products: CJOrderProduct[]
+}
+
+export interface CJOrderResult {
+  orderId: string
+  orderNum: string
+}
+
+export async function placeCJOrder(data: CJOrderData): Promise<CJOrderResult> {
+  const token = await getCJToken()
+
+  const payload = {
+    orderNumber: data.orderNumber,
+    shippingCountryCode: data.shippingCountryCode,
+    shippingProvince: data.shippingProvince,
+    shippingCity: data.shippingCity,
+    shippingAddress: data.shippingAddress,
+    shippingZip: data.shippingZip,
+    shippingCustomerName: data.shippingCustomerName,
+    shippingPhone: data.shippingPhone ?? '',
+    fromCountryCode: 'CN',
+    logisticName: 'CJPacket',
+    payType: 3, // Geen automatische betaling — admin betaalt handmatig op CJ
+    products: data.products.map((p) => ({
+      vid: p.vid,
+      quantity: p.quantity,
+    })),
+  }
+
+  const res = await fetch(`${CJ_BASE}/v1/shopping/order/createOrderV2`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'CJ-Access-Token': token,
+    },
+    body: JSON.stringify(payload),
+  })
+
+  const json = await res.json()
+
+  if (!json.result) {
+    throw new Error(`CJ order aanmaken mislukt: ${json.message ?? JSON.stringify(json)}`)
+  }
+
+  return {
+    orderId: json.data?.orderId ?? '',
+    orderNum: json.data?.orderNum ?? '',
+  }
+}
+
+// ─── Order detail ophalen ────────────────────────────────────────────────────
+
+export interface CJOrderDetail {
+  orderId: string
+  orderNum: string
+  orderStatus: string
+  trackNumber: string | null
+  logisticName: string | null
+}
+
+export async function getCJOrderDetail(orderId: string): Promise<CJOrderDetail> {
+  const token = await getCJToken()
+
+  const res = await fetch(`${CJ_BASE}/v1/shopping/order/getOrderDetail?orderId=${encodeURIComponent(orderId)}`, {
+    headers: { 'CJ-Access-Token': token },
+  })
+
+  const json = await res.json()
+
+  if (!json.result) {
+    throw new Error(`CJ order detail mislukt: ${json.message ?? JSON.stringify(json)}`)
+  }
+
+  const d = json.data
+  return {
+    orderId: d.orderId ?? orderId,
+    orderNum: d.orderNum ?? '',
+    orderStatus: d.orderStatus ?? '',
+    trackNumber: d.trackNumber ?? null,
+    logisticName: d.logisticName ?? null,
+  }
+}
+
+// ─── Saldo check ─────────────────────────────────────────────────────────────
+
+export async function getCJBalance(): Promise<{ amount: number; currency: string }> {
+  const token = await getCJToken()
+
+  const res = await fetch(`${CJ_BASE}/v1/shopping/pay/getBalance`, {
+    headers: { 'CJ-Access-Token': token },
+  })
+
+  const json = await res.json()
+
+  if (!json.result) {
+    throw new Error(`CJ saldo ophalen mislukt: ${json.message ?? JSON.stringify(json)}`)
+  }
+
+  return {
+    amount: parseFloat(json.data?.amount ?? '0'),
+    currency: json.data?.currency ?? 'USD',
+  }
+}
+
 // ─── Prijs berekening ─────────────────────────────────────────────────────────
 
 // Bereken verkoopprijs op basis van inkoopprijs

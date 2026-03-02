@@ -131,3 +131,42 @@ RLS: producten publiek leesbaar, orders/klanten alleen via service role
 - Telegram vrije vragen werken niet zonder Anthropic credits
 - CJ prijsdata is beperkt voor nieuwe accounts (alles €1.74) — handmatig aanpassen
 - Admin importpagina: opnieuw inloggen als "Unauthorized" fout verschijnt
+
+## Skills Library (claude-skills)
+
+Geïntegreerde skill packages in `skills/` voor strategisch advies, marketing, engineering en meer.
+
+### Beschikbare Skills
+
+| Domein | Map | Gebruik voor |
+|--------|-----|-------------|
+| **Marketing** | `skills/marketing-skill/` | Content creatie, SEO, demand gen, campagne analytics |
+| **Business Growth** | `skills/business-growth/` | Customer success, sales, revenue operations |
+| **Finance** | `skills/finance/` | Financiële analyse, budgettering, forecasting |
+| **Product** | `skills/product-team/` | RICE scoring, OKRs, user stories, UX research |
+| **Engineering** | `skills/engineering/` | Code scaffolding, fullstack, AI/ML, data tools |
+| **Engineering Team** | `skills/engineering-team/` | Team workflows, code review standaarden |
+| **C-Level** | `skills/c-level-advisor/` | CEO/CTO strategisch advies |
+| **Project Management** | `skills/project-management/` | Jira/Confluence, sprint planning |
+| **RA/QM** | `skills/ra-qm-team/` | Compliance, ISO, kwaliteitsmanagement |
+| **Standards** | `skills/standards/` | Communicatie, kwaliteit, git, security standaarden |
+| **Templates** | `skills/templates/` | Herbruikbare templates |
+| **Agents** | `skills/agents/` | Agent orchestratie (marketing, C-level, product) |
+
+### Slash Commands
+
+| Command | Functie |
+|---------|---------|
+| `/git/cm` | Commit zonder push |
+| `/git/cp` | Commit en push |
+| `/git/pr` | Pull request aanmaken |
+| `/review` | Quality checks uitvoeren |
+| `/security-scan` | Security validatie |
+
+### Hoe te gebruiken
+
+- **Marketing advies:** Verwijs naar `skills/marketing-skill/` voor content strategie, SEO, social media
+- **Financieel:** Gebruik `skills/finance/` voor omzet analyse, pricing strategie
+- **Groei strategie:** Raadpleeg `skills/business-growth/` voor customer acquisition, sales
+- **Technisch:** Gebruik `skills/engineering/` en `skills/standards/` voor code kwaliteit
+- **Slash commands:** Type `/` in Claude Code voor git workflows en reviews

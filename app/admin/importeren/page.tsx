@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { Search, Plus, Check, AlertCircle, ExternalLink, RefreshCw, Tag, TrendingUp, Link2 } from 'lucide-react'
+import { Search, Plus, Check, AlertCircle, ExternalLink, RefreshCw, Tag, TrendingUp, Link2, LinkIcon } from 'lucide-react'
 
 interface CJProduct {
   pid: string
@@ -14,6 +14,17 @@ interface CJProduct {
   suggestedComparePrice: number | null
   suggestedCategory: string
   margin: number
+  variants?: { vid: string; variantSku: string; variantProperty: string }[]
+}
+
+interface ShopProduct {
+  id: string
+  name: string
+  category: string
+  price: number
+  images: string[]
+  cj_pid: string | null
+  cj_vid: string | null
 }
 
 const WINNING_KEYWORDS = [
@@ -70,6 +81,11 @@ function ImporterenContent() {
   const [importModal, setImportModal] = useState<ImportModal | null>(null)
   const [importing, setImporting] = useState(false)
   const [imported, setImported] = useState<Set<string>>(new Set())
+  const [linkModal, setLinkModal] = useState<{ cjProduct: CJProduct } | null>(null)
+  const [shopProducts, setShopProducts] = useState<ShopProduct[]>([])
+  const [shopLoading, setShopLoading] = useState(false)
+  const [linking, setLinking] = useState(false)
+  const [linked, setLinked] = useState<Set<string>>(new Set())
   const searchParams = useSearchParams()
 
   // Auto-zoek als ?q= in URL staat (vanuit trending pagina)
@@ -164,6 +180,53 @@ function ImporterenContent() {
       alert(`Fout bij importeren: ${e.message}`)
     } finally {
       setImporting(false)
+    }
+  }
+
+  async function openLink(cjProduct: CJProduct) {
+    setLinkModal({ cjProduct })
+    if (shopProducts.length === 0) {
+      setShopLoading(true)
+      try {
+        const res = await fetch('/api/admin/products')
+        const data = await res.json()
+        if (Array.isArray(data)) setShopProducts(data)
+      } catch {} finally {
+        setShopLoading(false)
+      }
+    }
+  }
+
+  async function doLink(shopProductId: string) {
+    if (!linkModal) return
+    setLinking(true)
+    try {
+      const cj = linkModal.cjProduct
+      // Haal detail op voor eerste variant vid
+      const detailRes = await fetch(`/api/admin/cj?pid=${encodeURIComponent(cj.pid)}`)
+      const detailData = await detailRes.json()
+      const vid = detailData.products?.[0]?.variants?.[0]?.vid ?? null
+
+      const res = await fetch(`/api/admin/products/${shopProductId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          cj_pid: cj.pid,
+          cj_vid: vid,
+        }),
+      })
+      if (!res.ok) {
+        const err = await res.json()
+        throw new Error(err.error)
+      }
+      setLinked((prev) => { const next = new Set(Array.from(prev)); next.add(shopProductId); return next })
+      // Update shopProducts state
+      setShopProducts((prev) => prev.map((p) => p.id === shopProductId ? { ...p, cj_pid: cj.pid, cj_vid: vid } : p))
+      setLinkModal(null)
+    } catch (e: any) {
+      alert(`Fout bij koppelen: ${e.message}`)
+    } finally {
+      setLinking(false)
     }
   }
 
@@ -308,17 +371,25 @@ function ImporterenContent() {
                   </div>
                 </div>
 
-                <button
-                  onClick={() => openImport(p)}
-                  disabled={imported.has(p.pid)}
-                  className="w-full flex items-center justify-center gap-2 bg-gray-900 text-white text-sm font-medium py-2 rounded-xl hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {imported.has(p.pid) ? (
-                    <><Check className="w-4 h-4" /> Geïmporteerd</>
-                  ) : (
-                    <><Plus className="w-4 h-4" /> Importeren</>
-                  )}
-                </button>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => openImport(p)}
+                    disabled={imported.has(p.pid)}
+                    className="flex-1 flex items-center justify-center gap-1.5 bg-gray-900 text-white text-sm font-medium py-2 rounded-xl hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {imported.has(p.pid) ? (
+                      <><Check className="w-4 h-4" /> Nieuw</>
+                    ) : (
+                      <><Plus className="w-4 h-4" /> Nieuw</>
+                    )}
+                  </button>
+                  <button
+                    onClick={() => openLink(p)}
+                    className="flex-1 flex items-center justify-center gap-1.5 bg-blue-600 text-white text-sm font-medium py-2 rounded-xl hover:bg-blue-700 transition-colors"
+                  >
+                    <LinkIcon className="w-4 h-4" /> Koppelen
+                  </button>
+                </div>
               </div>
             </div>
           ))}
@@ -453,6 +524,69 @@ function ImporterenContent() {
                   {importing ? 'Importeren...' : '✅ Importeren naar shop'}
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Link modal */}
+      {linkModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <h2 className="text-lg font-bold text-gray-900 mb-2">Koppel aan bestaand product</h2>
+              <p className="text-sm text-gray-500 mb-4">
+                CJ product: <strong>{linkModal.cjProduct.productName}</strong>
+                <br />
+                <span className="text-xs text-gray-400">PID: {linkModal.cjProduct.pid}</span>
+              </p>
+
+              {shopLoading ? (
+                <div className="text-center py-8 text-gray-400">Producten laden...</div>
+              ) : (
+                <div className="space-y-2 max-h-96 overflow-y-auto">
+                  {shopProducts.map((sp) => (
+                    <button
+                      key={sp.id}
+                      onClick={() => doLink(sp.id)}
+                      disabled={linking || !!sp.cj_pid}
+                      className={`w-full flex items-center gap-3 p-3 rounded-xl border text-left transition-colors ${
+                        sp.cj_pid
+                          ? 'border-green-200 bg-green-50 opacity-60 cursor-not-allowed'
+                          : linked.has(sp.id)
+                          ? 'border-blue-300 bg-blue-50'
+                          : 'border-gray-200 hover:border-blue-300 hover:bg-blue-50'
+                      }`}
+                    >
+                      <img
+                        src={sp.images?.[0] ?? ''}
+                        alt=""
+                        className="w-12 h-12 rounded-lg object-cover flex-shrink-0 bg-gray-100"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-gray-900 truncate">{sp.name}</p>
+                        <p className="text-xs text-gray-400">
+                          {CATEGORY_LABELS[sp.category] ?? sp.category} &middot; {eur(sp.price)}
+                        </p>
+                      </div>
+                      {sp.cj_pid ? (
+                        <span className="text-xs text-green-600 font-medium flex-shrink-0">Al gekoppeld</span>
+                      ) : linked.has(sp.id) ? (
+                        <Check className="w-5 h-5 text-blue-600 flex-shrink-0" />
+                      ) : (
+                        <LinkIcon className="w-4 h-4 text-gray-300 flex-shrink-0" />
+                      )}
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              <button
+                onClick={() => setLinkModal(null)}
+                className="w-full mt-4 border border-gray-200 text-gray-700 py-2.5 rounded-xl text-sm font-medium hover:bg-gray-50"
+              >
+                Sluiten
+              </button>
             </div>
           </div>
         </div>
