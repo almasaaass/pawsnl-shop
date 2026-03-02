@@ -11,13 +11,18 @@ interface Props {
 }
 
 /**
- * Vind de eerste ECHTE productfoto (geen gegenereerde branded afbeelding).
- * Gegenereerde afbeeldingen zitten in Supabase storage bucket 'product-images'.
+ * Vind een schone productfoto (geen branded/marketing afbeelding).
+ * - Supabase storage images (social.png, feature.png) = eigen branded images → skip
+ * - Eerste CJ-foto is vaak ook een marketing-afbeelding met tekst → skip
+ * - Latere CJ-foto's zijn schone productfoto's → gebruik deze
  */
-function getRealPhoto(product: Product): string {
+function getCleanPhoto(product: Product): string {
   const GENERATED_PREFIX = 'https://mumuorbsfiklktwqtveb.supabase.co/storage/v1/object/public/product-images/'
-  const real = product.images.find(img => !img.startsWith(GENERATED_PREFIX))
-  return real || product.images[0] || ''
+  // Filter alle Supabase branded images eruit
+  const cjPhotos = product.images.filter(img => !img.startsWith(GENERATED_PREFIX))
+  // Pak de 2e CJ-foto (index 1) als die bestaat — de eerste is vaak een marketing-foto
+  // Val terug op de 1e CJ-foto, dan op images[0]
+  return cjPhotos[1] || cjPhotos[0] || product.images[0] || ''
 }
 
 export default function HeroBanner({ products = [] }: Props) {
@@ -67,9 +72,9 @@ export default function HeroBanner({ products = [] }: Props) {
                     className="animate-fade-in-up stagger-2 absolute top-8 left-0 w-52 bg-white rounded-2xl shadow-card-hover overflow-hidden -rotate-6 hover:rotate-0 hover:scale-105 transition-transform duration-300 block"
                   >
                     <div className="relative aspect-square bg-gray-50">
-                      {getRealPhoto(heroProducts[0]) && (
+                      {getCleanPhoto(heroProducts[0]) && (
                         <Image
-                          src={getImageSrc(getRealPhoto(heroProducts[0]))}
+                          src={getImageSrc(getCleanPhoto(heroProducts[0]))}
                           alt={heroProducts[0].name}
                           fill
                           className="object-cover"
@@ -89,9 +94,9 @@ export default function HeroBanner({ products = [] }: Props) {
                     className="animate-fade-in-up stagger-3 absolute top-0 left-1/2 -translate-x-1/2 w-56 bg-white rounded-2xl shadow-card-hover overflow-hidden z-10 hover:scale-105 transition-transform duration-300 block"
                   >
                     <div className="relative aspect-square bg-gray-50">
-                      {getRealPhoto(heroProducts[1]) && (
+                      {getCleanPhoto(heroProducts[1]) && (
                         <Image
-                          src={getImageSrc(getRealPhoto(heroProducts[1]))}
+                          src={getImageSrc(getCleanPhoto(heroProducts[1]))}
                           alt={heroProducts[1].name}
                           fill
                           className="object-cover"
@@ -111,9 +116,9 @@ export default function HeroBanner({ products = [] }: Props) {
                     className="animate-fade-in-up stagger-4 absolute top-12 right-0 w-48 bg-white rounded-2xl shadow-card-hover overflow-hidden rotate-6 hover:rotate-0 hover:scale-105 transition-transform duration-300 block"
                   >
                     <div className="relative aspect-square bg-gray-50">
-                      {getRealPhoto(heroProducts[2]) && (
+                      {getCleanPhoto(heroProducts[2]) && (
                         <Image
-                          src={getImageSrc(getRealPhoto(heroProducts[2]))}
+                          src={getImageSrc(getCleanPhoto(heroProducts[2]))}
                           alt={heroProducts[2].name}
                           fill
                           className="object-cover"
