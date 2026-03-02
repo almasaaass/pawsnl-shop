@@ -12,21 +12,15 @@ interface Props {
 
 /**
  * Vind een schone productfoto (geen branded/marketing afbeelding).
- * - Supabase storage images (social.png, feature.png) = eigen branded images → skip
- * - Eerste CJ-foto is vaak ook een marketing-afbeelding met tekst → skip
- * - Latere CJ-foto's zijn schone productfoto's → gebruik deze
  */
 function getCleanPhoto(product: Product): string {
   const GENERATED_PREFIX = 'https://mumuorbsfiklktwqtveb.supabase.co/storage/v1/object/public/product-images/'
-  // Filter alle Supabase branded images eruit
   const cjPhotos = product.images.filter(img => !img.startsWith(GENERATED_PREFIX))
-  // Pak de 2e CJ-foto (index 1) als die bestaat — de eerste is vaak een marketing-foto
-  // Val terug op de 1e CJ-foto, dan op images[0]
   return cjPhotos[1] || cjPhotos[0] || product.images[0] || ''
 }
 
 export default function HeroBanner({ products = [] }: Props) {
-  const heroProducts = products.slice(0, 3)
+  const heroProducts = products.slice(0, 2)
 
   return (
     <section className="relative bg-gradient-to-br from-warm-100 via-warm-50 to-white overflow-hidden">
@@ -58,18 +52,31 @@ export default function HeroBanner({ products = [] }: Props) {
                 Over PawsNL
               </Link>
             </div>
-
           </div>
 
-          {/* Hero visual: overlappende productkaartjes */}
+          {/* Hero visual: lifestyle foto + 2 overlappende productkaartjes */}
           <div className="hidden lg:flex justify-center lg:justify-end">
-            <div className="relative w-[380px] h-[380px]">
-              {heroProducts.length >= 3 ? (
+            <div className="relative w-[500px] h-[420px]">
+              {/* Lifestyle afbeelding — afgerond met schaduw */}
+              <div className="animate-fade-in-up stagger-1 relative w-[400px] h-[400px] rounded-[2rem] overflow-hidden shadow-card-hover">
+                <Image
+                  src="https://images.unsplash.com/photo-1574158622682-e40e69881006?w=800&h=800&fit=crop&crop=faces"
+                  alt="Blije kat — PawsNL dierenwinkel"
+                  fill
+                  className="object-cover"
+                  sizes="400px"
+                  priority
+                  unoptimized
+                />
+              </div>
+
+              {/* Product kaartjes die over de foto heen zweven */}
+              {heroProducts.length >= 2 && (
                 <>
-                  {/* Kaartje 1 - links achter */}
+                  {/* Kaartje 1 — linksonder */}
                   <Link
                     href={`/producten/${heroProducts[0].slug}`}
-                    className="animate-fade-in-up stagger-2 absolute top-8 left-0 w-52 bg-white rounded-2xl shadow-card-hover overflow-hidden -rotate-6 hover:rotate-0 hover:scale-105 transition-transform duration-300 block"
+                    className="animate-fade-in-up stagger-3 absolute -bottom-4 -left-6 w-44 bg-white rounded-2xl shadow-card-hover overflow-hidden -rotate-3 hover:rotate-0 hover:scale-105 transition-transform duration-300 block z-10"
                   >
                     <div className="relative aspect-square bg-gray-50">
                       {getCleanPhoto(heroProducts[0]) && (
@@ -78,20 +85,20 @@ export default function HeroBanner({ products = [] }: Props) {
                           alt={heroProducts[0].name}
                           fill
                           className="object-cover"
-                          sizes="208px"
+                          sizes="176px"
                           unoptimized
                         />
                       )}
                     </div>
-                    <div className="p-3">
+                    <div className="p-2.5">
                       <p className="text-xs font-semibold text-charcoal truncate">{heroProducts[0].name}</p>
                     </div>
                   </Link>
 
-                  {/* Kaartje 2 - midden voor */}
+                  {/* Kaartje 2 — rechtsonder */}
                   <Link
                     href={`/producten/${heroProducts[1].slug}`}
-                    className="animate-fade-in-up stagger-3 absolute top-0 left-1/2 -translate-x-1/2 w-56 bg-white rounded-2xl shadow-card-hover overflow-hidden z-10 hover:scale-105 transition-transform duration-300 block"
+                    className="animate-fade-in-up stagger-4 absolute -bottom-2 right-0 w-44 bg-white rounded-2xl shadow-card-hover overflow-hidden rotate-3 hover:rotate-0 hover:scale-105 transition-transform duration-300 block z-10"
                   >
                     <div className="relative aspect-square bg-gray-50">
                       {getCleanPhoto(heroProducts[1]) && (
@@ -100,46 +107,16 @@ export default function HeroBanner({ products = [] }: Props) {
                           alt={heroProducts[1].name}
                           fill
                           className="object-cover"
-                          sizes="224px"
+                          sizes="176px"
                           unoptimized
                         />
                       )}
                     </div>
-                    <div className="p-3">
+                    <div className="p-2.5">
                       <p className="text-xs font-semibold text-charcoal truncate">{heroProducts[1].name}</p>
                     </div>
                   </Link>
-
-                  {/* Kaartje 3 - rechts achter */}
-                  <Link
-                    href={`/producten/${heroProducts[2].slug}`}
-                    className="animate-fade-in-up stagger-4 absolute top-12 right-0 w-48 bg-white rounded-2xl shadow-card-hover overflow-hidden rotate-6 hover:rotate-0 hover:scale-105 transition-transform duration-300 block"
-                  >
-                    <div className="relative aspect-square bg-gray-50">
-                      {getCleanPhoto(heroProducts[2]) && (
-                        <Image
-                          src={getImageSrc(getCleanPhoto(heroProducts[2]))}
-                          alt={heroProducts[2].name}
-                          fill
-                          className="object-cover"
-                          sizes="192px"
-                          unoptimized
-                        />
-                      )}
-                    </div>
-                    <div className="p-3">
-                      <p className="text-xs font-semibold text-charcoal truncate">{heroProducts[2].name}</p>
-                    </div>
-                  </Link>
                 </>
-              ) : (
-                /* Fallback als er minder dan 3 producten zijn */
-                <div className="w-full h-full bg-gradient-to-br from-accent-100 to-accent-50 rounded-3xl flex items-center justify-center">
-                  <div className="text-center">
-                    <p className="text-6xl font-heading font-bold text-accent-500 mb-2">Paws</p>
-                    <p className="text-lg text-accent-400">NL</p>
-                  </div>
-                </div>
               )}
             </div>
           </div>
