@@ -42,7 +42,7 @@ export default function AddToCartButton({ product }: Props) {
         <div className="flex items-center border border-gray-200 rounded-xl overflow-hidden">
           <button
             onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-            className="px-4 py-2.5 hover:bg-gray-50 transition-colors text-gray-700"
+            className="px-4 py-2.5 hover:bg-gray-50 active:scale-95 transition-all text-gray-700"
             aria-label="Minder"
           >
             <Minus className="w-4 h-4" />
@@ -52,7 +52,7 @@ export default function AddToCartButton({ product }: Props) {
           </span>
           <button
             onClick={() => setQuantity((q) => Math.min(product.stock, q + 1))}
-            className="px-4 py-2.5 hover:bg-gray-50 transition-colors text-gray-700"
+            className="px-4 py-2.5 hover:bg-gray-50 active:scale-95 transition-all text-gray-700"
             aria-label="Meer"
           >
             <Plus className="w-4 h-4" />
@@ -66,12 +66,12 @@ export default function AddToCartButton({ product }: Props) {
         <button
           onClick={handleAdd}
           className={`btn-primary flex-1 flex items-center justify-center gap-2 ${
-            added ? 'bg-green-500 hover:bg-green-600' : ''
+            added ? 'bg-green-500 hover:bg-green-600 animate-button-pulse' : ''
           }`}
         >
           {added ? (
             <>
-              <Check className="w-5 h-5" />
+              <Check className="w-5 h-5 animate-check-bounce" />
               Toegevoegd!
             </>
           ) : (

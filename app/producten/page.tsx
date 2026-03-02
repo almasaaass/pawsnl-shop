@@ -2,7 +2,7 @@ import { supabase } from '@/lib/supabase'
 import { Product, CATEGORIES } from '@/lib/types'
 import ProductCard from '@/components/shop/ProductCard'
 import ProductFilters from '@/components/shop/ProductFilters'
-import { SlidersHorizontal } from 'lucide-react'
+import { SlidersHorizontal, PawPrint } from 'lucide-react'
 
 export const revalidate = 60
 
@@ -54,7 +54,7 @@ export default async function ProductenPage({ searchParams }: PageProps) {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Alle Producten</h1>
+        <h1 className="text-3xl font-bold text-charcoal mb-2">Alle Producten</h1>
         <p className="text-gray-500">
           {products.length} {products.length === 1 ? 'product' : 'producten'} gevonden
         </p>
@@ -64,8 +64,8 @@ export default async function ProductenPage({ searchParams }: PageProps) {
         {/* Filters sidebar */}
         <aside className="lg:w-64 flex-shrink-0">
           <div className="card p-5 sticky top-24">
-            <div className="flex items-center gap-2 mb-5 font-semibold text-gray-900">
-              <SlidersHorizontal className="w-4 h-4 text-orange-500" />
+            <div className="flex items-center gap-2 mb-5 font-semibold text-charcoal">
+              <SlidersHorizontal className="w-4 h-4 text-accent-500" />
               <span>Filters</span>
             </div>
             <ProductFilters
@@ -81,12 +81,12 @@ export default async function ProductenPage({ searchParams }: PageProps) {
         <div className="flex-1">
           {products.length === 0 ? (
             <div className="text-center py-20">
-              <p className="text-5xl mb-4">🐾</p>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Geen producten gevonden</h3>
+              <PawPrint className="w-12 h-12 text-accent-300 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-charcoal mb-2">Geen producten gevonden</h3>
               <p className="text-gray-500">Probeer andere filters of zoektermen.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
               {products.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}

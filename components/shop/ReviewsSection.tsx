@@ -1,4 +1,7 @@
+'use client'
+
 import { Star } from 'lucide-react'
+import { useInView } from '@/hooks/useInView'
 
 // Voorbeeld reviews – vervang door echte reviews uit je database
 const DEMO_REVIEWS = [
@@ -47,17 +50,18 @@ interface Props {
 }
 
 export default function ReviewsSection({ productId: _productId, productName }: Props) {
+  const { ref, isInView } = useInView({ threshold: 0.1 })
   const avgRating =
     DEMO_REVIEWS.reduce((sum, r) => sum + r.rating, 0) / DEMO_REVIEWS.length
 
   return (
-    <section>
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">
+    <section ref={ref}>
+      <h2 className={`text-2xl font-bold text-gray-900 mb-6 ${isInView ? 'animate-fade-in-up' : 'opacity-0'}`}>
         Klantbeoordelingen voor {productName}
       </h2>
 
       {/* Samenvatting */}
-      <div className="card p-6 mb-6 flex items-center gap-6">
+      <div className={`card p-6 mb-6 flex items-center gap-6 ${isInView ? 'animate-fade-in-up stagger-1' : 'opacity-0'}`}>
         <div className="text-center flex-shrink-0">
           <p className="text-5xl font-bold text-gray-900">{avgRating.toFixed(1)}</p>
           <StarRating rating={Math.round(avgRating)} />
@@ -71,10 +75,10 @@ export default function ReviewsSection({ productId: _productId, productName }: P
               <div key={star} className="flex items-center gap-2 mb-1">
                 <span className="text-xs text-gray-500 w-4">{star}</span>
                 <Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />
-                <div className="flex-1 bg-gray-100 rounded-full h-2">
+                <div className="flex-1 bg-gray-100 rounded-full h-2 overflow-hidden">
                   <div
-                    className="bg-yellow-400 h-2 rounded-full transition-all"
-                    style={{ width: `${pct}%` }}
+                    className="bg-yellow-400 h-2 rounded-full transition-all duration-1000 ease-out"
+                    style={{ width: isInView ? `${pct}%` : '0%' }}
                   />
                 </div>
                 <span className="text-xs text-gray-500 w-4">{count}</span>
@@ -86,8 +90,11 @@ export default function ReviewsSection({ productId: _productId, productName }: P
 
       {/* Review lijst */}
       <div className="space-y-4">
-        {DEMO_REVIEWS.map((review) => (
-          <div key={review.id} className="card p-5">
+        {DEMO_REVIEWS.map((review, i) => (
+          <div
+            key={review.id}
+            className={`card p-5 ${isInView ? `animate-fade-in-up stagger-${Math.min(i + 2, 8)}` : 'opacity-0'}`}
+          >
             <div className="flex items-start justify-between mb-3">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">

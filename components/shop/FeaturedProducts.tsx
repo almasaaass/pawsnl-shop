@@ -1,23 +1,28 @@
+'use client'
+
 import Link from 'next/link'
 import { Product } from '@/lib/types'
 import ProductCard from './ProductCard'
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, PawPrint } from 'lucide-react'
+import { useInView } from '@/hooks/useInView'
 
 interface Props {
   products: Product[]
 }
 
 export default function FeaturedProducts({ products }: Props) {
+  const { ref, isInView } = useInView({ threshold: 0.1 })
+
   return (
-    <section className="section">
-      <div className="flex items-center justify-between mb-8">
+    <section ref={ref} className="section">
+      <div className={`flex items-center justify-between mb-8 ${isInView ? 'animate-fade-in-up' : 'opacity-0'}`}>
         <div>
-          <h2 className="text-3xl font-bold text-gray-900 mb-1">Uitgelichte producten</h2>
+          <h2 className="text-3xl font-bold text-charcoal mb-1">Uitgelichte producten</h2>
           <p className="text-gray-500">Onze meest populaire keuzes voor jouw huisdier</p>
         </div>
         <Link
           href="/producten"
-          className="hidden sm:flex items-center gap-2 text-orange-500 hover:text-orange-600 font-semibold transition-colors"
+          className="hidden sm:flex items-center gap-2 text-accent-500 hover:text-accent-600 font-semibold transition-colors"
         >
           Alles bekijken
           <ArrowRight className="w-4 h-4" />
@@ -25,9 +30,9 @@ export default function FeaturedProducts({ products }: Props) {
       </div>
 
       {products.length === 0 ? (
-        <div className="text-center py-16 bg-gray-50 rounded-2xl">
-          <p className="text-5xl mb-4">🐾</p>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">Nog geen producten</h3>
+        <div className="text-center py-16 bg-warm-100 rounded-2xl">
+          <PawPrint className="w-12 h-12 text-accent-300 mx-auto mb-4" />
+          <h3 className="text-lg font-semibold text-charcoal mb-2">Nog geen producten</h3>
           <p className="text-gray-500 text-sm mb-4">
             Voeg producten toe in het admin paneel om ze hier te tonen.
           </p>
@@ -37,9 +42,14 @@ export default function FeaturedProducts({ products }: Props) {
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            {products.map((product, i) => (
+              <div
+                key={product.id}
+                className={isInView ? `animate-fade-in-up stagger-${Math.min(i + 1, 8)}` : 'opacity-0'}
+              >
+                <ProductCard product={product} />
+              </div>
             ))}
           </div>
           <div className="mt-8 text-center sm:hidden">
