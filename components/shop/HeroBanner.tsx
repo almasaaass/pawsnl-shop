@@ -54,29 +54,30 @@ export default function HeroBanner({ products = [] }: Props) {
             </div>
           </div>
 
-          {/* Hero visual: lifestyle foto + 2 overlappende productkaartjes */}
+          {/* Hero visual: horizontale lifestyle foto + 2 zwevende productkaartjes */}
           <div className="hidden lg:flex justify-center lg:justify-end">
-            <div className="relative w-[500px] h-[420px]">
-              {/* Lifestyle afbeelding — afgerond met schaduw */}
-              <div className="animate-fade-in-up stagger-1 relative w-[400px] h-[400px] rounded-[2rem] overflow-hidden shadow-card-hover">
+            <div className="relative w-full max-w-[540px]">
+              {/* Horizontale lifestyle afbeelding — warme tinten passend bij site */}
+              <div className="animate-fade-in-up stagger-1 relative w-full aspect-[4/3] rounded-3xl overflow-hidden shadow-card-hover">
                 <Image
-                  src="https://images.unsplash.com/photo-1574158622682-e40e69881006?w=800&h=800&fit=crop&crop=faces"
-                  alt="Blije kat — PawsNL dierenwinkel"
+                  src="/hero-cat.jpg"
+                  alt="Blije oranje kat — PawsNL dierenwinkel"
                   fill
                   className="object-cover"
-                  sizes="400px"
+                  sizes="540px"
                   priority
-                  unoptimized
                 />
+                {/* Warme overlay voor kleur-match */}
+                <div className="absolute inset-0 bg-gradient-to-t from-orange-900/10 via-transparent to-orange-100/10" />
               </div>
 
-              {/* Product kaartjes die over de foto heen zweven */}
+              {/* 2 productkaartjes die over de onderrand zweven */}
               {heroProducts.length >= 2 && (
                 <>
-                  {/* Kaartje 1 — linksonder */}
+                  {/* Kaartje 1 — links */}
                   <Link
                     href={`/producten/${heroProducts[0].slug}`}
-                    className="animate-fade-in-up stagger-3 absolute -bottom-4 -left-6 w-44 bg-white rounded-2xl shadow-card-hover overflow-hidden -rotate-3 hover:rotate-0 hover:scale-105 transition-transform duration-300 block z-10"
+                    className="animate-fade-in-up stagger-3 absolute -bottom-6 left-4 w-40 bg-white rounded-2xl shadow-card-hover overflow-hidden -rotate-2 hover:rotate-0 hover:scale-105 transition-transform duration-300 block z-10"
                   >
                     <div className="relative aspect-square bg-gray-50">
                       {getCleanPhoto(heroProducts[0]) && (
@@ -85,20 +86,20 @@ export default function HeroBanner({ products = [] }: Props) {
                           alt={heroProducts[0].name}
                           fill
                           className="object-cover"
-                          sizes="176px"
+                          sizes="160px"
                           unoptimized
                         />
                       )}
                     </div>
-                    <div className="p-2.5">
-                      <p className="text-xs font-semibold text-charcoal truncate">{heroProducts[0].name}</p>
+                    <div className="p-2">
+                      <p className="text-[11px] font-semibold text-charcoal truncate">{heroProducts[0].name}</p>
                     </div>
                   </Link>
 
-                  {/* Kaartje 2 — rechtsonder */}
+                  {/* Kaartje 2 — rechts */}
                   <Link
                     href={`/producten/${heroProducts[1].slug}`}
-                    className="animate-fade-in-up stagger-4 absolute -bottom-2 right-0 w-44 bg-white rounded-2xl shadow-card-hover overflow-hidden rotate-3 hover:rotate-0 hover:scale-105 transition-transform duration-300 block z-10"
+                    className="animate-fade-in-up stagger-4 absolute -bottom-4 right-6 w-40 bg-white rounded-2xl shadow-card-hover overflow-hidden rotate-2 hover:rotate-0 hover:scale-105 transition-transform duration-300 block z-10"
                   >
                     <div className="relative aspect-square bg-gray-50">
                       {getCleanPhoto(heroProducts[1]) && (
@@ -107,13 +108,13 @@ export default function HeroBanner({ products = [] }: Props) {
                           alt={heroProducts[1].name}
                           fill
                           className="object-cover"
-                          sizes="176px"
+                          sizes="160px"
                           unoptimized
                         />
                       )}
                     </div>
-                    <div className="p-2.5">
-                      <p className="text-xs font-semibold text-charcoal truncate">{heroProducts[1].name}</p>
+                    <div className="p-2">
+                      <p className="text-[11px] font-semibold text-charcoal truncate">{heroProducts[1].name}</p>
                     </div>
                   </Link>
                 </>
