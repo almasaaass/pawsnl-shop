@@ -253,7 +253,16 @@ export default function WinkelwagenPage() {
             {/* Payment methods */}
             <div className="mt-3 flex items-center justify-center gap-2 flex-wrap">
               <span className="bg-gray-100 px-2.5 py-1 rounded text-xs font-medium text-gray-600">Visa</span>
-              <span className="bg-gray-100 px-2.5 py-1 rounded text-xs font-medium text-gray-600">MC</span>
+              <span className="bg-gray-100 px-2.5 py-1 rounded text-xs font-medium text-gray-600">Mastercard</span>
+              {locale === 'nl' && (
+                <>
+                  <span className="bg-gray-100 px-2.5 py-1 rounded text-xs font-medium text-gray-600">iDEAL</span>
+                  <span className="bg-gray-100 px-2.5 py-1 rounded text-xs font-medium text-gray-600">Bancontact</span>
+                </>
+              )}
+              <span className="bg-gray-100 px-2.5 py-1 rounded text-xs font-medium text-gray-600">Klarna</span>
+              <span className="bg-gray-100 px-2.5 py-1 rounded text-xs font-medium text-gray-600">Apple Pay</span>
+              <span className="bg-gray-100 px-2.5 py-1 rounded text-xs font-medium text-gray-600">Google Pay</span>
             </div>
           </div>
         </div>

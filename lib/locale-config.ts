@@ -1,6 +1,5 @@
 export const EXCHANGE_RATES: Record<string, number> = {
   eur: 1,
-  gbp: 0.86,
 }
 
 export const LOCALE_CONFIGS = {
@@ -10,20 +9,33 @@ export const LOCALE_CONFIGS = {
     currencyLocale: 'nl-NL',
     freeShippingThreshold: 35,
     shippingCost: 4.95,
-    allowedCountries: ['NL', 'BE', 'DE'] as const,
+    allowedCountries: ['NL', 'BE', 'DE', 'LU'] as const,
     paymentMethods: ['card', 'ideal', 'bancontact', 'klarna'] as const,
     deliveryDays: { min: 5, max: 10 },
     stripeLocale: 'nl' as const,
   },
   en: {
-    currency: 'gbp',
-    currencyCode: 'GBP',
-    currencyLocale: 'en-GB',
-    freeShippingThreshold: 30,
-    shippingCost: 4.25,
-    allowedCountries: ['GB', 'AU', 'IE'] as const,
-    paymentMethods: ['card'] as const,
-    deliveryDays: { min: 7, max: 14 },
+    currency: 'eur',
+    currencyCode: 'EUR',
+    currencyLocale: 'en-US',
+    freeShippingThreshold: 35,
+    shippingCost: 5.95,
+    allowedCountries: [
+      // Europe
+      'GB', 'IE', 'FR', 'DE', 'ES', 'IT', 'PT', 'AT', 'CH', 'SE',
+      'NO', 'DK', 'FI', 'PL', 'CZ', 'GR', 'HR', 'RO', 'BG', 'HU',
+      'SK', 'SI', 'EE', 'LV', 'LT', 'CY', 'MT', 'IS', 'LU', 'BE',
+      // North America
+      'US', 'CA',
+      // Oceania
+      'AU', 'NZ',
+      // Asia
+      'SG', 'JP', 'KR', 'HK', 'MY', 'TH',
+      // Middle East
+      'AE', 'SA', 'QA', 'KW', 'BH',
+    ] as const,
+    paymentMethods: ['card', 'klarna', 'link'] as const,
+    deliveryDays: { min: 7, max: 18 },
     stripeLocale: 'en' as const,
   },
 } as const

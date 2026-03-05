@@ -138,7 +138,7 @@
     "temporarilyOutOfStock": "Temporarily out of stock",
     "offerEndsIn": "Offer ends in",
     "freeAbove": "Free over €35",
-    "deliveryDays": "7-14 business days",
+    "deliveryDays": "7-18 business days",
     "return30Days": "30-day returns",
     "safePayment": "Secure payment",
     "alsoViewed": "Customers also bought"
@@ -172,7 +172,7 @@
     "checkout": "Secure checkout",
     "processing": "Processing...",
     "klarnaLabel": "",
-    "safePaymentMethods": "Secure payment with Visa or Mastercard",
+    "safePaymentMethods": "Secure payment — Visa, Mastercard, Apple Pay & more",
     "returnNoHassle": "30-day hassle-free returns",
     "checkoutError": "Something went wrong. Please try again."
   },
