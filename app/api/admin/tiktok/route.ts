@@ -31,7 +31,7 @@ interface TikTokScript {
 
 type ScriptFormat = 'pov' | 'educational' | 'review' | 'problem_solution' | 'trending' | 'unboxing' | 'top3'
 
-const DAYS = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', 'Zondag']
+const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 
 const FORMATS: ScriptFormat[] = [
   'pov',
@@ -43,7 +43,7 @@ const FORMATS: ScriptFormat[] = [
   'top3',
 ]
 
-// ─── Hormozi-stijl hooks (0-3 sec) ──────────────────────────────────────────
+// ─── Hormozi-style hooks (0-3 sec) ──────────────────────────────────────────
 
 function getHooks(product: Product): string[] {
   const { category, compare_price, price } = product
@@ -51,42 +51,42 @@ function getHooks(product: Product): string[] {
   const priceStr = `€${price.toFixed(2).replace('.', ',')}`
   const savingsPerYear = Math.round(price * 3)
 
-  // Hormozi-stijl openers — pattern interrupts
+  // Hormozi-style openers — pattern interrupts
   const hormoziHooks = [
-    `STOP! Als je een ${category.slice(0, -2)} hebt MOET je dit zien`,
-    `Ik wou dat iemand mij dit eerder had verteld over dit product`,
-    `Dit kost ${priceStr} maar bespaart je €${savingsPerYear} per jaar`,
-    `De #1 fout die ${category}baasjes maken (en hoe je het fixt)`,
-    `Ik heb €500+ uitgegeven aan ${category}producten. Dit is de ENIGE die werkt`,
+    `STOP! If you have a ${category === 'fish' ? category : category.slice(0, -1)} you NEED to see this`,
+    `I wish someone had told me about this product sooner`,
+    `This costs ${priceStr} but saves you €${savingsPerYear} per year`,
+    `The #1 mistake ${category} owners make (and how to fix it)`,
+    `I've spent €500+ on ${category} products. This is the ONLY one that works`,
   ]
 
   const categoryHooks: Record<string, string[]> = {
-    honden: [
-      `Elke dierenarts raadt dit aan maar niemand vertelt je waarom 🐶`,
-      `Mijn hond FLIPT uit elke keer dat ik dit pak`,
-      `97% van hondenbaasjes weet dit niet over hun hond`,
+    dogs: [
+      `Every vet recommends this but nobody tells you why 🐶`,
+      `My dog FREAKS OUT every time I grab this`,
+      `97% of dog owners don't know this about their dog`,
     ],
-    katten: [
-      `Je kat haat je in stilte als je dit niet hebt 🐱`,
-      `POV: je kat wil NOOIT meer stoppen met spelen`,
-      `Dit is waarom je kat 's nachts zo raar doet`,
+    cats: [
+      `Your cat secretly hates you if you don't have this 🐱`,
+      `POV: your cat NEVER wants to stop playing`,
+      `This is why your cat acts so weird at night`,
     ],
-    vogels: [
-      `Mijn vogel werd zoveel gelukkiger na dit ding 🐦`,
-      `Vogelbaasjes slaan dit ALTIJD over (grote fout)`,
+    birds: [
+      `My bird became so much happier after this thing 🐦`,
+      `Bird owners ALWAYS skip this (big mistake)`,
     ],
-    knaagdieren: [
-      `Je knaagdier verdient beter dan wat je nu hebt 🐹`,
-      `Dit maakte mijn knaagdier 10x gelukkiger`,
+    rodents: [
+      `Your rodent deserves better than what you have now 🐹`,
+      `This made my rodent 10x happier`,
     ],
-    vissen: [
-      `Je aquarium mist dit ene ding 🐟`,
-      `Professionele aquariumhouders zweren bij dit product`,
+    fish: [
+      `Your aquarium is missing this one thing 🐟`,
+      `Professional aquarium keepers swear by this product`,
     ],
   }
 
   const discountHooks = discount >= 20
-    ? [`${discount}% korting — maar ALLEEN deze week ⚡`]
+    ? [`${discount}% off — but ONLY this week ⚡`]
     : []
 
   return [...hormoziHooks, ...(categoryHooks[category] ?? []), ...discountHooks]
@@ -102,11 +102,11 @@ function generateScript(product: Product, format: ScriptFormat, dayIndex: number
     : 0
   const priceStr = `€${product.price.toFixed(2).replace('.', ',')}`
   const compareStr = product.compare_price ? `€${product.compare_price.toFixed(2).replace('.', ',')}` : ''
-  const url = 'pawsshop.nl'
+  const url = 'pawsnlshop.com'
   const animal = product.category.slice(0, -2)
 
   const animalEmoji: Record<string, string> = {
-    honden: '🐶', katten: '🐱', vogels: '🐦', knaagdieren: '🐹', vissen: '🐟',
+    dogs: '🐶', cats: '🐱', birds: '🐦', rodents: '🐹', fish: '🐟',
   }
   const emoji = animalEmoji[product.category] ?? '🐾'
 
@@ -120,271 +120,271 @@ function generateScript(product: Product, format: ScriptFormat, dayIndex: number
   const scripts: Record<ScriptFormat, ScriptParts> = {
 
     pov: {
-      retain: `[Tekst op scherm: "${hook}"]
+      retain: `[Text on screen: "${hook}"]
 
-Serieus, luister even. Ik heb de ${product.name} gekocht voor mijn ${animal} en ik ga je precies laten zien waarom dit een gamechanger is.
+Seriously, listen up. I bought the ${product.name} for my ${animal} and I'm going to show you exactly why this is a gamechanger.
 
-[Laat het product zien vanuit je hand]
+[Show the product from your hand]
 
-Kijk. Dit is 'm. ${product.name}.
+Look. This is it. ${product.name}.
 
-[Demonstreer het product 10-15 seconden — laat details zien]
+[Demonstrate the product 10-15 seconds — show details]
 
-Zie je dit? Mijn ${animal} went er binnen 5 minuten aan. En dat is normaal — want dit is echt goed ontworpen.
+See this? My ${animal} gets used to it within 5 minutes. And that's normal — because this is really well designed.
 
-[Laat reactie van je huisdier zien]
+[Show your pet's reaction]
 
-Het verschil met andere producten? Dit gaat ECHT lang mee. Ik gebruik het nu al weken en het ziet er nog als nieuw uit.
+The difference with other products? This REALLY lasts. I've been using it for weeks and it still looks brand new.
 
-Voor ${priceStr}${discount > 0 ? ` (was ${compareStr})` : ''} is dit echt een no-brainer.`,
-      reward: `[Kijk in camera — urgentie]
+For ${priceStr}${discount > 0 ? ` (was ${compareStr})` : ''} this is truly a no-brainer.`,
+      reward: `[Look into camera — urgency]
 
-Link in mijn bio! ⬆️ En volg voor meer ${animal}tips — ik test elke week nieuwe producten.
+Link in my bio! ⬆️ And follow for more ${animal} tips — I test new products every week.
 
-${discount > 0 ? `LET OP: die ${discount}% korting is tijdelijk!` : 'Dit product is regelmatig uitverkocht, dus wees er snel bij.'}`,
+${discount > 0 ? `HEADS UP: that ${discount}% discount is temporary!` : 'This product regularly sells out, so be quick.'}`,
       filmtips: {
-        hook: ['Begin met close-up van het product in je hand — 2 seconden max', 'Gebruik tekst-overlay met de hook-zin'],
-        retain: ['Film in portretmodus (9:16) met daglicht', 'Laat je huisdier reageren op het product — DIT is de gouden content', 'Toon het product vanuit meerdere hoeken'],
-        reward: ['Eindig met oogcontact in de camera', 'Wijs naar boven (richting bio link)', 'Voeg trending geluid toe op laag volume'],
+        hook: ['Start with close-up of the product in your hand — 2 seconds max', 'Use text overlay with the hook line'],
+        retain: ['Film in portrait mode (9:16) with daylight', 'Let your pet react to the product — THIS is the golden content', 'Show the product from multiple angles'],
+        reward: ['End with eye contact into the camera', 'Point upward (towards bio link)', 'Add trending sound at low volume'],
       },
-      duration: '30-45 seconden',
+      duration: '30-45 seconds',
     },
 
     problem_solution: {
-      retain: `[Begin met probleem — kijk gefrustreerd in camera]
+      retain: `[Start with problem — look frustrated into camera]
 
-Okaaay. Ik was het ZAT.
+Okaaay. I was SO done.
 
-${product.category === 'honden'
-  ? 'Mijn hond trok altijd aan de riem, blafte continu, of verveelde zich de hele dag. Ik heb alles geprobeerd — YouTube tips, dure trainers, andere producten. Niks werkte.'
-  : product.category === 'katten'
-    ? 'Mijn kat was altijd chagrijnig, verveeld, of dronk te weinig water. Ik zag haar gezondheid achteruitgaan en ik wist niet wat ik moest doen.'
-    : `Mijn ${animal} had problemen en ik wist niet hoe ik het moest oplossen. Tot ik dit vond.`}
+${product.category === 'dogs'
+  ? 'My dog was always pulling on the leash, barking non-stop, or bored all day. I tried everything — YouTube tips, expensive trainers, other products. Nothing worked.'
+  : product.category === 'cats'
+    ? 'My cat was always grumpy, bored, or not drinking enough water. I could see her health declining and I didn\'t know what to do.'
+    : `My ${animal} had problems and I didn't know how to fix it. Until I found this.`}
 
-[Dramatische pauze — houd product op]
+[Dramatic pause — hold up product]
 
-TOT. IK. DIT. VOND.
+UNTIL. I. FOUND. THIS.
 
-[Laat product zien — enthousiastisch]
+[Show product — enthusiastic]
 
-De ${product.name}. Kijk, dit is waarom het werkt:
+The ${product.name}. Look, this is why it works:
 
-[Demonstreer stap voor stap — 15 seconden]
-1. Je pakt het uit de verpakking
-2. Je zet het klaar voor je ${animal}
-3. En dan... kijk maar naar de reactie ${emoji}
+[Demonstrate step by step — 15 seconds]
+1. You take it out of the packaging
+2. You set it up for your ${animal}
+3. And then... just watch the reaction ${emoji}
 
-[Film de reactie van je huisdier]
+[Film your pet's reaction]
 
-Het verschil was DIRECT zichtbaar. Geen gelieg — mijn ${animal} is zo veel gelukkiger.`,
-      reward: `Dit kost maar ${priceStr}${discount > 0 ? ` (normaal ${compareStr})` : ''}.
+The difference was IMMEDIATELY visible. No lies — my ${animal} is so much happier.`,
+      reward: `This only costs ${priceStr}${discount > 0 ? ` (normally ${compareStr})` : ''}.
 
-Sla dit op 🔖 en klik de link in mijn bio voordat het uitverkocht is.
+Save this 🔖 and click the link in my bio before it sells out.
 
-Volg mij voor meer tips die ECHT werken! ${emoji}`,
+Follow me for more tips that ACTUALLY work! ${emoji}`,
       filmtips: {
-        hook: ['Begin met een gefrustreerde gezichtsuitdrukking', 'Gebruik "before" footage als je dat hebt'],
-        retain: ['Maak een before/after sfeer', 'Film de echte reactie van je huisdier', 'Gebruik split-screen als je kunt (CapCut)'],
-        reward: ['Eindig met een glimlach + product in beeld', 'Voeg "sla dit op" tekst-sticker toe'],
+        hook: ['Start with a frustrated facial expression', 'Use "before" footage if you have it'],
+        retain: ['Create a before/after vibe', 'Film the real reaction of your pet', 'Use split-screen if you can (CapCut)'],
+        reward: ['End with a smile + product in frame', 'Add a "save this" text sticker'],
       },
-      duration: '30-60 seconden',
+      duration: '30-60 seconds',
     },
 
     educational: {
-      retain: `[Tekst op scherm: "3 dingen die ik wens dat ik wist als ${animal}baasje"]
+      retain: `[Text on screen: "3 things I wish I knew as a ${animal} owner"]
 
-Nummer 1 ${emoji}
-${product.category === 'honden'
-  ? 'Honden hebben dagelijks mentale én fysieke stimulatie nodig. Zonder dat worden ze destructief. De meeste gedragsproblemen komen door VERVELING, niet door slechte opvoeding.'
-  : product.category === 'katten'
-    ? 'Katten drinken van nature liever bewegend water. Stilstaand water drinken ze minder — en dat veroorzaakt nierproblemen op de lange termijn.'
-    : `De meeste ${animal}baasjes onderschatten hoeveel stimulatie hun ${animal} nodig heeft.`}
+Number 1 ${emoji}
+${product.category === 'dogs'
+  ? 'Dogs need daily mental AND physical stimulation. Without it they become destructive. Most behavioural problems come from BOREDOM, not bad training.'
+  : product.category === 'cats'
+    ? 'Cats naturally prefer to drink moving water. They drink less still water — and that causes kidney problems in the long run.'
+    : `Most ${animal} owners underestimate how much stimulation their ${animal} needs.`}
 
-Nummer 2 🎯
-De meeste baasjes besteden te weinig aan de juiste producten. Maar goedkoop = duurkoop bij je huisdier. Een goed product kan je honderden euro's aan dierenarts kosten besparen.
+Number 2 🎯
+Most owners spend too little on the right products. But cheap = expensive when it comes to your pet. A good product can save you hundreds of euros in vet bills.
 
-Nummer 3 ✅
-[Introduceer product als de oplossing]
-Daarom gebruik ik de ${product.name}. Dit lost precies probleem #1 op.
+Number 3 ✅
+[Introduce product as the solution]
+That's why I use the ${product.name}. This solves exactly problem #1.
 
-[Laat het product zien en demonstreer het]
+[Show and demonstrate the product]
 
-Kijk, zo simpel is het. Mijn ${animal} is er dol op en het kost maar ${priceStr}.`,
-      reward: `Sla dit op voor later! 🔖
+See, it's that simple. My ${animal} loves it and it only costs ${priceStr}.`,
+      reward: `Save this for later! 🔖
 
-Wil je de ${product.name}? Link in mijn bio → ${url}
+Want the ${product.name}? Link in my bio → ${url}
 
-Volg voor meer ${animal}tips — ik post elke dag! ${emoji}`,
+Follow for more ${animal} tips — I post every day! ${emoji}`,
       filmtips: {
-        hook: ['Gebruik grote tekst "3 DINGEN..." als eerste frame', 'Kijk verbaasd/geschokt in de camera'],
-        retain: ['Gebruik nummering met tekst-overlays (1, 2, 3)', 'Spreek snel en duidelijk — geen lange pauzes', 'Zet captions aan in TikTok voor meer bereik'],
-        reward: ['Gebruik een "sla dit op" animatie', 'Wijs naar je bio-link', 'Thumbnail tip: gebruik het getal "3" groot in beeld'],
+        hook: ['Use large text "3 THINGS..." as the first frame', 'Look surprised/shocked into the camera'],
+        retain: ['Use numbering with text overlays (1, 2, 3)', 'Speak quickly and clearly — no long pauses', 'Turn on captions in TikTok for more reach'],
+        reward: ['Use a "save this" animation', 'Point to your bio link', 'Thumbnail tip: use the number "3" big on screen'],
       },
-      duration: '45-60 seconden',
+      duration: '45-60 seconds',
     },
 
     review: {
-      retain: `[Houd product op naar camera]
+      retain: `[Hold product up to camera]
 
-Eerlijke review van de ${product.name} — na 2 weken gebruik.
+Honest review of the ${product.name} — after 2 weeks of use.
 
-[Laat product van alle kanten zien]
+[Show product from all angles]
 
-Ik heb dit product ${product.compare_price ? `voor ${priceStr} gekocht (normaal ${compareStr})` : `voor ${priceStr} gekocht`}. Hier is mijn eerlijke mening:
+I bought this product ${product.compare_price ? `for ${priceStr} (normally ${compareStr})` : `for ${priceStr}`}. Here is my honest opinion:
 
-DE GOEDE DINGEN ${emoji}
-[Noem 3 positieve punten met beelden]
-✅ Mijn ${animal} is er dol op — kijk maar [toon reactie]
-✅ Super makkelijk te gebruiken — geen handleiding nodig
-✅ Goede kwaliteit materiaal — voelt stevig aan
+THE GOOD STUFF ${emoji}
+[Name 3 positive points with visuals]
+✅ My ${animal} loves it — just look [show reaction]
+✅ Super easy to use — no manual needed
+✅ Good quality material — feels sturdy
 
-VERBETERPUNTEN:
-[Eerlijk 1 klein minpunt — dit maakt je geloofwaardiger]
-⚠️ De verpakking had handiger gekund
+AREAS FOR IMPROVEMENT:
+[Honestly 1 small downside — this makes you more credible]
+⚠️ The packaging could have been more practical
 
-MAAR HIER IS HET DING:
-Voor ${priceStr} vind je NIKS beters. Echt niet. Ik heb gezocht.
+BUT HERE'S THE THING:
+For ${priceStr} you won't find ANYTHING better. Seriously. I've looked.
 
-Mijn eindoordeel: 9/10 — absoluut een aanrader voor elk ${animal}baasje.`,
-      reward: `Wil je hem zelf proberen? Link in mijn bio 🔗
+My final verdict: 9/10 — absolutely recommended for every ${animal} owner.`,
+      reward: `Want to try it yourself? Link in my bio 🔗
 
-Comment "REVIEW" en ik stuur je de link!
+Comment "REVIEW" and I'll send you the link!
 
-Volg voor meer eerlijke reviews — geen gesponsorde onzin ${emoji}`,
+Follow for more honest reviews — no sponsored nonsense ${emoji}`,
       filmtips: {
-        hook: ['Houd het product naast je gezicht', 'Gebruik "Eerlijke review" als tekst-overlay'],
-        retain: ['Film close-ups van materiaal en details', 'Laat je huisdier het product gebruiken', 'Wees ECHT eerlijk — dat scoort beter'],
-        reward: ['Houd het product omhoog als "aanbevolen"', 'Voeg sterren-rating animatie toe in edit'],
+        hook: ['Hold the product next to your face', 'Use "Honest review" as text overlay'],
+        retain: ['Film close-ups of material and details', 'Let your pet use the product', 'Be REALLY honest — that performs better'],
+        reward: ['Hold the product up as "recommended"', 'Add star rating animation in edit'],
       },
-      duration: '45-60 seconden',
+      duration: '45-60 seconds',
     },
 
     trending: {
-      retain: `[Open met trending geluid — begin direct met actie]
+      retain: `[Open with trending sound — start immediately with action]
 
-Dingen die mijn leven veranderden in ${new Date().getFullYear()}:
+Things that changed my life in ${new Date().getFullYear()}:
 
-[Snel knippen — 2 sec per item]
-🧴 Mijn nieuwe huidverzorging... nee
-📱 Mijn nieuwe telefoon... nee
-🏋️ Mijn gym routine... nee
-🐾 De ${product.name} voor mijn ${animal}... JA!
+[Quick cuts — 2 sec per item]
+🧴 My new skincare... no
+📱 My new phone... no
+🏋️ My gym routine... no
+🐾 The ${product.name} for my ${animal}... YES!
 
-[Close-up van blij huisdier met product — 5-8 seconden]
+[Close-up of happy pet with product — 5-8 seconds]
 
-Dit. Dit is de winner. Geen discussie ${emoji}
+This. This is the winner. No debate ${emoji}
 
-Mijn ${animal} is er GEK op. Kijk maar...
+My ${animal} is OBSESSED. Just watch...
 
-[Toon de beste reactie van je huisdier]
+[Show the best reaction from your pet]
 
-En ik betaalde maar ${priceStr}${discount > 0 ? ` (${discount}% korting nu!)` : ''}.`,
-      reward: `Sla dit op en klik de link in mijn bio als je het wilt ${emoji}
+And I only paid ${priceStr}${discount > 0 ? ` (${discount}% off right now!)` : ''}.`,
+      reward: `Save this and click the link in my bio if you want it ${emoji}
 
-Dit product is STEEDS uitverkocht dus wees er snel bij!
+This product keeps SELLING OUT so be quick!
 
-Volg voor meer van dit soort vondsten 🔗`,
+Follow for more finds like this 🔗`,
       filmtips: {
-        hook: ['Gebruik een trending geluid dat NU viral gaat', 'Eerste frame moet meteen actie hebben'],
-        retain: ['Film in hoog tempo — max 2 sec per item', 'Gebruik CapCut-templates voor lijst-video\'s', 'De huisdier-reactie is je gouden moment'],
-        reward: ['Voeg urgentie toe: "bijna uitverkocht"', 'Gebruik sticker-animaties voor engagement'],
+        hook: ['Use a trending sound that\'s going viral RIGHT NOW', 'First frame needs immediate action'],
+        retain: ['Film at high speed — max 2 sec per item', 'Use CapCut templates for list videos', 'The pet reaction is your golden moment'],
+        reward: ['Add urgency: "almost sold out"', 'Use sticker animations for engagement'],
       },
-      duration: '15-30 seconden',
+      duration: '15-30 seconds',
     },
 
     unboxing: {
-      retain: `[Film de doos/verpakking — bouw spanning op]
+      retain: `[Film the box/packaging — build suspense]
 
-Mijn nieuwe bestelling van PawsNL is binnen! Laten we unboxen 📦
+My new order from PawsNL has arrived! Let's unbox 📦
 
-[Open de verpakking langzaam — ASMR-achtig]
+[Open the packaging slowly — ASMR-style]
 
-Okaaay, eerste indruk van de verpakking... netjes. Goed ingepakt.
+Okaaay, first impression of the packaging... neat. Well packed.
 
-[Haal product eruit]
+[Take product out]
 
-Dit is 'm. De ${product.name}.
+This is it. The ${product.name}.
 
-[Detailopnames — draai het rond, laat materiaal zien]
+[Detail shots — rotate it, show the material]
 
-Wow, de kwaliteit is echt beter dan verwacht voor ${priceStr}. Kijk naar dit materiaal... [voel eraan]
+Wow, the quality is really better than expected for ${priceStr}. Look at this material... [feel it]
 
-Het ruikt ook goed — geen chemische geur of zo.
+It also smells good — no chemical smell or anything.
 
-[Nu de ultieme test]
+[Now the ultimate test]
 
-Maar de echte vraag is: wat vindt mijn ${animal} ervan? ${emoji}
+But the real question is: what does my ${animal} think? ${emoji}
 
-[Film de reactie van je huisdier — dit is het hoogtepunt!]
+[Film your pet's reaction — this is the highlight!]
 
-KIJK! Direct goedgekeurd door de echte expert in huis 😂`,
-      reward: `${priceStr}${discount > 0 ? ` (normaal ${compareStr} — dus ${discount}% korting!)` : ''} voor deze kwaliteit? Absoluut waard.
+LOOK! Instantly approved by the real expert in the house 😂`,
+      reward: `${priceStr}${discount > 0 ? ` (normally ${compareStr} — so ${discount}% off!)` : ''} for this quality? Absolutely worth it.
 
-Link in mijn bio! ⬆️ Volg voor meer unboxings elke week.
+Link in my bio! ⬆️ Follow for more unboxings every week.
 
-Comment wat ik hierna moet unboxen! ${emoji}`,
+Comment what I should unbox next! ${emoji}`,
       filmtips: {
-        hook: ['Film de doos/pakket in je handen — close-up', 'Bouw spanning op met je stem'],
-        retain: ['Film ASMR-achtig: langzaam openen, geluiden', 'Toon details van het product van dichtbij', 'De huisdier-reactie is het BELANGRIJKSTE deel'],
-        reward: ['Houd product + huisdier samen in beeld', 'Vraag om comments voor engagement'],
+        hook: ['Film the box/package in your hands — close-up', 'Build suspense with your voice'],
+        retain: ['Film ASMR-style: open slowly, sounds', 'Show details of the product up close', 'The pet reaction is the MOST IMPORTANT part'],
+        reward: ['Keep product + pet together in frame', 'Ask for comments for engagement'],
       },
-      duration: '45-90 seconden',
+      duration: '45-90 seconds',
     },
 
     top3: {
-      retain: `[Tekst op scherm: "Top 3 ${animal}producten in ${new Date().getFullYear()}"]
+      retain: `[Text on screen: "Top 3 ${animal} products in ${new Date().getFullYear()}"]
 
-Nummer 3 🥉
-[Noem een basis product uit de categorie]
-Een goed [voerbak/speeltje/verzorgingsproduct] — €10-15, doet z'n werk.
+Number 3 🥉
+[Name a basic product from the category]
+A good [food bowl/toy/grooming product] — €10-15, does the job.
 
-Nummer 2 🥈
-[Noem een premium alternatief]
-Een [premium optie] — €20-30, betere kwaliteit maar duurder.
+Number 2 🥈
+[Name a premium alternative]
+A [premium option] — €20-30, better quality but pricier.
 
-Maar nummer 1? Dit wint ALTIJD. Klaar?
+But number 1? This ALWAYS wins. Ready?
 
-[Dramatische intro]
+[Dramatic intro]
 
-De ${product.name} ${emoji}
+The ${product.name} ${emoji}
 
-[Demonstreer 15-20 seconden — laat zien WAAROM dit de beste is]
+[Demonstrate 15-20 seconds — show WHY this is the best]
 
-Dit is de perfecte balans: goede kwaliteit, eerlijke prijs, en mijn ${animal} is er dol op.
+This is the perfect balance: good quality, fair price, and my ${animal} loves it.
 
-Voor ${priceStr}${discount > 0 ? ` (en nu met ${discount}% korting!)` : ''} is dit veruit de beste deal.`,
-      reward: `Alle 3 producten staan via de link in mijn bio 🔗
+For ${priceStr}${discount > 0 ? ` (and now with ${discount}% off!)` : ''} this is by far the best deal.`,
+      reward: `All 3 products are available via the link in my bio 🔗
 
-Sla dit op! 🔖 En volg voor elke week een nieuwe top 3.
+Save this! 🔖 And follow for a new top 3 every week.
 
-Comment welke categorie ik hierna moet doen! ${emoji}`,
+Comment which category I should do next! ${emoji}`,
       filmtips: {
-        hook: ['Gebruik "TOP 3" als grote tekst in eerste frame', 'Begin met een countdown-gebaar'],
-        retain: ['Gebruik countdown-animatie (3→2→1) in CapCut', 'Geef product #1 de meeste schermtijd', 'Toon het product in gebruik bij je huisdier'],
-        reward: ['Eindig met duidelijke CTA naar bio-link', 'Vraag om comments voor algoritme-boost'],
+        hook: ['Use "TOP 3" as large text in the first frame', 'Start with a countdown gesture'],
+        retain: ['Use countdown animation (3→2→1) in CapCut', 'Give product #1 the most screen time', 'Show the product being used by your pet'],
+        reward: ['End with clear CTA to bio link', 'Ask for comments for algorithm boost'],
       },
-      duration: '30-60 seconden',
+      duration: '30-60 seconds',
     },
   }
 
   const s = scripts[format]
 
-  const hashtagsBase = ['#huisdier', '#dierenliefhebber', '#pawsnl', '#petlover']
+  const hashtagsBase = ['#pet', '#petlover', '#pawsshop', '#petsoftiktok']
   const hashtagsCat: Record<string, string[]> = {
-    honden: ['#hond', '#hondenbaasje', '#hondentiktok', '#dogmom', '#dogdad', '#hondenverzorging'],
-    katten: ['#kat', '#kattenbaasje', '#cattok', '#catsoftiktok', '#kattenliefde'],
-    vogels: ['#vogel', '#vogelbaasje', '#birdtok'],
-    knaagdieren: ['#hamster', '#knaagdier', '#hamsterlife'],
-    vissen: ['#aquarium', '#vissen', '#fishkeeper'],
+    dogs: ['#dog', '#dogowner', '#dogtiktok', '#dogmom', '#dogdad', '#dogcare'],
+    cats: ['#cat', '#catowner', '#cattok', '#catsoftiktok', '#catlove'],
+    birds: ['#bird', '#birdowner', '#birdtok'],
+    rodents: ['#hamster', '#rodent', '#hamsterlife'],
+    fish: ['#aquarium', '#fish', '#fishkeeper'],
   }
   const hashtagsFormat: Record<ScriptFormat, string[]> = {
     pov: ['#pov', '#povvideo'],
-    problem_solution: ['#probleem', '#oplossing', '#tip'],
-    educational: ['#leertiktok', '#tips', '#didyouknow'],
-    review: ['#review', '#ehrlijkereview', '#productreview'],
+    problem_solution: ['#problem', '#solution', '#tip'],
+    educational: ['#learntiktok', '#tips', '#didyouknow'],
+    review: ['#review', '#honestreview', '#productreview'],
     trending: ['#trending', '#fyp', '#viral'],
-    unboxing: ['#unboxing', '#haul', '#nieuw'],
-    top3: ['#top3', '#musthave', '#aanbeveling'],
+    unboxing: ['#unboxing', '#haul', '#new'],
+    top3: ['#top3', '#musthave', '#recommended'],
   }
 
   const hashtags = [
@@ -396,12 +396,12 @@ Comment welke categorie ik hierna moet doen! ${emoji}`,
 
   const formatNames: Record<ScriptFormat, string> = {
     pov: 'POV Video',
-    problem_solution: 'Probleem & Oplossing',
-    educational: 'Educatief (Top 3 tips)',
-    review: 'Eerlijke Review',
+    problem_solution: 'Problem & Solution',
+    educational: 'Educational (Top 3 tips)',
+    review: 'Honest Review',
     trending: 'Trending Format',
     unboxing: 'Unboxing Video',
-    top3: 'Top 3 Producten',
+    top3: 'Top 3 Products',
   }
 
   return {
@@ -434,15 +434,15 @@ export async function GET() {
     .order('created_at', { ascending: false })
 
   if (!products || products.length === 0) {
-    return NextResponse.json({ error: 'Geen producten gevonden' }, { status: 404 })
+    return NextResponse.json({ error: 'No products found' }, { status: 404 })
   }
 
-  // Kies 7 producten — verspreid over categorieën zoveel mogelijk
+  // Choose 7 products — spread across categories as much as possible
   const shuffled = [...products].sort(() => Math.random() - 0.5)
   const selected: Product[] = []
   const usedCategories = new Set<string>()
 
-  // Eerst: 1 per categorie
+  // First: 1 per category
   for (const p of shuffled) {
     if (!usedCategories.has(p.category) && selected.length < 7) {
       selected.push(p)
@@ -450,7 +450,7 @@ export async function GET() {
     }
   }
 
-  // Aanvullen tot 7 als er minder categorieën zijn
+  // Fill up to 7 if there are fewer categories
   for (const p of shuffled) {
     if (selected.length >= 7) break
     if (!selected.find((s) => s.id === p.id)) selected.push(p)

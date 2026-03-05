@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!--
+    PawsNL — Square Icon Logo
+    For social media profile pictures (TikTok, Instagram, etc.)
+    Charcoal rounded-square background
+    White main pad + orange toe pads
+    Small "NL" text beneath the paw
+    Works at sizes as small as 32x32 px
+  -->
+
+  <!-- ================================================ -->
+  <!--  BACKGROUND — charcoal rounded square             -->
+  <!-- ================================================ -->
+  <rect width="200" height="200" rx="40" ry="40" fill="#1a1a2e"/>
+
+  <!-- ================================================ -->
+  <!--  PAW PRINT — centered in the upper area           -->
+  <!--  White main pad + orange toe pads                 -->
+  <!-- ================================================ -->
+  <g transform="translate(100, 78)">
+    <!-- Main pad — white, heart-shaped -->
+    <path d="M0 16
+             C-6 6, -24 4, -28 14
+             C-32 24, -24 36, -12 40
+             C-6 42, -2 43, 0 43
+             C2 43, 6 42, 12 40
+             C24 36, 32 24, 28 14
+             C24 4, 6 6, 0 16 Z"
+          fill="#FFFFFF"/>
+
+    <!-- Toe pads — orange, proportionally sized for small display -->
+    <ellipse cx="-26" cy="-10" rx="9"   ry="11.5" transform="rotate(-15, -26, -10)" fill="#F97316"/>
+    <ellipse cx="-10" cy="-24" rx="8.5" ry="11"   transform="rotate(-5, -10, -24)"  fill="#F97316"/>
+    <ellipse cx="10"  cy="-24" rx="8.5" ry="11"   transform="rotate(5, 10, -24)"    fill="#F97316"/>
+    <ellipse cx="26"  cy="-10" rx="9"   ry="11.5" transform="rotate(15, 26, -10)"   fill="#F97316"/>
+  </g>
+
+  <!-- ================================================ -->
+  <!--  DIVIDER — thin orange line                       -->
+  <!-- ================================================ -->
+  <line x1="70" y1="142" x2="130" y2="142"
+        stroke="#F97316" stroke-width="1.5" opacity="0.35" stroke-linecap="round"/>
+
+  <!-- ================================================ -->
+  <!--  "NL" — small orange text below paw               -->
+  <!-- ================================================ -->
+  <text x="100" y="168"
+        font-family="'Inter', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif"
+        font-size="28" font-weight="800" fill="#F97316"
+        text-anchor="middle" letter-spacing="4">NL</text>
+
+</svg>

@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 100" width="380" height="100">
+  <!--
+    PawsNL — Full Wordmark Logo
+    Dutch online pet products store
+    Primary: #F97316 (orange)  |  Text: #1a1a2e (charcoal)
+
+    Design: The paw print replaces the letter "a" in "Paws".
+    Main pad in charcoal matches the text weight.
+    Toe pads in orange create a visual link to the "NL".
+    A subtle orange dot separates "Paws" from "NL".
+  -->
+
+  <!-- ================================================ -->
+  <!--  PAW PRINT — integrated as the letter "a"         -->
+  <!--  Charcoal main pad + orange toe pads              -->
+  <!-- ================================================ -->
+  <g transform="translate(44, 16)">
+    <!-- Main pad — smooth, slightly heart-shaped -->
+    <path d="M26 38
+             C22 30, 8 28, 4 36
+             C0 44, 6 54, 16 56
+             C20 57, 24 58, 26 58
+             C28 58, 32 57, 36 56
+             C46 54, 52 44, 48 36
+             C44 28, 30 30, 26 38 Z"
+          fill="#1a1a2e"/>
+
+    <!-- Toe pads — orange, angled outward naturally -->
+    <ellipse cx="5"  cy="18" rx="5.8" ry="7.5" transform="rotate(-15, 5, 18)"  fill="#F97316"/>
+    <ellipse cx="17" cy="9"  rx="5.2" ry="7"   transform="rotate(-5, 17, 9)"   fill="#F97316"/>
+    <ellipse cx="31" cy="9"  rx="5.2" ry="7"   transform="rotate(5, 31, 9)"    fill="#F97316"/>
+    <ellipse cx="43" cy="18" rx="5.8" ry="7.5" transform="rotate(15, 43, 18)"  fill="#F97316"/>
+  </g>
+
+  <!-- ================================================ -->
+  <!--  TEXT — "P" before paw, "ws" after paw            -->
+  <!-- ================================================ -->
+
+  <!-- "P" — charcoal, extra bold -->
+  <text x="6" y="74"
+        font-family="'Inter', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif"
+        font-size="60" font-weight="800" fill="#1a1a2e"
+        letter-spacing="-1">P</text>
+
+  <!-- "ws" — charcoal, same weight -->
+  <text x="100" y="74"
+        font-family="'Inter', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif"
+        font-size="60" font-weight="800" fill="#1a1a2e"
+        letter-spacing="-1">ws</text>
+
+  <!-- ================================================ -->
+  <!--  SEPARATOR — small orange dot                     -->
+  <!-- ================================================ -->
+  <circle cx="194" cy="62" r="3.5" fill="#F97316" opacity="0.45"/>
+
+  <!-- ================================================ -->
+  <!--  "NL" — orange, bold                              -->
+  <!-- ================================================ -->
+  <text x="208" y="74"
+        font-family="'Inter', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif"
+        font-size="60" font-weight="800" fill="#F97316"
+        letter-spacing="-1">NL</text>
+
+  <!-- ================================================ -->
+  <!--  TAGLINE — subtle grey descriptor                 -->
+  <!-- ================================================ -->
+  <text x="8" y="94"
+        font-family="'Inter', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif"
+        font-size="10.5" font-weight="500" fill="#9CA3AF"
+        letter-spacing="3.5">DIERENWINKEL</text>
+
+</svg>

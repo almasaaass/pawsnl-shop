@@ -1,12 +1,25 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import createMiddleware from 'next-intl/middleware'
+import { routing } from './i18n/routing'
+
+const intlMiddleware = createMiddleware(routing)
+
+function addSecurityHeaders(response: NextResponse) {
+  response.headers.set('X-Frame-Options', 'DENY')
+  response.headers.set('X-Content-Type-Options', 'nosniff')
+  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
+  response.headers.set('X-XSS-Protection', '1; mode=block')
+  return response
+}
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
+  // Admin routes: skip i18n, apply auth check
   if (pathname.startsWith('/admin')) {
     if (pathname === '/admin/login') {
-      return NextResponse.next()
+      return addSecurityHeaders(NextResponse.next())
     }
 
     const adminAuth = request.cookies.get('admin-auth')?.value
@@ -15,11 +28,20 @@ export function middleware(request: NextRequest) {
     if (!adminAuth || !adminSecret || adminAuth !== adminSecret) {
       return NextResponse.redirect(new URL('/admin/login', request.url))
     }
+
+    return addSecurityHeaders(NextResponse.next())
   }
 
-  return NextResponse.next()
+  // API routes: skip i18n
+  if (pathname.startsWith('/api')) {
+    return addSecurityHeaders(NextResponse.next())
+  }
+
+  // All other routes: apply next-intl middleware for locale detection
+  const response = intlMiddleware(request)
+  return addSecurityHeaders(response)
 }
 
 export const config = {
-  matcher: ['/admin/:path*'],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico|.*\\..*).*)'],
 }

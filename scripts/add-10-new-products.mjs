@@ -292,7 +292,7 @@ async function main() {
   // Tel totaal producten
   const { count } = await supabase.from('products').select('*', { count: 'exact', head: true })
   console.log(`\n📊 Totaal producten in shop: ${count}`)
-  console.log('🌐 https://pawsshop.nl\n')
+  console.log('🌐 https://pawsnlshop.com\n')
 }
 
 main().catch(err => {

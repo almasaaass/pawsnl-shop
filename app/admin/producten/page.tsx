@@ -13,7 +13,7 @@ const emptyForm = {
   price: '',
   compare_price: '',
   images: '',
-  category: 'honden',
+  category: 'dogs',
   stock: '',
   featured: false,
 }
@@ -88,13 +88,13 @@ export default function AdminProductenPage() {
       setShowModal(false)
       loadProducts()
     } else {
-      alert('Fout bij opslaan. Probeer opnieuw.')
+      alert('Error saving. Please try again.')
     }
     setIsSaving(false)
   }
 
   async function handleDelete(id: string) {
-    if (!confirm('Weet je zeker dat je dit product wilt verwijderen?')) return
+    if (!confirm('Are you sure you want to delete this product?')) return
     await fetch(`/api/admin/products/${id}`, { method: 'DELETE' })
     loadProducts()
   }
@@ -107,12 +107,12 @@ export default function AdminProductenPage() {
     <div>
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Producten</h1>
-          <p className="text-gray-500 text-sm mt-1">{products.length} producten in totaal</p>
+          <h1 className="text-2xl font-bold text-gray-900">Products</h1>
+          <p className="text-gray-500 text-sm mt-1">{products.length} products in total</p>
         </div>
         <button onClick={openCreate} className="btn-primary flex items-center gap-2">
           <Plus className="w-4 h-4" />
-          Nieuw product
+          New product
         </button>
       </div>
 
@@ -121,24 +121,24 @@ export default function AdminProductenPage() {
         <Search className="w-4 h-4 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2" />
         <input
           type="text"
-          placeholder="Zoek producten..."
+          placeholder="Search products..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="input pl-11"
         />
       </div>
 
-      {/* Tabel */}
+      {/* Table */}
       <div className="card">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="border-b border-gray-100 bg-gray-50">
                 <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Product</th>
-                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Categorie</th>
-                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Prijs</th>
-                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Voorraad</th>
-                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Uitgelicht</th>
+                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Category</th>
+                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Price</th>
+                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Stock</th>
+                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Featured</th>
                 <th className="px-5 py-3" />
               </tr>
             </thead>
@@ -152,7 +152,7 @@ export default function AdminProductenPage() {
               ) : filtered.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="px-5 py-10 text-center text-gray-400 text-sm">
-                    Geen producten gevonden
+                    No products found
                   </td>
                 </tr>
               ) : (
@@ -228,7 +228,7 @@ export default function AdminProductenPage() {
           <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b border-gray-100 flex items-center justify-between sticky top-0 bg-white rounded-t-2xl">
               <h2 className="text-xl font-bold text-gray-900">
-                {editingProduct ? 'Product bewerken' : 'Nieuw product'}
+                {editingProduct ? 'Edit product' : 'New product'}
               </h2>
               <button onClick={() => setShowModal(false)} className="p-2 hover:bg-gray-100 rounded-xl transition-colors">
                 <X className="w-5 h-5" />
@@ -237,13 +237,13 @@ export default function AdminProductenPage() {
             <div className="p-6 space-y-5">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Naam *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Name *</label>
                   <input
                     type="text"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     className="input"
-                    placeholder="Product naam"
+                    placeholder="Product name"
                   />
                 </div>
                 <div>
@@ -253,23 +253,23 @@ export default function AdminProductenPage() {
                     value={formData.slug}
                     onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
                     className="input"
-                    placeholder="auto-gegenereerd"
+                    placeholder="auto-generated"
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Beschrijving *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Description *</label>
                 <textarea
                   rows={3}
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   className="input resize-none"
-                  placeholder="Product beschrijving..."
+                  placeholder="Product description..."
                 />
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Prijs (€) *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Price (€) *</label>
                   <input
                     type="number"
                     step="0.01"
@@ -280,7 +280,7 @@ export default function AdminProductenPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Vergelijkprijs (€)</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Compare price (€)</label>
                   <input
                     type="number"
                     step="0.01"
@@ -291,7 +291,7 @@ export default function AdminProductenPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Voorraad *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Stock *</label>
                   <input
                     type="number"
                     value={formData.stock}
@@ -302,29 +302,29 @@ export default function AdminProductenPage() {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Afbeeldingen (URLs, komma-gescheiden)</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Images (URLs, comma-separated)</label>
                 <textarea
                   rows={2}
                   value={formData.images}
                   onChange={(e) => setFormData({ ...formData, images: e.target.value })}
                   className="input resize-none"
-                  placeholder="https://voorbeeld.com/foto1.jpg, https://voorbeeld.com/foto2.jpg"
+                  placeholder="https://example.com/photo1.jpg, https://example.com/photo2.jpg"
                 />
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Categorie *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Category *</label>
                   <select
                     value={formData.category}
                     onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                     className="input"
                   >
-                    <option value="honden">Honden</option>
-                    <option value="katten">Katten</option>
-                    <option value="vogels">Vogels</option>
-                    <option value="knaagdieren">Knaagdieren</option>
-                    <option value="vissen">Vissen</option>
-                    <option value="reptielen">Reptielen</option>
+                    <option value="dogs">Dogs</option>
+                    <option value="cats">Cats</option>
+                    <option value="birds">Birds</option>
+                    <option value="small-pets">Small pets</option>
+                    <option value="fish">Fish</option>
+                    <option value="reptiles">Reptiles</option>
                   </select>
                 </div>
                 <div className="flex items-end pb-3">
@@ -335,17 +335,17 @@ export default function AdminProductenPage() {
                       onChange={(e) => setFormData({ ...formData, featured: e.target.checked })}
                       className="w-4 h-4 text-orange-500 rounded"
                     />
-                    <span className="text-sm font-medium text-gray-700">Uitgelicht op homepage</span>
+                    <span className="text-sm font-medium text-gray-700">Featured on homepage</span>
                   </label>
                 </div>
               </div>
             </div>
             <div className="p-6 border-t border-gray-100 flex gap-3 justify-end sticky bottom-0 bg-white rounded-b-2xl">
               <button onClick={() => setShowModal(false)} className="btn-secondary">
-                Annuleren
+                Cancel
               </button>
               <button onClick={handleSave} disabled={isSaving} className="btn-primary">
-                {isSaving ? 'Opslaan...' : editingProduct ? 'Wijzigingen opslaan' : 'Product aanmaken'}
+                {isSaving ? 'Saving...' : editingProduct ? 'Save changes' : 'Create product'}
               </button>
             </div>
           </div>

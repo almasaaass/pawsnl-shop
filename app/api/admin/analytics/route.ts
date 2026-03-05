@@ -23,35 +23,35 @@ export async function GET() {
 
   const allOrders = orders ?? []
 
-  // ─── Omzet & bestellingen per dag (laatste 30 dagen) ─────────────────────
+  // ─── Revenue & orders per day (last 30 days) ─────────────────────
   const today = new Date()
   today.setHours(23, 59, 59, 999)
   const thirtyDaysAgo = new Date(today)
   thirtyDaysAgo.setDate(today.getDate() - 29)
   thirtyDaysAgo.setHours(0, 0, 0, 0)
 
-  const dailyMap: Record<string, { date: string; omzet: number; bestellingen: number }> = {}
+  const dailyMap: Record<string, { date: string; revenue: number; orders: number }> = {}
 
   for (let i = 0; i < 30; i++) {
     const d = new Date(thirtyDaysAgo)
     d.setDate(thirtyDaysAgo.getDate() + i)
     const key = d.toISOString().slice(0, 10)
-    const label = d.toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' })
-    dailyMap[key] = { date: label, omzet: 0, bestellingen: 0 }
+    const label = d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })
+    dailyMap[key] = { date: label, revenue: 0, orders: 0 }
   }
 
   for (const order of allOrders) {
     const key = order.created_at.slice(0, 10)
     if (dailyMap[key]) {
-      dailyMap[key].omzet += Number(order.total)
-      dailyMap[key].bestellingen += 1
+      dailyMap[key].revenue += Number(order.total)
+      dailyMap[key].orders += 1
     }
   }
 
-  const dagelijks = Object.values(dailyMap)
+  const daily = Object.values(dailyMap)
 
-  // ─── Top producten op basis van verkochte items ───────────────────────────
-  const productStats: Record<string, { name: string; category: string; verkocht: number; omzet: number }> = {}
+  // ─── Top products based on sold items ───────────────────────────
+  const productStats: Record<string, { name: string; category: string; sold: number; revenue: number }> = {}
 
   for (const order of allOrders) {
     const items: { product_id: string; name: string; quantity: number; price: number }[] =
@@ -61,58 +61,58 @@ export async function GET() {
       if (!productStats[item.product_id]) {
         const product = products?.find((p) => p.id === item.product_id)
         productStats[item.product_id] = {
-          name: item.name ?? product?.name ?? 'Onbekend',
+          name: item.name ?? product?.name ?? 'Unknown',
           category: product?.category ?? '',
-          verkocht: 0,
-          omzet: 0,
+          sold: 0,
+          revenue: 0,
         }
       }
-      productStats[item.product_id].verkocht += item.quantity
-      productStats[item.product_id].omzet += item.price * item.quantity
+      productStats[item.product_id].sold += item.quantity
+      productStats[item.product_id].revenue += item.price * item.quantity
     }
   }
 
-  const topProducten = Object.values(productStats)
-    .sort((a, b) => b.omzet - a.omzet)
+  const topProducts = Object.values(productStats)
+    .sort((a, b) => b.revenue - a.revenue)
     .slice(0, 8)
 
-  // ─── Omzet per categorie ──────────────────────────────────────────────────
+  // ─── Revenue per category ──────────────────────────────────────────────────
   const categoryMap: Record<string, number> = {}
-  for (const p of topProducten) {
+  for (const p of topProducts) {
     if (!categoryMap[p.category]) categoryMap[p.category] = 0
-    categoryMap[p.category] += p.omzet
+    categoryMap[p.category] += p.revenue
   }
-  const perCategorie = Object.entries(categoryMap)
-    .map(([name, omzet]) => ({ name, omzet }))
-    .sort((a, b) => b.omzet - a.omzet)
+  const perCategory = Object.entries(categoryMap)
+    .map(([name, revenue]) => ({ name, revenue }))
+    .sort((a, b) => b.revenue - a.revenue)
 
-  // ─── Totalen ──────────────────────────────────────────────────────────────
+  // ─── Totals ──────────────────────────────────────────────────────────────
   const now = new Date()
-  const startVandaag = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString()
+  const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString()
   const startWeek = new Date(now)
   startWeek.setDate(now.getDate() - 7)
-  const startMaand = new Date(now.getFullYear(), now.getMonth(), 1).toISOString()
+  const startMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString()
 
-  const omzetTotaal = allOrders.reduce((s, o) => s + Number(o.total), 0)
-  const omzetVandaag = allOrders.filter((o) => o.created_at >= startVandaag).reduce((s, o) => s + Number(o.total), 0)
-  const omzetWeek = allOrders.filter((o) => o.created_at >= startWeek.toISOString()).reduce((s, o) => s + Number(o.total), 0)
-  const omzetMaand = allOrders.filter((o) => o.created_at >= startMaand).reduce((s, o) => s + Number(o.total), 0)
+  const revenueTotal = allOrders.reduce((s, o) => s + Number(o.total), 0)
+  const revenueToday = allOrders.filter((o) => o.created_at >= startToday).reduce((s, o) => s + Number(o.total), 0)
+  const revenueWeek = allOrders.filter((o) => o.created_at >= startWeek.toISOString()).reduce((s, o) => s + Number(o.total), 0)
+  const revenueMonth = allOrders.filter((o) => o.created_at >= startMonth).reduce((s, o) => s + Number(o.total), 0)
 
-  const gemiddeldeOrderwaarde = allOrders.length > 0 ? omzetTotaal / allOrders.length : 0
+  const averageOrderValue = allOrders.length > 0 ? revenueTotal / allOrders.length : 0
 
   return NextResponse.json({
-    totalen: {
-      omzetTotaal,
-      omzetVandaag,
-      omzetWeek,
-      omzetMaand,
-      bestellingenTotaal: allOrders.length,
-      klantenTotaal: customers?.length ?? 0,
-      gemiddeldeOrderwaarde,
-      productTotaal: products?.length ?? 0,
+    totals: {
+      revenueTotal,
+      revenueToday,
+      revenueWeek,
+      revenueMonth,
+      ordersTotal: allOrders.length,
+      customersTotal: customers?.length ?? 0,
+      averageOrderValue,
+      productsTotal: products?.length ?? 0,
     },
-    dagelijks,
-    topProducten,
-    perCategorie,
+    daily,
+    topProducts,
+    perCategory,
   })
 }

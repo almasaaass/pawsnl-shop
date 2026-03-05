@@ -26,10 +26,10 @@ export default function AdminLoginPage() {
         router.push('/admin')
         router.refresh()
       } else {
-        setError('Onjuist wachtwoord. Probeer het opnieuw.')
+        setError('Incorrect password. Please try again.')
       }
     } catch {
-      setError('Er is een fout opgetreden.')
+      setError('Something went wrong.')
     } finally {
       setIsLoading(false)
     }
@@ -43,14 +43,14 @@ export default function AdminLoginPage() {
             <Lock className="w-7 h-7 text-orange-500" />
           </div>
           <h1 className="text-2xl font-bold text-gray-900">PawsNL Admin</h1>
-          <p className="text-gray-500 text-sm mt-1">Voer je wachtwoord in om door te gaan</p>
+          <p className="text-gray-500 text-sm mt-1">Enter your password to continue</p>
         </div>
 
         <div className="card p-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label htmlFor="wachtwoord" className="block text-sm font-medium text-gray-700 mb-1.5">
-                Wachtwoord
+                Password
               </label>
               <input
                 id="wachtwoord"
@@ -69,7 +69,7 @@ export default function AdminLoginPage() {
             )}
 
             <button type="submit" disabled={isLoading} className="btn-primary w-full">
-              {isLoading ? 'Inloggen...' : 'Inloggen'}
+              {isLoading ? 'Logging in...' : 'Log in'}
             </button>
           </form>
         </div>

@@ -6,18 +6,18 @@ import { useInView } from '@/hooks/useInView'
 const badges = [
   {
     icon: ShieldCheck,
-    title: '100% Blij-Dier Garantie',
-    subtitle: 'Niet blij? Geld terug.',
+    title: '100% Blij Huisdier Garantie',
+    subtitle: 'Niet tevreden? Geld terug.',
   },
   {
     icon: Truck,
     title: 'Gratis verzending',
-    subtitle: 'Bij bestellingen vanaf €35',
+    subtitle: 'Vanaf €35 besteding',
   },
   {
     icon: RotateCcw,
-    title: '30 dagen retour',
-    subtitle: 'Geen vragen, geen gedoe.',
+    title: '30 dagen retourrecht',
+    subtitle: 'Zonder vragen.',
   },
   {
     icon: Headphones,

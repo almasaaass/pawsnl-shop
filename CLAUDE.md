@@ -4,8 +4,8 @@
 Nederlandse dropshipping webshop voor dierenproducten. Next.js 14 + Supabase + Stripe. Eigenaar: almasaaass.
 
 ## Live URLs
-- **Shop:** https://pawsshop.nl
-- **Admin:** https://pawsshop.nl/admin (wachtwoord: PawsNL2024!)
+- **Shop:** https://pawsnlshop.com
+- **Admin:** https://pawsnlshop.com/admin (wachtwoord: PawsNL2024!)
 - **GitHub:** https://github.com/almasaaass/pawsnl-shop
 
 ## Stack
@@ -66,7 +66,7 @@ Nederlandse dropshipping webshop voor dierenproducten. Next.js 14 + Supabase + S
 - Werkt: /stats, /bestellingen, /voorraad
 - Vrije vragen werken ALLEEN als Anthropic account credits heeft
 - Fix: ga naar console.anthropic.com → Billing → Add credits ($5)
-- Webhook: https://pawsshop.nl/api/telegram
+- Webhook: https://pawsnlshop.com/api/telegram
 
 ### CJdropshipping Import
 - Admin → Importeren (/admin/importeren)
@@ -75,10 +75,10 @@ Nederlandse dropshipping webshop voor dierenproducten. Next.js 14 + Supabase + S
 - Auth: apiKey (niet email/wachtwoord)
 
 ## Volgende stappen (nog te doen)
-1. ~~**Eigen domein**~~ ✅ pawsshop.nl gekoppeld aan Vercel (Mijndomein)
+1. ~~**Eigen domein**~~ ✅ pawsnlshop.com gekoppeld aan Vercel (Mijndomein)
 2. ~~**Prijzen fixen**~~ ✅ Concurrentieprijzen onderzocht en aangepast
 3. ~~**iDEAL toevoegen**~~ ✅ Stripe payment_method_types: ['card', 'ideal']
-4. ~~**Resend domein verifiëren**~~ ✅ pawsshop.nl geverifieerd, emails vanuit info@pawsshop.nl
+4. ~~**Resend domein verifiëren**~~ ✅ pawsnlshop.com geverifieerd, emails vanuit info@pawsnlshop.com
 5. ~~**Meer producten importeren**~~ ✅ 21 producten (9 honden, 6 katten, 3 vogels, 3 knaagdieren)
 6. **Productfoto's** — CJ API fix is gedaan (v2 endpoint), foto's nog ophalen
 7. **TikTok account aanmaken** en beginnen met content posten

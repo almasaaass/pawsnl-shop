@@ -3,39 +3,39 @@ import { verifyAdmin } from '@/lib/auth'
 import { createAdminClient } from '@/lib/supabase'
 
 /**
- * Photo Agent — Genereert professionele productfoto's,
- * slaat ze op in Supabase Storage en publiceert naar de webshop.
+ * Photo Agent — Generates professional product photos,
+ * stores them in Supabase Storage and publishes to the webshop.
  *
- * POST: Verwerk een enkel product of alle producten (batch)
+ * POST: Process a single product or all products (batch)
  * Body: { productId?: string, mode: 'single' | 'batch', template?: string, features?: string, badge?: string }
  */
 
 const BUCKET_NAME = 'product-images'
 
-// Standaard features per categorie
+// Default features per category
 const DEFAULT_FEATURES: Record<string, string> = {
-  honden: 'Premium kwaliteit|Gratis verzending vanaf €35|30 dagen retour',
-  katten: 'Premium kwaliteit|Gratis verzending vanaf €35|30 dagen retour',
-  vogels: 'Premium kwaliteit|Gratis verzending vanaf €35|30 dagen retour',
-  knaagdieren: 'Premium kwaliteit|Gratis verzending vanaf €35|30 dagen retour',
-  vissen: 'Premium kwaliteit|Gratis verzending vanaf €35|30 dagen retour',
+  honden: 'Premium quality|Free shipping from €35|30-day returns',
+  katten: 'Premium quality|Free shipping from €35|30-day returns',
+  vogels: 'Premium quality|Free shipping from €35|30-day returns',
+  knaagdieren: 'Premium quality|Free shipping from €35|30-day returns',
+  vissen: 'Premium quality|Free shipping from €35|30-day returns',
 }
 
-// Standaard badges per prijs/korting
+// Default badges per price/discount
 function getDefaultBadge(product: any): string {
   if (product.compare_price && product.compare_price > product.price) {
     const discount = Math.round(((product.compare_price - product.price) / product.compare_price) * 100)
-    if (discount >= 30) return 'Aanbieding'
+    if (discount >= 30) return 'Sale'
     return 'Bestseller'
   }
   return 'Bestseller'
 }
 
 function formatEur(n: number): string {
-  return new Intl.NumberFormat('nl-NL', { style: 'currency', currency: 'EUR' }).format(n)
+  return new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'EUR' }).format(n)
 }
 
-// CJ CDN hosts die via proxy moeten
+// CJ CDN hosts that need to go through proxy
 const CJ_CDN_HOSTS = [
   'cc-west-usa.oss-us-west-1.aliyuncs.com',
   'cbu01.alicdn.com',
@@ -72,7 +72,7 @@ async function ensureBucketExists(supabase: any) {
       fileSizeLimit: 10 * 1024 * 1024, // 10MB
     })
     if (error && !error.message.includes('already exists')) {
-      throw new Error(`Bucket aanmaken mislukt: ${error.message}`)
+      throw new Error(`Bucket creation failed: ${error.message}`)
     }
   }
   return true
@@ -116,7 +116,7 @@ async function generateAndUpload(
   })
 
   if (!imgResponse.ok) {
-    throw new Error(`Image generatie mislukt: ${imgResponse.status}`)
+    throw new Error(`Image generation failed: ${imgResponse.status}`)
   }
 
   const imageBuffer = await imgResponse.arrayBuffer()
@@ -130,11 +130,11 @@ async function generateAndUpload(
     .from(BUCKET_NAME)
     .upload(filePath, imageData, {
       contentType: 'image/png',
-      upsert: true, // Overschrijf als bestand al bestaat
+      upsert: true, // Overwrite if file already exists
     })
 
   if (uploadError) {
-    throw new Error(`Upload mislukt: ${uploadError.message}`)
+    throw new Error(`Upload failed: ${uploadError.message}`)
   }
 
   // 4. Get public URL
@@ -173,7 +173,7 @@ export async function POST(request: NextRequest) {
         .single()
 
       if (error || !product) {
-        return NextResponse.json({ error: 'Product niet gevonden' }, { status: 404 })
+        return NextResponse.json({ error: 'Product not found' }, { status: 404 })
       }
 
       const selectedTemplate = (template || 'social') as Template
@@ -186,7 +186,7 @@ export async function POST(request: NextRequest) {
       )
 
       if (!publicUrl) {
-        return NextResponse.json({ error: 'Generatie mislukt' }, { status: 500 })
+        return NextResponse.json({ error: 'Generation failed' }, { status: 500 })
       }
 
       // Update product images - prepend the new image
@@ -217,7 +217,7 @@ export async function POST(request: NextRequest) {
         .order('name')
 
       if (error || !products) {
-        return NextResponse.json({ error: 'Producten ophalen mislukt' }, { status: 500 })
+        return NextResponse.json({ error: 'Failed to fetch products' }, { status: 500 })
       }
 
       const templates: Template[] = ['social'] // Use 'social' as the hero image
@@ -264,7 +264,7 @@ export async function POST(request: NextRequest) {
             results.push({
               name: product.name,
               status: 'failed',
-              error: 'Geen images gegenereerd',
+              error: 'No images generated',
             })
           }
         } catch (err: any) {
@@ -286,7 +286,7 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    return NextResponse.json({ error: 'Ongeldige mode' }, { status: 400 })
+    return NextResponse.json({ error: 'Invalid mode' }, { status: 400 })
 
   } catch (err: any) {
     console.error('Photo Agent error:', err)

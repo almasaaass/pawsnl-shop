@@ -55,8 +55,8 @@ export default function AdminBestellingenPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Bestellingen</h1>
-        <p className="text-gray-500 text-sm mt-1">{orders.length} bestellingen in totaal</p>
+        <h1 className="text-2xl font-bold text-gray-900">Orders</h1>
+        <p className="text-gray-500 text-sm mt-1">{orders.length} orders in total</p>
       </div>
 
       {/* Filters */}
@@ -65,7 +65,7 @@ export default function AdminBestellingenPage() {
           <Search className="w-4 h-4 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Zoek op naam, e-mail of order ID..."
+            placeholder="Search by name, email or order ID..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="input pl-11"
@@ -76,7 +76,7 @@ export default function AdminBestellingenPage() {
           onChange={(e) => setStatusFilter(e.target.value as OrderStatus | 'all')}
           className="input sm:w-48"
         >
-          <option value="all">Alle statussen</option>
+          <option value="all">All statuses</option>
           {Object.entries(ORDER_STATUS_LABELS).map(([value, label]) => (
             <option key={value} value={value}>{label}</option>
           ))}
@@ -89,9 +89,9 @@ export default function AdminBestellingenPage() {
             <thead>
               <tr className="border-b border-gray-100 bg-gray-50">
                 <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Order ID</th>
-                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Klant</th>
-                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Datum</th>
-                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Totaal</th>
+                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Customer</th>
+                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Date</th>
+                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Total</th>
                 <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
                 <th className="px-5 py-3" />
               </tr>
@@ -106,7 +106,7 @@ export default function AdminBestellingenPage() {
               ) : filtered.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="px-5 py-10 text-center text-gray-400 text-sm">
-                    Geen bestellingen gevonden
+                    No orders found
                   </td>
                 </tr>
               ) : (

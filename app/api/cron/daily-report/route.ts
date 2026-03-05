@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase'
-import { sendDailyReport } from '@/lib/email'
+import { sendDailyReport, sendViralAlert } from '@/lib/email'
+import { isBlotatoConfigured, getPostAnalytics } from '@/lib/blotato'
 
-// Beveiligd met een secret header zodat alleen Vercel Cron dit kan aanroepen
+// Secured with a secret header so only Vercel Cron can call this
 export async function GET(request: NextRequest) {
   const authHeader = request.headers.get('authorization')
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
@@ -12,7 +13,7 @@ export async function GET(request: NextRequest) {
   const supabase = createAdminClient()
   const now = new Date()
 
-  // Tijdgrenzen
+  // Time boundaries
   const startOfToday = new Date(now)
   startOfToday.setHours(0, 0, 0, 0)
 
@@ -20,7 +21,7 @@ export async function GET(request: NextRequest) {
   startOfWeek.setDate(now.getDate() - now.getDay())
   startOfWeek.setHours(0, 0, 0, 0)
 
-  // Alle bestellingen ophalen
+  // Fetch all orders
   const { data: orders } = await supabase
     .from('orders')
     .select('total, status, customer_name, created_at')
@@ -45,7 +46,7 @@ export async function GET(request: NextRequest) {
 
   const revenueMonth = allOrders.reduce((sum, o) => sum + Number(o.total), 0)
 
-  const date = now.toLocaleDateString('nl-NL', {
+  const date = now.toLocaleDateString('en-GB', {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
@@ -64,5 +65,51 @@ export async function GET(request: NextRequest) {
     recentOrders: allOrders.slice(0, 5),
   })
 
-  return NextResponse.json({ ok: true, date })
+  // ─── TikTok views check ──────────────────────────────────────────────────
+  // Check views van geposte video's en stuur viral alert bij ≥1.000 views
+
+  let viralAlerts = 0
+
+  if (isBlotatoConfigured()) {
+    const { data: postedVideos } = await supabase
+      .from('tiktok_videos')
+      .select('*')
+      .in('status', ['posted', 'viral'])
+      .not('blotato_post_id', 'is', null)
+
+    for (const video of postedVideos ?? []) {
+      try {
+        const analytics = await getPostAnalytics(video.blotato_post_id)
+        const newViews = analytics.views
+
+        // Update views
+        await supabase
+          .from('tiktok_videos')
+          .update({ views: newViews })
+          .eq('id', video.id)
+
+        // Viral alert bij ≥1.000 views (eenmalig)
+        if (newViews >= 1000 && !video.viral_alert_sent) {
+          await sendViralAlert({
+            videoId: video.id,
+            productName: video.product_name,
+            tiktokUrl: video.tiktok_post_url,
+            views: newViews,
+          })
+
+          await supabase
+            .from('tiktok_videos')
+            .update({ status: 'viral', viral_alert_sent: true })
+            .eq('id', video.id)
+
+          viralAlerts++
+        }
+      } catch {
+        // Analytics ophalen mislukt — skip deze video
+        continue
+      }
+    }
+  }
+
+  return NextResponse.json({ ok: true, date, viralAlerts })
 }

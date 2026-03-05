@@ -10,18 +10,18 @@ interface ReferralCardProps {
 export default function ReferralCard({ sessionId }: ReferralCardProps) {
   const [copied, setCopied] = useState(false)
 
-  // Generate referral code from session ID
+  // Genereer referral code op basis van sessie-ID
   const referralCode = btoa(sessionId.slice(0, 20)).replace(/[+/=]/g, '').slice(0, 8).toUpperCase()
-  const referralLink = `https://pawsshop.nl/?ref=${referralCode}`
+  const referralLink = `https://pawsnlshop.com/?ref=${referralCode}`
 
-  const shareText = `Hey! Ik heb net iets leuks besteld bij PawsNL voor mijn huisdier 🐾 Via deze link krijgen we allebei €5 korting: ${referralLink}`
+  const shareText = `Hey! Ik heb net iets geweldigs besteld voor mijn huisdier bij PawsNL 🐾 Gebruik deze link en we krijgen allebei €5 korting: ${referralLink}`
 
   function copyLink() {
     navigator.clipboard.writeText(referralLink)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
 
-    // Track referral share
+    // Referral delen bijhouden
     fetch('/api/referral', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -50,7 +50,7 @@ export default function ReferralCard({ sessionId }: ReferralCardProps) {
             Deel & verdien €5 korting!
           </h2>
           <p className="text-sm text-gray-500 mb-4">
-            Deel je unieke link met een vriend. Als zij bestellen, krijgen jullie allebei €5 korting op de volgende bestelling!
+            Deel jouw unieke link met een vriend. Als zij bestellen, krijgen jullie allebei €5 korting op de volgende aankoop!
           </p>
 
           {/* Referral link */}
@@ -67,14 +67,14 @@ export default function ReferralCard({ sessionId }: ReferralCardProps) {
             </button>
           </div>
 
-          {/* Share buttons */}
+          {/* Deelknoppen */}
           <div className="flex gap-2">
             <button
               onClick={shareWhatsApp}
               className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-green-500 text-white rounded-xl text-sm font-medium hover:bg-green-600 transition-colors"
             >
               <Share2 className="w-4 h-4" />
-              Deel via WhatsApp
+              Delen via WhatsApp
             </button>
             <button
               onClick={() => {
@@ -91,9 +91,9 @@ export default function ReferralCard({ sessionId }: ReferralCardProps) {
             </button>
           </div>
 
-          {/* How it works */}
+          {/* Hoe werkt het */}
           <div className="mt-4 pt-4 border-t border-gray-100">
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Hoe werkt het?</p>
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Hoe werkt het</p>
             <div className="grid grid-cols-3 gap-2 text-center">
               <div className="text-xs text-gray-500">
                 <div className="text-lg mb-1">1️⃣</div>
@@ -105,7 +105,7 @@ export default function ReferralCard({ sessionId }: ReferralCardProps) {
               </div>
               <div className="text-xs text-gray-500">
                 <div className="text-lg mb-1">3️⃣</div>
-                Beiden €5 korting!
+                Allebei €5 korting!
               </div>
             </div>
           </div>

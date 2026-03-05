@@ -1,31 +1,36 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Product } from '@/lib/types'
+import { Product, ProductVariant } from '@/lib/types'
 import { formatPrice } from '@/lib/utils'
+import { getVariantPrice, hasVariants } from '@/lib/variants'
 import { useCart } from '@/components/cart/CartContext'
 import { ShoppingCart, Check } from 'lucide-react'
 
 interface Props {
   product: Product
+  selectedVariant?: ProductVariant | null
 }
 
-export default function StickyMobileCTA({ product }: Props) {
+export default function StickyMobileCTA({ product, selectedVariant }: Props) {
   const { addItem } = useCart()
   const [visible, setVisible] = useState(false)
   const [added, setAdded] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => {
-      // Show after scrolling 400px
       setVisible(window.scrollY > 400)
     }
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  const needsVariant = hasVariants(product) && !selectedVariant
+  const effectivePrice = getVariantPrice(product, selectedVariant)
+
   function handleAdd() {
-    addItem(product)
+    if (needsVariant) return
+    addItem(product, 1, selectedVariant)
     setAdded(true)
     setTimeout(() => setAdded(false), 2000)
   }
@@ -42,17 +47,22 @@ export default function StickyMobileCTA({ product }: Props) {
         <div className="flex items-center justify-between gap-4 max-w-lg mx-auto">
           <div className="flex flex-col min-w-0">
             <span className="text-xs text-gray-500 truncate">{product.name}</span>
-            <span className="text-lg font-bold text-accent-500">{formatPrice(product.price)}</span>
+            <span className="text-lg font-bold text-accent-500">{formatPrice(effectivePrice)}</span>
           </div>
           <button
             onClick={handleAdd}
+            disabled={needsVariant}
             className={`flex items-center gap-2 font-semibold text-sm py-3 px-6 rounded-xl transition-all min-h-[45px] ${
-              added
-                ? 'bg-green-500 text-white animate-button-pulse'
-                : 'bg-accent-500 hover:bg-accent-600 text-white'
+              needsVariant
+                ? 'bg-gray-200 text-gray-400'
+                : added
+                  ? 'bg-green-500 text-white animate-button-pulse'
+                  : 'bg-accent-500 hover:bg-accent-600 text-white'
             }`}
           >
-            {added ? (
+            {needsVariant ? (
+              'Kies een optie'
+            ) : added ? (
               <>
                 <Check className="w-4 h-4 animate-check-bounce" />
                 Toegevoegd!
@@ -60,7 +70,7 @@ export default function StickyMobileCTA({ product }: Props) {
             ) : (
               <>
                 <ShoppingCart className="w-4 h-4" />
-                Toevoegen
+                In winkelwagen
               </>
             )}
           </button>

@@ -41,49 +41,49 @@ export default function AdminDashboard() {
 
   const statCards = [
     {
-      label: 'Omzet vandaag',
+      label: 'Revenue today',
       value: formatPrice(stats?.omzet_vandaag ?? 0),
       icon: TrendingUp,
       color: 'text-green-500',
       bg: 'bg-green-50',
     },
     {
-      label: 'Omzet deze week',
+      label: 'Revenue this week',
       value: formatPrice(stats?.omzet_week ?? 0),
       icon: TrendingUp,
       color: 'text-blue-500',
       bg: 'bg-blue-50',
     },
     {
-      label: 'Omzet deze maand',
+      label: 'Revenue this month',
       value: formatPrice(stats?.omzet_maand ?? 0),
       icon: TrendingUp,
       color: 'text-purple-500',
       bg: 'bg-purple-50',
     },
     {
-      label: 'Orders vandaag',
+      label: 'Orders today',
       value: stats?.orders_vandaag ?? 0,
       icon: ShoppingBag,
       color: 'text-orange-500',
       bg: 'bg-orange-50',
     },
     {
-      label: 'Totaal orders',
+      label: 'Total orders',
       value: stats?.orders_totaal ?? 0,
       icon: ShoppingBag,
       color: 'text-orange-400',
       bg: 'bg-orange-50',
     },
     {
-      label: 'Klanten',
+      label: 'Customers',
       value: stats?.klanten_totaal ?? 0,
       icon: Users,
       color: 'text-indigo-500',
       bg: 'bg-indigo-50',
     },
     {
-      label: 'Producten',
+      label: 'Products',
       value: stats?.producten_totaal ?? 0,
       icon: Package,
       color: 'text-teal-500',
@@ -104,7 +104,7 @@ export default function AdminDashboard() {
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-        <p className="text-gray-500 text-sm mt-1">Welkom terug bij PawsNL admin</p>
+        <p className="text-gray-500 text-sm mt-1">Welcome back to PawsNL admin</p>
       </div>
 
       {/* Stats grid */}
@@ -136,15 +136,15 @@ export default function AdminDashboard() {
         ))}
       </div>
 
-      {/* Recente orders */}
+      {/* Recent orders */}
       <div className="card">
         <div className="p-5 border-b border-gray-100 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Clock className="w-4 h-4 text-orange-500" />
-            <h2 className="font-bold text-gray-900">Recente bestellingen</h2>
+            <h2 className="font-bold text-gray-900">Recent orders</h2>
           </div>
           <Link href="/admin/bestellingen" className="text-sm text-orange-500 hover:text-orange-600 font-medium">
-            Alle bestellingen →
+            All orders →
           </Link>
         </div>
         <div className="overflow-x-auto">
@@ -152,8 +152,8 @@ export default function AdminDashboard() {
             <thead>
               <tr className="border-b border-gray-50 bg-gray-50">
                 <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Order</th>
-                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Klant</th>
-                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Totaal</th>
+                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Customer</th>
+                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Total</th>
                 <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
               </tr>
             </thead>
@@ -161,7 +161,7 @@ export default function AdminDashboard() {
               {(stats?.recente_orders ?? []).length === 0 ? (
                 <tr>
                   <td colSpan={4} className="px-5 py-8 text-center text-gray-400 text-sm">
-                    Nog geen bestellingen
+                    No orders yet
                   </td>
                 </tr>
               ) : (

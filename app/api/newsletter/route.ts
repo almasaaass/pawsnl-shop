@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase'
-import { sendLeadMagnetEmail } from '@/lib/email'
+import { sendLeadMagnetEmail, sendWelcomeEmail } from '@/lib/email'
 
 export async function POST(req: Request) {
   try {
@@ -12,7 +12,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Ongeldig e-mailadres' }, { status: 400 })
     }
 
-    const validSources = ['popup', 'footer', 'checkout']
+    const validSources = ['popup', 'footer', 'checkout', 'exit-intent', 'lead-magnet']
     const emailSource = validSources.includes(source) ? source : 'unknown'
 
     const supabase = createAdminClient()
@@ -42,11 +42,17 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Aanmelding mislukt. Probeer het opnieuw.' }, { status: 500 })
     }
 
-    // Send lead magnet email
+    // Send appropriate email based on source
     try {
-      await sendLeadMagnetEmail(email.toLowerCase().trim())
+      if (emailSource === 'exit-intent') {
+        // Exit intent → welcome email with WELKOM10 coupon
+        await sendWelcomeEmail({ email: email.toLowerCase().trim(), emailNumber: 1 })
+      } else {
+        // Default → lead magnet email
+        await sendLeadMagnetEmail(email.toLowerCase().trim())
+      }
     } catch (emailError) {
-      console.error('Lead magnet email error:', emailError)
+      console.error('Signup email error:', emailError)
       // Don't fail the signup if email fails
     }
 

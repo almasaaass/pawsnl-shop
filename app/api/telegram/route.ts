@@ -29,22 +29,22 @@ async function getShopStats() {
   try {
     const supabase = createAdminClient()
     const now = new Date()
-    const startVandaag = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString()
-    const startMaand = new Date(now.getFullYear(), now.getMonth(), 1).toISOString()
+    const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString()
+    const startMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString()
 
-    const [{ data: orders }, { data: klanten }] = await Promise.all([
+    const [{ data: orders }, { data: customers }] = await Promise.all([
       supabase.from('orders').select('total, created_at').eq('status', 'paid'),
       supabase.from('customers').select('id'),
     ])
 
     const all = orders ?? []
     return {
-      omzetVandaag: all.filter((o) => o.created_at >= startVandaag).reduce((s, o) => s + Number(o.total), 0),
-      omzetMaand: all.filter((o) => o.created_at >= startMaand).reduce((s, o) => s + Number(o.total), 0),
-      omzetTotaal: all.reduce((s, o) => s + Number(o.total), 0),
-      ordersVandaag: all.filter((o) => o.created_at >= startVandaag).length,
-      bestellingenTotaal: all.length,
-      klantenTotaal: klanten?.length ?? 0,
+      revenueToday: all.filter((o) => o.created_at >= startToday).reduce((s, o) => s + Number(o.total), 0),
+      revenueMonth: all.filter((o) => o.created_at >= startMonth).reduce((s, o) => s + Number(o.total), 0),
+      revenueTotal: all.reduce((s, o) => s + Number(o.total), 0),
+      ordersToday: all.filter((o) => o.created_at >= startToday).length,
+      ordersTotal: all.length,
+      customersTotal: customers?.length ?? 0,
     }
   } catch {
     return null
@@ -62,22 +62,22 @@ async function askClaude(userMessage: string, context: string): Promise<string> 
     body: JSON.stringify({
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 500,
-      system: `Je bent de slimme AI-assistent van PawsNL, een Nederlandse dropshipping webshop voor dierenproducten. Je spreekt altijd Nederlands en geeft korte, praktische antwoorden (max 150 woorden). Dit is een chat op mobiel — wees beknopt.
+      system: `You are the smart AI assistant for PawsNL, a dropshipping web store for pet products. You always speak English and give short, practical answers (max 150 words). This is a mobile chat — be concise.
 
 ${context}
 
-Je kunt advies geven over marketing, TikTok, productkeuze, prijsstrategie, leveranciers en shopbeheer.`,
+You can give advice on marketing, TikTok, product selection, pricing strategy, suppliers and shop management.`,
       messages: [{ role: 'user', content: userMessage }],
     }),
   })
 
   if (!res.ok) {
     const err = await res.text()
-    throw new Error(`Anthropic API fout: ${res.status} — ${err}`)
+    throw new Error(`Anthropic API error: ${res.status} — ${err}`)
   }
 
   const data = await res.json()
-  return data.content?.[0]?.text ?? 'Geen antwoord ontvangen.'
+  return data.content?.[0]?.text ?? 'No response received.'
 }
 
 export async function POST(request: NextRequest) {
@@ -88,53 +88,53 @@ export async function POST(request: NextRequest) {
 
     const chatId = message.chat?.id
     const text: string = (message.text ?? '').trim()
-    const username = message.from?.first_name ?? 'daar'
+    const username = message.from?.first_name ?? 'there'
 
     if (!text) return NextResponse.json({ ok: true })
 
-    // Toegangscontrole
+    // Access control
     if (ALLOWED_CHAT_ID && String(chatId) !== ALLOWED_CHAT_ID) {
-      await sendTelegram(chatId, `⛔ Geen toegang. Jouw chat ID is: \`${chatId}\``)
+      await sendTelegram(chatId, `⛔ No access. Your chat ID is: \`${chatId}\``)
       return NextResponse.json({ ok: true })
     }
 
     const cmd = text.toLowerCase()
 
-    // ─── Commando's ──────────────────────────────────────────────────────────
+    // ─── Commands ──────────────────────────────────────────────────────────
 
     if (cmd === '/start' || cmd === '/help') {
-      await sendTelegram(chatId, `🐾 *PawsNL Bot* — Hallo ${username}!
+      await sendTelegram(chatId, `🐾 *PawsNL Bot* — Hello ${username}!
 
-Ik ben je AI shop-assistent. Stel me alles over je shop, of gebruik:
+I'm your AI shop assistant. Ask me anything about your shop, or use:
 
-📊 */stats* — Omzet & cijfers
-📦 */bestellingen* — Laatste orders
-🛒 */voorraad* — Voorraad check
+📊 */stats* — Revenue & figures
+📦 */orders* — Recent orders
+🛒 */stock* — Stock check
 
-Of typ gewoon een vraag zoals:
-• "Welke producten moet ik toevoegen?"
-• "Geef me een TikTok idee voor vandaag"
-• "Hoe verbeter ik mijn conversie?"`)
+Or just type a question like:
+• "Which products should I add?"
+• "Give me a TikTok idea for today"
+• "How do I improve my conversion?"`)
       return NextResponse.json({ ok: true })
     }
 
     if (cmd === '/stats') {
       const stats = await getShopStats()
       if (!stats) {
-        await sendTelegram(chatId, '❌ Kon statistieken niet ophalen.')
+        await sendTelegram(chatId, '❌ Could not retrieve statistics.')
         return NextResponse.json({ ok: true })
       }
       await sendTelegram(chatId, `📊 *PawsNL Stats*
 
-💰 Vandaag: *${eur(stats.omzetVandaag)}* (${stats.ordersVandaag} orders)
-📅 Deze maand: *${eur(stats.omzetMaand)}*
-🏆 Totaal: *${eur(stats.omzetTotaal)}*
-👥 Klanten: ${stats.klantenTotaal}
-📦 Orders totaal: ${stats.bestellingenTotaal}`)
+💰 Today: *${eur(stats.revenueToday)}* (${stats.ordersToday} orders)
+📅 This month: *${eur(stats.revenueMonth)}*
+🏆 Total: *${eur(stats.revenueTotal)}*
+👥 Customers: ${stats.customersTotal}
+📦 Total orders: ${stats.ordersTotal}`)
       return NextResponse.json({ ok: true })
     }
 
-    if (cmd === '/bestellingen') {
+    if (cmd === '/orders') {
       const supabase = createAdminClient()
       const { data } = await supabase
         .from('orders')
@@ -143,47 +143,47 @@ Of typ gewoon een vraag zoals:
         .limit(5)
 
       if (!data?.length) {
-        await sendTelegram(chatId, '📦 Nog geen bestellingen.')
+        await sendTelegram(chatId, '📦 No orders yet.')
         return NextResponse.json({ ok: true })
       }
 
       const lines = data.map((o, i) => {
-        const datum = new Date(o.created_at).toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' })
+        const datum = new Date(o.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })
         const items = Array.isArray(o.items) ? o.items.map((it: any) => `${it.name} ×${it.quantity}`).join(', ') : ''
         return `${i + 1}. *${o.customer_name}* — ${eur(Number(o.total))} (${datum})${items ? `\n   _${items}_` : ''}`
       })
 
-      await sendTelegram(chatId, `📦 *Laatste bestellingen*\n\n${lines.join('\n\n')}`)
+      await sendTelegram(chatId, `📦 *Recent orders*\n\n${lines.join('\n\n')}`)
       return NextResponse.json({ ok: true })
     }
 
-    if (cmd === '/voorraad') {
+    if (cmd === '/stock') {
       const supabase = createAdminClient()
       const { data } = await supabase.from('products').select('name, stock').order('stock').limit(10)
       const lines = (data ?? []).map((p) => `• ${p.name}: *${p.stock}*${p.stock < 5 ? ' ⚠️' : ''}`)
-      await sendTelegram(chatId, `🛒 *Voorraad (laagste eerst)*\n\n${lines.join('\n')}`)
+      await sendTelegram(chatId, `🛒 *Stock (lowest first)*\n\n${lines.join('\n')}`)
       return NextResponse.json({ ok: true })
     }
 
-    // ─── Vrije vraag → Claude ─────────────────────────────────────────────────
+    // ─── Free question → Claude ─────────────────────────────────────────────────
 
     await sendTyping(chatId)
 
-    // Haal snel stats op als context
+    // Quickly fetch stats as context
     const stats = await getShopStats()
     const context = stats
-      ? `Huidige shopdata: omzet vandaag ${eur(stats.omzetVandaag)}, deze maand ${eur(stats.omzetMaand)}, totaal ${eur(stats.omzetTotaal)}, ${stats.bestellingenTotaal} bestellingen, ${stats.klantenTotaal} klanten.`
-      : 'Shopdata tijdelijk niet beschikbaar.'
+      ? `Current shop data: revenue today ${eur(stats.revenueToday)}, this month ${eur(stats.revenueMonth)}, total ${eur(stats.revenueTotal)}, ${stats.ordersTotal} orders, ${stats.customersTotal} customers.`
+      : 'Shop data temporarily unavailable.'
 
     let reply: string
     try {
       reply = await askClaude(text, context)
     } catch (aiError: any) {
-      // Fallback als Anthropic API niet beschikbaar is
+      // Fallback if Anthropic API is not available
       if (aiError?.message?.includes('credit') || aiError?.message?.includes('billing')) {
-        reply = `🤖 Ik kan je vraag nu niet beantwoorden — de AI heeft onvoldoende credits.\n\n👉 Ga naar console.anthropic.com → Billing → Add credits om dit te activeren.\n\nGebruik ondertussen de commando's:\n📊 /stats · 📦 /bestellingen · 🛒 /voorraad`
+        reply = `🤖 I can't answer your question right now — the AI has insufficient credits.\n\n👉 Go to console.anthropic.com → Billing → Add credits to activate this.\n\nIn the meantime, use the commands:\n📊 /stats · 📦 /orders · 🛒 /stock`
       } else {
-        reply = `❌ AI fout: ${aiError?.message ?? 'Onbekend'}`
+        reply = `❌ AI error: ${aiError?.message ?? 'Unknown'}`
       }
     }
     await sendTelegram(chatId, reply)
@@ -192,19 +192,19 @@ Of typ gewoon een vraag zoals:
 
   } catch (error: any) {
     console.error('Telegram webhook error:', error)
-    // Probeer fout te melden aan gebruiker (best effort)
+    // Try to report error to user (best effort)
     try {
       const body = await request.clone().json().catch(() => ({}))
       const chatId = body?.message?.chat?.id
       if (chatId) {
-        await sendTelegram(chatId, `❌ Fout: ${error?.message ?? 'Onbekende fout'}`)
+        await sendTelegram(chatId, `❌ Error: ${error?.message ?? 'Unknown error'}`)
       }
     } catch {}
     return NextResponse.json({ ok: true })
   }
 }
 
-// Webhook registratie
+// Webhook registration
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
   if (searchParams.get('setup') !== process.env.CRON_SECRET) {

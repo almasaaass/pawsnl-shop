@@ -1,31 +1,31 @@
-import Link from 'next/link'
+'use client'
+
 import { CATEGORIES } from '@/lib/types'
 import { Dog, Cat, Bird, Rabbit, Fish, Snail } from 'lucide-react'
 import { LucideIcon } from 'lucide-react'
+import { useTranslations } from 'next-intl'
+import { Link } from '@/i18n/navigation'
 
 const iconMap: Record<string, LucideIcon> = {
-  Dog,
-  Cat,
-  Bird,
-  Rabbit,
-  Fish,
-  Snail,
+  Dog, Cat, Bird, Rabbit, Fish, Snail,
 }
 
 export default function CategoryOverview() {
+  const t = useTranslations('categories')
+
   return (
     <section className="bg-warm-100 py-16 md:py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-10">
-          <h2 className="text-3xl font-bold text-charcoal mb-2">Winkel per categorie</h2>
-          <p className="text-gray-500">Vind het perfecte product voor jouw trouwe vriend</p>
+          <h2 className="text-3xl font-bold text-charcoal mb-2">{t('title')}</h2>
+          <p className="text-gray-500">{t('subtitle')}</p>
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
           {CATEGORIES.map((category) => {
             const Icon = iconMap[category.icon]
             return (
-              <Link
+              <a
                 key={category.slug}
                 href={`/producten?categorie=${category.slug}`}
                 className="card p-5 text-center hover:shadow-card-hover hover:border-accent-200 transition-all group cursor-pointer"
@@ -38,7 +38,7 @@ export default function CategoryOverview() {
                   )}
                 </div>
                 <p className="font-semibold text-charcoal text-sm">{category.label}</p>
-              </Link>
+              </a>
             )
           })}
         </div>

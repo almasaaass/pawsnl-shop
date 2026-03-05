@@ -60,9 +60,6 @@ export async function GET(request: NextRequest) {
   for (const product of products) {
     await new Promise(r => setTimeout(r, 300))
 
-    // Skip manually disabled products
-    if (product.stock === 0) continue
-
     // If product has a CJ pid, check real inventory
     if (product.cj_pid) {
       const cjStock = await getCJInventory(product.cj_pid, token)

@@ -1,12 +1,18 @@
-export function formatPrice(price: number): string {
+export function formatPrice(price: number, locale: string = 'nl'): string {
+  if (locale === 'en') {
+    return new Intl.NumberFormat('en-GB', {
+      style: 'currency',
+      currency: 'GBP',
+    }).format(price)
+  }
   return new Intl.NumberFormat('nl-NL', {
     style: 'currency',
     currency: 'EUR',
   }).format(price)
 }
 
-export function formatDate(dateString: string): string {
-  return new Intl.DateTimeFormat('nl-NL', {
+export function formatDate(dateString: string, locale: string = 'nl'): string {
+  return new Intl.DateTimeFormat(locale === 'en' ? 'en-GB' : 'nl-NL', {
     day: 'numeric',
     month: 'long',
     year: 'numeric',
@@ -23,8 +29,8 @@ export function slugify(text: string): string {
 }
 
 /**
- * Controleer of een afbeelding URL van CJ Dropshipping CDN komt.
- * CJ CDN blokkeert hotlinking — deze moeten via onze proxy geladen worden.
+ * Check if an image URL comes from the CJ Dropshipping CDN.
+ * CJ CDN blocks hotlinking — these must be loaded through our proxy.
  */
 const CJ_CDN_HOSTS = [
   'cc-west-usa.oss-us-west-1.aliyuncs.com',
@@ -36,6 +42,18 @@ const CJ_CDN_HOSTS = [
   'cc-west-usa.oss-accelerate.aliyuncs.com',
   'oss-cf.cjdropshipping.com',
 ]
+
+/** Deterministic pseudo-rating from product id (for UI display) */
+export function getProductRating(id: string): { rating: number; count: number } {
+  let hash = 0
+  for (let i = 0; i < id.length; i++) {
+    hash = ((hash << 5) - hash) + id.charCodeAt(i)
+    hash |= 0
+  }
+  const rating = 3.8 + (Math.abs(hash) % 13) / 10
+  const count = 4 + (Math.abs(hash >> 4) % 28)
+  return { rating: Math.min(rating, 5), count }
+}
 
 export function getImageSrc(url: string): string {
   if (!url || typeof url !== 'string') return ''

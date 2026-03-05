@@ -14,7 +14,7 @@ export default function GuaranteeBanner() {
         <div className="flex items-center justify-center gap-2 mb-4">
           <ShieldCheck className="w-8 h-8 text-trust-600" />
           <h2 className="text-2xl md:text-3xl font-bold text-trust-800">
-            100% Blij-Dier Garantie
+            100% Blij Huisdier Garantie
           </h2>
         </div>
         <p className="text-trust-700 text-lg mb-8 max-w-xl mx-auto">
@@ -23,9 +23,9 @@ export default function GuaranteeBanner() {
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-2xl mx-auto">
           {[
-            { icon: RotateCcw, title: '30 dagen retour', desc: 'Geen vragen, geen gedoe' },
-            { icon: ShieldCheck, title: '100% geld terug', desc: 'Als het product niet bevalt' },
-            { icon: Heart, title: 'Getest op geluk', desc: 'Elk product door ons gecontroleerd' },
+            { icon: RotateCcw, title: '30 dagen retour', desc: 'Zonder vragen' },
+            { icon: ShieldCheck, title: '100% geld terug', desc: 'Als het product niet past' },
+            { icon: Heart, title: 'Getest op geluk', desc: 'Elk product gecontroleerd door ons team' },
           ].map((item, i) => (
             <div
               key={item.title}

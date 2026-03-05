@@ -3,8 +3,10 @@
 import { useState } from 'react'
 import { Mail, Gift, CheckCircle } from 'lucide-react'
 import { useInView } from '@/hooks/useInView'
+import { useTranslations } from 'next-intl'
 
 export default function NewsletterSection() {
+  const t = useTranslations('newsletter')
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
@@ -28,14 +30,14 @@ export default function NewsletterSection() {
       const data = await res.json()
 
       if (!res.ok) {
-        setError(data.error || 'Er ging iets mis.')
+        setError(data.error || t('errorGeneric'))
         return
       }
 
       setSuccess(true)
       setEmail('')
     } catch {
-      setError('Er ging iets mis. Probeer het opnieuw.')
+      setError(t('errorRetry'))
     } finally {
       setLoading(false)
     }
@@ -51,18 +53,13 @@ export default function NewsletterSection() {
             <Gift className="w-6 h-6 text-accent-500" />
           </div>
 
-          <h2 className="text-2xl font-bold text-charcoal mb-2">
-            Gratis tips & aanbiedingen + PDF gids
-          </h2>
-          <p className="text-gray-600 mb-6">
-            Meld je aan en ontvang direct onze gratis gids &quot;De Ultieme Gids voor een Gelukkig Huisdier&quot;
-            plus exclusieve kortingen en huisdiertips.
-          </p>
+          <h2 className="text-2xl font-bold text-charcoal mb-2">{t('title')}</h2>
+          <p className="text-gray-600 mb-6">{t('description')}</p>
 
           {success ? (
             <div className="flex items-center justify-center gap-2 text-trust-600 font-medium animate-scale-in">
               <CheckCircle className="w-5 h-5" />
-              Check je inbox! We hebben de gids verstuurd.
+              {t('successMessage')}
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
@@ -72,33 +69,24 @@ export default function NewsletterSection() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Je e-mailadres"
+                  placeholder={t('emailPlaceholder')}
                   required
                   className="input pl-10"
                 />
               </div>
-              <button
-                type="submit"
-                disabled={loading}
-                className="btn-primary flex items-center justify-center gap-2 whitespace-nowrap"
-              >
+              <button type="submit" disabled={loading} className="btn-primary flex items-center justify-center gap-2 whitespace-nowrap">
                 {loading ? (
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                 ) : (
                   <Gift className="w-4 h-4" />
                 )}
-                {loading ? 'Verzenden...' : 'Download gratis'}
+                {loading ? t('sending') : t('submitButton')}
               </button>
             </form>
           )}
 
-          {error && (
-            <p className="text-sm text-red-600 mt-3">{error}</p>
-          )}
-
-          <p className="text-xs text-gray-400 mt-4">
-            Geen spam. Je kunt je altijd uitschrijven.
-          </p>
+          {error && <p className="text-sm text-red-600 mt-3">{error}</p>}
+          <p className="text-xs text-gray-400 mt-4">{t('noSpam')}</p>
         </div>
       </div>
     </section>

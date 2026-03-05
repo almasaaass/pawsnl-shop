@@ -18,80 +18,80 @@ interface Product {
 type Template = 'infographic' | 'social' | 'feature' | 'banner'
 
 const TEMPLATE_INFO: Record<Template, { label: string; size: string; desc: string }> = {
-  infographic: { label: 'Infographic', size: '1080×1350', desc: 'Instagram portret — ideaal voor feed posts' },
-  social: { label: 'Social Post', size: '1080×1080', desc: 'Vierkant — TikTok, Instagram, Facebook' },
-  feature: { label: 'Feature Card', size: '1080×1080', desc: 'Donker thema met kenmerken' },
-  banner: { label: 'Banner', size: '1200×628', desc: 'Facebook/LinkedIn advertentie banner' },
+  infographic: { label: 'Infographic', size: '1080×1350', desc: 'Instagram portrait — ideal for feed posts' },
+  social: { label: 'Social Post', size: '1080×1080', desc: 'Square — TikTok, Instagram, Facebook' },
+  feature: { label: 'Feature Card', size: '1080×1080', desc: 'Dark theme with features' },
+  banner: { label: 'Banner', size: '1200×628', desc: 'Facebook/LinkedIn ad banner' },
 }
 
 const CATEGORY_LABELS: Record<string, string> = {
-  honden: '🐶 Honden',
-  katten: '🐱 Katten',
-  vogels: '🐦 Vogels',
-  knaagdieren: '🐹 Knaagdieren',
-  vissen: '🐟 Vissen',
+  honden: '🐶 Dogs',
+  katten: '🐱 Cats',
+  vogels: '🐦 Birds',
+  knaagdieren: '🐹 Small pets',
+  vissen: '🐟 Fish',
 }
 
 function eur(n: number) {
-  return new Intl.NumberFormat('nl-NL', { style: 'currency', currency: 'EUR' }).format(n)
+  return new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'EUR' }).format(n)
 }
 
 function generateVideoScript(product: Product): string {
   const category = product.category
-  const pet = category === 'honden' ? 'hond' : category === 'katten' ? 'kat' : category === 'vogels' ? 'vogel' : category === 'knaagdieren' ? 'knaagdier' : 'huisdier'
+  const pet = category === 'dogs' ? 'dog' : category === 'cats' ? 'cat' : category === 'birds' ? 'bird' : category === 'small pets' ? 'small pet' : 'pet'
 
   return `🎬 VIDEO SCRIPT: ${product.name}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 📱 Format: TikTok/Reels (9:16, 15-30 sec)
-🎯 Doel: Productverkoop via link in bio
+🎯 Goal: Product sales via link in bio
 
 ━━━ HOOK (0-3 sec) ━━━
-[Close-up van het product]
-Tekst op scherm: "Dit heeft jouw ${pet} NODIG 👀"
-Voice-over: "Elke ${pet}-eigenaar heeft DIT nodig..."
+[Close-up of the product]
+On-screen text: "Your ${pet} NEEDS this 👀"
+Voice-over: "Every ${pet} owner NEEDS this..."
 
-━━━ PROBLEEM (3-7 sec) ━━━
-[Toon het probleem dat dit product oplost]
-Tekst: "Ken je dit probleem? 😩"
-Voice-over: "Je kent het wel..."
+━━━ PROBLEM (3-7 sec) ━━━
+[Show the problem this product solves]
+Text: "Sound familiar? 😩"
+Voice-over: "You know the feeling..."
 
-━━━ OPLOSSING (7-15 sec) ━━━
-[Toon het product in gebruik]
-Tekst: "${product.name} ✨"
-Voice-over: "Daarom is de ${product.name} zo populair!"
+━━━ SOLUTION (7-15 sec) ━━━
+[Show the product in use]
+Text: "${product.name} ✨"
+Voice-over: "That's why the ${product.name} is so popular!"
 
-━━━ BEWIJS (15-22 sec) ━━━
-[Toon blije ${pet} met het product]
-Tekst: "Kijk hoe blij! 🥰"
-Voice-over: "En kijk hoe blij je ${pet} ervan wordt!"
+━━━ PROOF (15-22 sec) ━━━
+[Show happy ${pet} with the product]
+Text: "Look how happy! 🥰"
+Voice-over: "And look how happy your ${pet} is with it!"
 
 ━━━ CTA (22-30 sec) ━━━
 [Product + website]
-Tekst: "Nu ${eur(product.price)} ${product.compare_price ? `(was ${eur(product.compare_price)})` : ''}"
-Tekst: "🔗 Link in bio → pawsshop.nl"
-Voice-over: "Bestel nu via de link in bio. Gratis verzending!"
+Text: "Now ${eur(product.price)} ${product.compare_price ? `(was ${eur(product.compare_price)})` : ''}"
+Text: "🔗 Link in bio → pawsnlshop.com"
+Voice-over: "Order now via link in bio. Free shipping!"
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 📝 CAPTION:
-${product.name} voor jouw ${pet}! 🐾✨
-${product.compare_price ? `Van ${eur(product.compare_price)} voor maar ${eur(product.price)}! 🏷️` : `Nu ${eur(product.price)}! 🏷️`}
+${product.name} for your ${pet}! 🐾✨
+${product.compare_price ? `From ${eur(product.compare_price)} now only ${eur(product.price)}! 🏷️` : `Now ${eur(product.price)}! 🏷️`}
 
-✅ Premium kwaliteit
-✅ Gratis verzending vanaf €35
-✅ 30 dagen retour
+✅ Premium quality
+✅ Free shipping from €35
+✅ 30-day returns
 
-🔗 Bestel via link in bio!
+🔗 Order via link in bio!
 
-#pawsnl #${pet}enleven #${pet}envaninstagram #huisdier #${pet}liefde #${pet}producten #dierenwinkel #huisdierproducten #petshop ${category === 'honden' ? '#dogtok #hondenleven' : category === 'katten' ? '#cattok #kattenleven' : '#pettok'}
+#pawsshop #${pet}life #${pet}sofinstagram #pets #${pet}love #${pet}products #petstore #petproducts #petshop ${category === 'dogs' ? '#dogtok #doglife' : category === 'cats' ? '#cattok #catlife' : '#pettok'}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-🎵 MUZIEK SUGGESTIES:
+🎵 MUSIC SUGGESTIONS:
 - Trending sound (check TikTok Creative Center)
 - Upbeat lo-fi beats
-- "Oh no" sound als probleem → oplossing format
+- "Oh no" sound for problem → solution format
 `
 }
 
@@ -199,7 +199,7 @@ export default function FotoStudioPage() {
     if (!previewUrl) return
     const a = document.createElement('a')
     a.href = previewUrl
-    a.download = `pawsnl-${selected?.slug ?? 'product'}-${template}.png`
+    a.download = `pawsshop-${selected?.slug ?? 'product'}-${template}.png`
     a.click()
   }
 
@@ -223,7 +223,7 @@ export default function FotoStudioPage() {
 
       const a = document.createElement('a')
       a.href = `/api/admin/generate-image?${params.toString()}`
-      a.download = `pawsnl-${selected.slug}-${t}.png`
+      a.download = `pawsshop-${selected.slug}-${t}.png`
       a.click()
     })
   }
@@ -234,7 +234,7 @@ export default function FotoStudioPage() {
     setShowVideo(true)
   }
 
-  // ─── Publiceer naar webshop (enkel product) ───────────────────────────────
+  // ─── Publish to webshop (single product) ───────────────────────────────
 
   async function publishSingle() {
     if (!selected) return
@@ -255,7 +255,7 @@ export default function FotoStudioPage() {
       })
       const data = await res.json()
       if (data.success) {
-        alert(`✅ ${selected.name} is gepubliceerd naar de webshop!\n\nImage URL: ${data.url}`)
+        alert(`✅ ${selected.name} has been published to the webshop!\n\nImage URL: ${data.url}`)
         // Refresh products
         const refreshRes = await fetch('/api/admin/products')
         const refreshData = await refreshRes.json()
@@ -264,10 +264,10 @@ export default function FotoStudioPage() {
         const updated = refreshData.find((p: Product) => p.id === selected.id)
         if (updated) setSelected(updated)
       } else {
-        alert(`❌ Fout: ${data.error}`)
+        alert(`❌ Error: ${data.error}`)
       }
     } catch (err: any) {
-      alert(`❌ Fout: ${err.message}`)
+      alert(`❌ Error: ${err.message}`)
     } finally {
       setPublishingSingle(false)
     }
@@ -356,14 +356,14 @@ export default function FotoStudioPage() {
         <div>
           <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
             <Camera className="w-7 h-7 text-orange-500" />
-            Foto Studio
+            Photo Studio
           </h1>
           <p className="text-gray-500 mt-1">
-            Genereer professionele productfoto&apos;s en publiceer naar je webshop
+            Generate professional product photos and publish to your webshop
           </p>
         </div>
         <div className="text-sm text-gray-400">
-          {products.length} producten
+          {products.length} products
         </div>
       </div>
 
@@ -399,24 +399,24 @@ export default function FotoStudioPage() {
           {/* Stats */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
-              <p className="text-sm text-gray-500">Totaal producten</p>
+              <p className="text-sm text-gray-500">Total products</p>
               <p className="text-2xl font-bold text-gray-900">{agentStats?.totalProducts ?? products.length}</p>
             </div>
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
-              <p className="text-sm text-gray-500">Met studio foto</p>
+              <p className="text-sm text-gray-500">With studio photo</p>
               <p className="text-2xl font-bold text-green-600">{agentStats?.productsWithGenerated ?? 0}</p>
             </div>
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
-              <p className="text-sm text-gray-500">Zonder foto&apos;s</p>
+              <p className="text-sm text-gray-500">Without photos</p>
               <p className="text-2xl font-bold text-red-600">{agentStats?.productsWithoutImages ?? 0}</p>
             </div>
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
               <p className="text-sm text-gray-500">Storage bucket</p>
               <p className="text-2xl font-bold">
                 {agentStats?.bucketExists ? (
-                  <span className="text-green-600">✅ Actief</span>
+                  <span className="text-green-600">✅ Active</span>
                 ) : (
-                  <span className="text-gray-400">⏳ Wordt aangemaakt</span>
+                  <span className="text-gray-400">⏳ Being created</span>
                 )}
               </p>
             </div>
@@ -428,12 +428,12 @@ export default function FotoStudioPage() {
               <div>
                 <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
                   <Rocket className="w-5 h-5 text-orange-500" />
-                  Foto Agent — Batch Verwerking
+                  Photo Agent — Batch Processing
                 </h2>
                 <p className="text-gray-500 text-sm mt-1">
-                  Genereert automatisch professionele Social Post foto&apos;s voor ALLE producten
-                  en publiceert ze naar de webshop. Elke foto krijgt PawsNL branding, prijs,
-                  korting en vertrouwensbadges.
+                  Automatically generates professional Social Post photos for ALL products
+                  and publishes them to the webshop. Each photo gets PawsNL branding, price,
+                  discount and trust badges.
                 </p>
               </div>
             </div>
@@ -442,30 +442,30 @@ export default function FotoStudioPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Kenmerken voor alle producten (optioneel)
+                  Features for all products (optional)
                 </label>
                 <input
                   type="text"
                   value={features}
                   onChange={(e) => setFeatures(e.target.value)}
-                  placeholder="Premium kwaliteit|Gratis verzending|30 dagen retour"
+                  placeholder="Premium quality|Free shipping|30-day returns"
                   className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-orange-500 focus:outline-none"
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Badge voor alle producten (optioneel)
+                  Badge for all products (optional)
                 </label>
                 <div className="flex gap-2">
                   <input
                     type="text"
                     value={badge}
                     onChange={(e) => setBadge(e.target.value)}
-                    placeholder="Auto (Bestseller/Aanbieding)"
+                    placeholder="Auto (Bestseller/Sale)"
                     className="flex-1 border border-gray-200 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-orange-500 focus:outline-none"
                   />
                   <div className="flex gap-1">
-                    {['Bestseller', 'Nieuw'].map((b) => (
+                    {['Bestseller', 'New'].map((b) => (
                       <button
                         key={b}
                         onClick={() => setBadge(b)}
@@ -490,12 +490,12 @@ export default function FotoStudioPage() {
               {batchRunning ? (
                 <>
                   <Loader2 className="w-5 h-5 animate-spin" />
-                  Verwerken... ({batchProgress.current}/{batchProgress.total})
+                  Processing... ({batchProgress.current}/{batchProgress.total})
                 </>
               ) : (
                 <>
                   <Rocket className="w-5 h-5" />
-                  Start Foto Agent — Verwerk alle {products.length} producten
+                  Start Photo Agent — Process all {products.length} products
                 </>
               )}
             </button>
@@ -510,7 +510,7 @@ export default function FotoStudioPage() {
                   />
                 </div>
                 <p className="text-sm text-gray-500 mt-2 text-center">
-                  {batchProgress.current} van {batchProgress.total} producten verwerkt
+                  {batchProgress.current} of {batchProgress.total} products processed
                 </p>
               </div>
             )}
@@ -520,16 +520,16 @@ export default function FotoStudioPage() {
           {batchResults.length > 0 && (
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
               <div className="p-4 border-b border-gray-100 flex items-center justify-between">
-                <h3 className="font-semibold text-gray-900">Resultaten</h3>
+                <h3 className="font-semibold text-gray-900">Results</h3>
                 <div className="flex gap-4 text-sm">
                   <span className="text-green-600 font-medium">
-                    ✅ {batchResults.filter(r => r.status === 'success').length} gelukt
+                    ✅ {batchResults.filter(r => r.status === 'success').length} succeeded
                   </span>
                   <span className="text-red-500 font-medium">
-                    ❌ {batchResults.filter(r => r.status === 'failed').length} mislukt
+                    ❌ {batchResults.filter(r => r.status === 'failed').length} failed
                   </span>
                   <span className="text-gray-400">
-                    ⏳ {batchResults.filter(r => r.status === 'pending' || r.status === 'processing').length} wachtend
+                    ⏳ {batchResults.filter(r => r.status === 'pending' || r.status === 'processing').length} pending
                   </span>
                 </div>
               </div>
@@ -552,13 +552,13 @@ export default function FotoStudioPage() {
                     )}
                     <span className="text-sm text-gray-700 flex-1 truncate">{result.name}</span>
                     {result.status === 'success' && (
-                      <span className="text-xs text-green-600 font-medium">Gepubliceerd</span>
+                      <span className="text-xs text-green-600 font-medium">Published</span>
                     )}
                     {result.status === 'failed' && (
                       <span className="text-xs text-red-500 truncate max-w-[200px]">{result.error}</span>
                     )}
                     {result.status === 'processing' && (
-                      <span className="text-xs text-orange-500 font-medium">Bezig...</span>
+                      <span className="text-xs text-orange-500 font-medium">Processing...</span>
                     )}
                   </div>
                 ))}
@@ -569,11 +569,11 @@ export default function FotoStudioPage() {
       ) : (
         /* ─── STUDIO TAB ─────────────────────────────────────────── */
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* LEFT: Product selectie */}
+          {/* LEFT: Product selection */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
               <div className="p-4 border-b border-gray-100">
-                <h2 className="font-semibold text-gray-900">Selecteer product</h2>
+                <h2 className="font-semibold text-gray-900">Select product</h2>
               </div>
               <div className="max-h-[70vh] overflow-y-auto">
                 {products.map((p) => (
@@ -606,7 +606,7 @@ export default function FotoStudioPage() {
                       <p className="text-sm font-medium text-gray-900 truncate">{p.name}</p>
                       <p className="text-xs text-gray-400">
                         {CATEGORY_LABELS[p.category] ?? p.category} · {eur(p.price)}
-                        {p.images.length === 0 && ' · ⚠️ Geen foto'}
+                        {p.images.length === 0 && ' · ⚠️ No photo'}
                       </p>
                     </div>
                     <div className="text-xs text-gray-300">{p.images.length}📷</div>
@@ -621,8 +621,8 @@ export default function FotoStudioPage() {
             {!selected ? (
               <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-12 text-center">
                 <ImageIcon className="w-16 h-16 text-gray-200 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Selecteer een product</h3>
-                <p className="text-gray-500">Kies een product in de lijst om foto&apos;s en video scripts te genereren.</p>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Select a product</h3>
+                <p className="text-gray-500">Choose a product from the list to generate photos and video scripts.</p>
               </div>
             ) : (
               <div className="space-y-6">
@@ -641,7 +641,7 @@ export default function FotoStudioPage() {
                     <p className="text-sm text-gray-500">
                       {CATEGORY_LABELS[selected.category]} · {eur(selected.price)}
                       {selected.compare_price ? ` (was ${eur(selected.compare_price)})` : ''}
-                      · {selected.images.length} foto&apos;s
+                      · {selected.images.length} photo{selected.images.length !== 1 ? 's' : ''}
                     </p>
                   </div>
                   <div className="flex gap-2 flex-wrap">
@@ -657,7 +657,7 @@ export default function FotoStudioPage() {
                       className="flex items-center gap-2 bg-gray-900 hover:bg-gray-800 text-white text-sm font-medium px-4 py-2.5 rounded-xl transition-colors"
                     >
                       <Zap className="w-4 h-4" />
-                      Download Alle
+                      Download All
                     </button>
                     <button
                       onClick={publishSingle}
@@ -669,7 +669,7 @@ export default function FotoStudioPage() {
                       ) : (
                         <Upload className="w-4 h-4" />
                       )}
-                      Publiceer
+                      Publish
                     </button>
                   </div>
                 </div>
@@ -698,24 +698,24 @@ export default function FotoStudioPage() {
 
                 {/* Customization */}
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 space-y-4">
-                  <h3 className="font-semibold text-gray-900">Aanpassen</h3>
+                  <h3 className="font-semibold text-gray-900">Customise</h3>
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Kenmerken (gescheiden door |)
+                      Features (separated by |)
                     </label>
                     <input
                       type="text"
                       value={features}
                       onChange={(e) => setFeatures(e.target.value)}
-                      placeholder="Premium kwaliteit|Gratis verzending|30 dagen retour"
+                      placeholder="Premium quality|Free shipping|30-day returns"
                       className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-orange-500 focus:outline-none"
                     />
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Badge tekst (optioneel)
+                      Badge text (optional)
                     </label>
                     <div className="flex gap-2">
                       <input
@@ -726,7 +726,7 @@ export default function FotoStudioPage() {
                         className="flex-1 border border-gray-200 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-orange-500 focus:outline-none"
                       />
                       <div className="flex gap-1">
-                        {['Bestseller', 'Nieuw', 'Limited', 'Aanbieding'].map((b) => (
+                        {['Bestseller', 'New', 'Limited', 'Sale'].map((b) => (
                           <button
                             key={b}
                             onClick={() => setBadge(b)}
@@ -747,9 +747,9 @@ export default function FotoStudioPage() {
                     className="w-full flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 disabled:bg-orange-300 text-white font-semibold py-3 rounded-xl transition-colors"
                   >
                     {generating ? (
-                      <><RefreshCw className="w-4 h-4 animate-spin" /> Genereren...</>
+                      <><RefreshCw className="w-4 h-4 animate-spin" /> Generating...</>
                     ) : (
-                      <><Sparkles className="w-4 h-4" /> Preview genereren</>
+                      <><Sparkles className="w-4 h-4" /> Generate preview</>
                     )}
                   </button>
                 </div>
@@ -780,7 +780,7 @@ export default function FotoStudioPage() {
                           ) : (
                             <Upload className="w-4 h-4" />
                           )}
-                          Publiceer naar Webshop
+                          Publish to Webshop
                         </button>
                       </div>
                     </div>
@@ -809,7 +809,7 @@ export default function FotoStudioPage() {
                         }}
                         className="text-sm text-orange-500 hover:text-orange-600 font-medium"
                       >
-                        📋 Kopieer
+                        📋 Copy
                       </button>
                     </div>
                     <div className="p-5">

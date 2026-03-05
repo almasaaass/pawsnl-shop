@@ -11,78 +11,61 @@ interface QualityIssue {
 function auditProduct(product: any): QualityIssue[] {
   const issues: QualityIssue[] = []
 
-  // Naam checks
+  // Name checks
   if (!product.name || product.name.length < 5) {
-    issues.push({ type: 'error', field: 'naam', message: 'Naam ontbreekt of is te kort' })
+    issues.push({ type: 'error', field: 'name', message: 'Name is missing or too short' })
   }
   if (/^[a-z]/.test(product.name)) {
-    issues.push({ type: 'warning', field: 'naam', message: 'Naam begint niet met hoofdletter' })
-  }
-  // Check of naam Engels is (bevat veel voorkomende Engelse woorden)
-  const englishWords = ['the', 'for', 'with', 'and', 'dog', 'cat', 'pet', 'automatic', 'waterproof', 'rechargeable', 'adjustable', 'portable']
-  const nameLower = product.name.toLowerCase()
-  const englishCount = englishWords.filter(w => nameLower.split(/\s+/).includes(w)).length
-  if (englishCount >= 2) {
-    issues.push({ type: 'error', field: 'naam', message: `Naam lijkt Engels (${englishCount} Engelse woorden gevonden)` })
+    issues.push({ type: 'warning', field: 'name', message: 'Name does not start with a capital letter' })
   }
 
-  // Beschrijving checks
+  // Description checks
   if (!product.description || product.description.length < 20) {
-    issues.push({ type: 'error', field: 'beschrijving', message: 'Beschrijving ontbreekt of is te kort (min. 20 tekens)' })
+    issues.push({ type: 'error', field: 'description', message: 'Description is missing or too short (min. 20 characters)' })
   } else if (product.description.length < 80) {
-    issues.push({ type: 'warning', field: 'beschrijving', message: 'Beschrijving is kort (min. 80 tekens aanbevolen)' })
-  }
-  // Check of beschrijving Engels is
-  if (product.description) {
-    const descLower = product.description.toLowerCase()
-    const engDescWords = ['the', 'this', 'with', 'your', 'that', 'from', 'have', 'will']
-    const engDescCount = engDescWords.filter(w => descLower.split(/\s+/).includes(w)).length
-    if (engDescCount >= 3) {
-      issues.push({ type: 'error', field: 'beschrijving', message: 'Beschrijving lijkt Engels' })
-    }
+    issues.push({ type: 'warning', field: 'description', message: 'Description is short (min. 80 characters recommended)' })
   }
 
-  // Prijs checks
+  // Price checks
   if (!product.price || product.price <= 0) {
-    issues.push({ type: 'error', field: 'prijs', message: 'Geen verkoopprijs ingesteld' })
+    issues.push({ type: 'error', field: 'price', message: 'No selling price set' })
   }
   if (!product.compare_price || product.compare_price <= 0) {
-    issues.push({ type: 'warning', field: 'prijs', message: 'Geen vergelijkingsprijs (doorgestreepte prijs)' })
+    issues.push({ type: 'warning', field: 'price', message: 'No compare price (strikethrough price)' })
   }
   if (product.compare_price && product.compare_price <= product.price) {
-    issues.push({ type: 'error', field: 'prijs', message: 'Vergelijkingsprijs is lager dan verkoopprijs' })
+    issues.push({ type: 'error', field: 'price', message: 'Compare price is lower than selling price' })
   }
 
-  // Afbeelding checks
+  // Image checks
   const images = product.images || []
   if (images.length === 0) {
-    issues.push({ type: 'error', field: 'fotos', message: 'Geen afbeeldingen' })
+    issues.push({ type: 'error', field: 'images', message: 'No images' })
   } else if (images.length < 2) {
-    issues.push({ type: 'warning', field: 'fotos', message: 'Slechts 1 afbeelding (min. 2 aanbevolen)' })
+    issues.push({ type: 'warning', field: 'images', message: 'Only 1 image (min. 2 recommended)' })
   }
 
-  // Check of afbeeldingen laden
-  // (kunnen we niet server-side doen, maar check of URLs geldig zijn)
+  // Check if image URLs are valid
   for (const img of images) {
     if (!img.startsWith('http')) {
-      issues.push({ type: 'error', field: 'fotos', message: `Ongeldige afbeelding URL: ${img.slice(0, 50)}` })
+      issues.push({ type: 'error', field: 'images', message: `Invalid image URL: ${img.slice(0, 50)}` })
     }
   }
 
-  // Categorie check
-  const validCategories = ['honden', 'katten', 'vogels', 'knaagdieren', 'vissen']
+  // Category check
+  const validCategories = ['dogs', 'cats', 'birds', 'small-pets', 'fish', 'reptiles']
   if (!validCategories.includes(product.category)) {
-    issues.push({ type: 'error', field: 'categorie', message: `Ongeldige categorie: ${product.category}` })
+    issues.push({ type: 'error', field: 'category', message: `Invalid category: ${product.category}` })
   }
 
-  // Voorraad check
+  // Stock check
   if (product.stock === 0) {
-    issues.push({ type: 'warning', field: 'voorraad', message: 'Product is uitverkocht (voorraad = 0)' })
+    issues.push({ type: 'warning', field: 'stock', message: 'Product is sold out (stock = 0)' })
   }
 
   // Slug check
   if (!product.slug || product.slug.length < 3) {
-    issues.push({ type: 'error', field: 'slug', message: 'Slug ontbreekt of is te kort' })
+    issues.push({ type: 'error', field: 'slug', message: 'Slug is missing or too short' })
   }
 
   return issues

@@ -11,6 +11,10 @@
     {
       "path": "/api/cron/tracking-sync",
       "schedule": "0 14 * * *"
+    },
+    {
+      "path": "/api/cron/abandoned-carts",
+      "schedule": "0 10 * * *"
     }
   ]
 }

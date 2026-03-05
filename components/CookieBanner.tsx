@@ -1,14 +1,15 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useTranslations } from 'next-intl'
 
 type CookiePrefs = {
-  functional: true // always on
+  functional: true
   analytics: boolean
   marketing: boolean
 }
 
-const COOKIE_KEY = 'pawsnl-cookie-consent'
+const COOKIE_KEY = 'pawsshop-cookie-consent'
 
 function getStoredPrefs(): CookiePrefs | null {
   if (typeof window === 'undefined') return null
@@ -25,6 +26,7 @@ function savePrefs(prefs: CookiePrefs) {
 }
 
 export default function CookieBanner() {
+  const t = useTranslations('cookie')
   const [visible, setVisible] = useState(false)
   const [isClosing, setIsClosing] = useState(false)
   const [showDetails, setShowDetails] = useState(false)
@@ -68,117 +70,67 @@ export default function CookieBanner() {
       isClosing ? 'animate-slide-down-out' : 'animate-slide-up-in'
     }`}>
       <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-2xl border border-gray-200 p-6">
-        {/* Main message */}
         <div className="mb-4">
-          <h3 className="text-lg font-bold text-gray-900 mb-2">
-            Wij gebruiken cookies
-          </h3>
+          <h3 className="text-lg font-bold text-gray-900 mb-2">{t('title')}</h3>
           <p className="text-sm text-gray-600 leading-relaxed">
-            Wij gebruiken functionele cookies om de website goed te laten werken.
-            Daarnaast willen we graag analytische en marketing cookies plaatsen om
-            jouw ervaring te verbeteren. Je kunt zelf kiezen welke cookies je
-            accepteert.{' '}
-            <a
-              href="/privacybeleid#cookies"
-              className="text-accent-500 hover:underline font-medium"
-            >
-              Lees ons cookiebeleid
+            {t('description')}{' '}
+            <a href="/privacybeleid#cookies" className="text-accent-500 hover:underline font-medium">
+              {t('readPolicy')}
             </a>
           </p>
         </div>
 
-        {/* Details toggle — animated */}
         <div className={`overflow-hidden transition-all duration-300 ease-in-out ${
           showDetails ? 'max-h-80 opacity-100 mb-4' : 'max-h-0 opacity-0'
         }`}>
           <div className="space-y-3 bg-gray-50 rounded-xl p-4">
-            {/* Functioneel - always on */}
             <label className="flex items-start gap-3">
-              <input
-                type="checkbox"
-                checked
-                disabled
-                className="mt-1 h-4 w-4 rounded border-gray-300 text-accent-500 accent-accent-500"
-              />
+              <input type="checkbox" checked disabled className="mt-1 h-4 w-4 rounded border-gray-300 text-accent-500 accent-accent-500" />
               <div>
-                <span className="text-sm font-semibold text-gray-900">Functioneel</span>
-                <span className="ml-2 text-xs text-gray-400">(altijd aan)</span>
-                <p className="text-xs text-gray-500 mt-0.5">
-                  Noodzakelijk voor het functioneren van de website, zoals winkelwagen en inloggen.
-                </p>
+                <span className="text-sm font-semibold text-gray-900">{t('functional')}</span>
+                <span className="ml-2 text-xs text-gray-400">{t('functionalAlwaysOn')}</span>
+                <p className="text-xs text-gray-500 mt-0.5">{t('functionalDescription')}</p>
               </div>
             </label>
 
-            {/* Analytisch */}
             <label className="flex items-start gap-3 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={analytics}
-                onChange={(e) => setAnalytics(e.target.checked)}
-                className="mt-1 h-4 w-4 rounded border-gray-300 text-accent-500 accent-accent-500"
-              />
+              <input type="checkbox" checked={analytics} onChange={(e) => setAnalytics(e.target.checked)} className="mt-1 h-4 w-4 rounded border-gray-300 text-accent-500 accent-accent-500" />
               <div>
-                <span className="text-sm font-semibold text-gray-900">Analytisch</span>
-                <p className="text-xs text-gray-500 mt-0.5">
-                  Helpen ons begrijpen hoe bezoekers de website gebruiken, zodat we deze kunnen verbeteren.
-                </p>
+                <span className="text-sm font-semibold text-gray-900">{t('analytics')}</span>
+                <p className="text-xs text-gray-500 mt-0.5">{t('analyticsDescription')}</p>
               </div>
             </label>
 
-            {/* Marketing */}
             <label className="flex items-start gap-3 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={marketing}
-                onChange={(e) => setMarketing(e.target.checked)}
-                className="mt-1 h-4 w-4 rounded border-gray-300 text-accent-500 accent-accent-500"
-              />
+              <input type="checkbox" checked={marketing} onChange={(e) => setMarketing(e.target.checked)} className="mt-1 h-4 w-4 rounded border-gray-300 text-accent-500 accent-accent-500" />
               <div>
-                <span className="text-sm font-semibold text-gray-900">Marketing</span>
-                <p className="text-xs text-gray-500 mt-0.5">
-                  Worden gebruikt om advertenties relevanter te maken en om de effectiviteit van campagnes te meten.
-                </p>
+                <span className="text-sm font-semibold text-gray-900">{t('marketing')}</span>
+                <p className="text-xs text-gray-500 mt-0.5">{t('marketingDescription')}</p>
               </div>
             </label>
           </div>
         </div>
 
-        {/* Buttons */}
         <div className="flex flex-col sm:flex-row gap-2">
           {!showDetails ? (
             <>
-              <button
-                onClick={declineAll}
-                className="flex-1 px-4 py-2.5 text-sm font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors"
-              >
-                Alleen noodzakelijk
+              <button onClick={declineAll} className="flex-1 px-4 py-2.5 text-sm font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors">
+                {t('onlyNecessary')}
               </button>
-              <button
-                onClick={() => setShowDetails(true)}
-                className="flex-1 px-4 py-2.5 text-sm font-semibold text-accent-600 bg-accent-50 hover:bg-accent-100 rounded-xl transition-colors"
-              >
-                Voorkeuren aanpassen
+              <button onClick={() => setShowDetails(true)} className="flex-1 px-4 py-2.5 text-sm font-semibold text-accent-600 bg-accent-50 hover:bg-accent-100 rounded-xl transition-colors">
+                {t('customize')}
               </button>
-              <button
-                onClick={acceptAll}
-                className="flex-1 px-4 py-2.5 text-sm font-semibold text-white bg-accent-500 hover:bg-accent-600 rounded-xl transition-colors"
-              >
-                Alles accepteren
+              <button onClick={acceptAll} className="flex-1 px-4 py-2.5 text-sm font-semibold text-white bg-accent-500 hover:bg-accent-600 rounded-xl transition-colors">
+                {t('acceptAll')}
               </button>
             </>
           ) : (
             <>
-              <button
-                onClick={declineAll}
-                className="flex-1 px-4 py-2.5 text-sm font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors"
-              >
-                Alleen noodzakelijk
+              <button onClick={declineAll} className="flex-1 px-4 py-2.5 text-sm font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors">
+                {t('onlyNecessary')}
               </button>
-              <button
-                onClick={acceptSelected}
-                className="flex-1 px-4 py-2.5 text-sm font-semibold text-white bg-accent-500 hover:bg-accent-600 rounded-xl transition-colors"
-              >
-                Selectie opslaan
+              <button onClick={acceptSelected} className="flex-1 px-4 py-2.5 text-sm font-semibold text-white bg-accent-500 hover:bg-accent-600 rounded-xl transition-colors">
+                {t('savePreferences')}
               </button>
             </>
           )}

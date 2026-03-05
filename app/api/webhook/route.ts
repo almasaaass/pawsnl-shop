@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
   try {
     event = stripe.webhooks.constructEvent(body, signature, process.env.STRIPE_WEBHOOK_SECRET!)
   } catch (error) {
-    console.error('Webhook signature verificatie mislukt:', error)
+    console.error('Webhook signature verification failed:', error)
     return NextResponse.json({ error: 'Invalid signature' }, { status: 400 })
   }
 
@@ -24,8 +24,8 @@ export async function POST(request: NextRequest) {
     try {
       await handleSuccessfulPayment(session)
     } catch (error) {
-      console.error('Fout bij verwerken betaling:', error)
-      return NextResponse.json({ error: 'Verwerking mislukt' }, { status: 500 })
+      console.error('Error processing payment:', error)
+      return NextResponse.json({ error: 'Processing failed' }, { status: 500 })
     }
   }
 
@@ -37,7 +37,7 @@ async function handleSuccessfulPayment(session: Stripe.Checkout.Session) {
 
   const items = session.metadata?.items ? JSON.parse(session.metadata.items) : []
 
-  // Bouw shipping address
+  // Build shipping address
   const shipping = session.shipping_details
   const shippingAddress = {
     street: `${shipping?.address?.line1 ?? ''} ${shipping?.address?.line2 ?? ''}`.trim(),
@@ -52,7 +52,11 @@ async function handleSuccessfulPayment(session: Stripe.Checkout.Session) {
   const total =
     (session.amount_total ?? 0) / 100
 
-  // Sla de bestelling op
+  // Read locale from Stripe metadata
+  const locale = session.metadata?.locale || 'nl'
+  const currency = session.metadata?.currency || 'eur'
+
+  // Save the order
   const { data: orderData, error: orderError } = await supabaseAdmin.from('orders').insert({
     customer_email: customerEmail,
     customer_name: customerName,
@@ -62,14 +66,16 @@ async function handleSuccessfulPayment(session: Stripe.Checkout.Session) {
     status: 'paid',
     stripe_session_id: session.id,
     tracking_number: null,
+    locale,
+    currency,
   }).select().single()
 
   if (orderError) {
-    console.error('Fout bij opslaan bestelling:', orderError)
+    console.error('Error saving order:', orderError)
     throw orderError
   }
 
-  // Verlaag de voorraad
+  // Decrease stock
   for (const item of items) {
     const { data: product } = await supabaseAdmin
       .from('products')
@@ -85,7 +91,7 @@ async function handleSuccessfulPayment(session: Stripe.Checkout.Session) {
     }
   }
 
-  // Upsert klant
+  // Upsert customer
   const { data: existingCustomer } = await supabaseAdmin
     .from('customers')
     .select('id, orders_count, total_spent')
@@ -110,7 +116,7 @@ async function handleSuccessfulPayment(session: Stripe.Checkout.Session) {
     })
   }
 
-  // Stuur emails (niet-blokkerend — fouten stoppen de verwerking niet)
+  // Send emails (non-blocking — errors don't stop processing)
   const emailData = {
     customerName,
     customerEmail,
@@ -118,6 +124,7 @@ async function handleSuccessfulPayment(session: Stripe.Checkout.Session) {
     items,
     total,
     shippingAddress,
+    locale,
   }
 
   await Promise.allSettled([
@@ -125,10 +132,10 @@ async function handleSuccessfulPayment(session: Stripe.Checkout.Session) {
     sendAdminNewOrder(emailData),
   ])
 
-  // ── CJ Dropshipping order plaatsen ──────────────────────────────────────
-  // Niet-blokkerend: CJ failure mag webhook NIET laten crashen
+  // ── Place CJ Dropshipping order ──────────────────────────────────────
+  // Non-blocking: CJ failure must NOT crash the webhook
   try {
-    // Haal cj_pid en cj_vid op voor elk besteld product
+    // Fetch cj_pid and cj_vid for each ordered product
     const productIds = items.map((i: any) => i.product_id).filter(Boolean)
     if (productIds.length > 0) {
       const { data: products } = await supabaseAdmin
@@ -136,12 +143,14 @@ async function handleSuccessfulPayment(session: Stripe.Checkout.Session) {
         .select('id, cj_pid, cj_vid')
         .in('id', productIds)
 
-      // Bouw CJ order products array (alleen items met cj_vid)
+      // Build CJ order products array
+      // Priority: item.cj_vid (variant) > product.cj_vid (fallback)
       const cjProducts: { vid: string; quantity: number }[] = []
       for (const item of items) {
         const prod = products?.find((p: any) => p.id === item.product_id)
-        if (prod?.cj_vid) {
-          cjProducts.push({ vid: prod.cj_vid, quantity: item.quantity })
+        const vid = item.cj_vid || prod?.cj_vid
+        if (vid) {
+          cjProducts.push({ vid, quantity: item.quantity })
         }
       }
 
@@ -157,19 +166,19 @@ async function handleSuccessfulPayment(session: Stripe.Checkout.Session) {
           products: cjProducts,
         })
 
-        // Sla CJ order ID op
+        // Save CJ order ID
         await supabaseAdmin
           .from('orders')
           .update({ cj_order_id: cjResult.orderId })
           .eq('id', orderData.id)
 
-        console.log(`✅ CJ order geplaatst: ${cjResult.orderId} voor order ${orderData.id}`)
+        // CJ order placed successfully
       } else {
-        console.log(`⚠️ Geen CJ producten gevonden voor order ${orderData.id} — handmatig afhandelen`)
+        console.error(`⚠️ No CJ products found for order ${orderData.id} — handle manually`)
       }
     }
   } catch (cjError) {
-    // CJ failure mag de webhook NIET laten falen — klant heeft al betaald
-    console.error('⚠️ CJ order plaatsen mislukt (order wordt handmatig afgehandeld):', cjError)
+    // CJ failure must NOT break the webhook — customer has already paid
+    console.error('⚠️ CJ order placement failed (order will be handled manually):', cjError)
   }
 }

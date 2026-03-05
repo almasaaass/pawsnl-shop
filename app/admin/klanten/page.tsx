@@ -31,22 +31,22 @@ export default function AdminKlantenPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Klanten</h1>
-        <p className="text-gray-500 text-sm mt-1">{customers.length} klanten in totaal</p>
+        <h1 className="text-2xl font-bold text-gray-900">Customers</h1>
+        <p className="text-gray-500 text-sm mt-1">{customers.length} customers in total</p>
       </div>
 
-      {/* Samenvatting */}
+      {/* Summary */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8">
         <div className="card p-5">
-          <p className="text-sm text-gray-500 mb-1">Totaal klanten</p>
+          <p className="text-sm text-gray-500 mb-1">Total customers</p>
           <p className="text-2xl font-bold text-gray-900">{customers.length}</p>
         </div>
         <div className="card p-5">
-          <p className="text-sm text-gray-500 mb-1">Totale omzet klanten</p>
+          <p className="text-sm text-gray-500 mb-1">Total customer revenue</p>
           <p className="text-2xl font-bold text-gray-900">{formatPrice(totalRevenue)}</p>
         </div>
         <div className="card p-5">
-          <p className="text-sm text-gray-500 mb-1">Gem. besteding per klant</p>
+          <p className="text-sm text-gray-500 mb-1">Avg. spending per customer</p>
           <p className="text-2xl font-bold text-gray-900">
             {formatPrice(customers.length > 0 ? totalRevenue / customers.length : 0)}
           </p>
@@ -58,7 +58,7 @@ export default function AdminKlantenPage() {
         <Search className="w-4 h-4 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2" />
         <input
           type="text"
-          placeholder="Zoek op naam of e-mail..."
+          placeholder="Search by name or email..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="input pl-11"
@@ -70,10 +70,10 @@ export default function AdminKlantenPage() {
           <table className="w-full">
             <thead>
               <tr className="border-b border-gray-100 bg-gray-50">
-                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Klant</th>
-                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Aantal orders</th>
-                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Totaal besteed</th>
-                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Gem. per order</th>
+                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Customer</th>
+                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Number of orders</th>
+                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Total spent</th>
+                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Avg. per order</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
@@ -87,7 +87,7 @@ export default function AdminKlantenPage() {
                 <tr>
                   <td colSpan={4} className="px-5 py-10 text-center">
                     <Users className="w-10 h-10 text-gray-200 mx-auto mb-3" />
-                    <p className="text-gray-400 text-sm">Geen klanten gevonden</p>
+                    <p className="text-gray-400 text-sm">No customers found</p>
                   </td>
                 </tr>
               ) : (

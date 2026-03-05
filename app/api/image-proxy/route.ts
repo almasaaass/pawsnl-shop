@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 /**
- * Image proxy voor CJ Dropshipping afbeeldingen.
- * CJ CDN blokkeert hotlinking vanaf externe domeinen.
- * Deze route downloadt de afbeelding server-side en stuurt die door,
- * waardoor de browser geen directe verbinding maakt met CJ CDN.
+ * Image proxy for CJ Dropshipping images.
+ * CJ CDN blocks hotlinking from external domains.
+ * This route downloads the image server-side and forwards it,
+ * so the browser does not make a direct connection to CJ CDN.
  *
- * Gebruik: /api/image-proxy?url=https://cc-west-usa.oss-us-west-1.aliyuncs.com/...
+ * Usage: /api/image-proxy?url=https://cc-west-usa.oss-us-west-1.aliyuncs.com/...
  */
 
 const ALLOWED_HOSTS = [
@@ -20,33 +20,33 @@ const ALLOWED_HOSTS = [
   'oss-cf.cjdropshipping.com',
 ]
 
-// In-memory cache voor 1 uur
+// In-memory cache for 1 hour
 const cache = new Map<string, { data: Uint8Array; contentType: string; expires: number }>()
-const CACHE_TTL = 60 * 60 * 1000 // 1 uur
+const CACHE_TTL = 60 * 60 * 1000 // 1 hour
 
 export async function GET(request: NextRequest) {
   const url = request.nextUrl.searchParams.get('url')
 
   if (!url) {
-    return NextResponse.json({ error: 'URL parameter verplicht' }, { status: 400 })
+    return NextResponse.json({ error: 'URL parameter required' }, { status: 400 })
   }
 
-  // Valideer URL
+  // Validate URL
   let parsed: URL
   try {
     parsed = new URL(url)
   } catch {
-    return NextResponse.json({ error: 'Ongeldige URL' }, { status: 400 })
+    return NextResponse.json({ error: 'Invalid URL' }, { status: 400 })
   }
 
-  // Alleen toegestane hosts (CJ CDN domeinen)
+  // Only allowed hosts (CJ CDN domains)
   if (!ALLOWED_HOSTS.some(host => parsed.hostname.endsWith(host) || parsed.hostname === host)) {
-    return NextResponse.json({ error: 'Domein niet toegestaan' }, { status: 403 })
+    return NextResponse.json({ error: 'Domain not allowed' }, { status: 403 })
   }
 
-  // Alleen HTTPS
+  // HTTPS only
   if (parsed.protocol !== 'https:') {
-    return NextResponse.json({ error: 'Alleen HTTPS URLs toegestaan' }, { status: 400 })
+    return NextResponse.json({ error: 'Only HTTPS URLs allowed' }, { status: 400 })
   }
 
   // Check cache
@@ -73,16 +73,16 @@ export async function GET(request: NextRequest) {
 
     if (!response.ok) {
       return NextResponse.json(
-        { error: `Afbeelding kon niet geladen worden (${response.status})` },
+        { error: `Image could not be loaded (${response.status})` },
         { status: 502 }
       )
     }
 
     const contentType = response.headers.get('Content-Type') || 'image/jpeg'
 
-    // Controleer dat het daadwerkelijk een afbeelding is
+    // Verify that it is actually an image
     if (!contentType.startsWith('image/')) {
-      return NextResponse.json({ error: 'URL is geen afbeelding' }, { status: 400 })
+      return NextResponse.json({ error: 'URL is not an image' }, { status: 400 })
     }
 
     const arrayBuffer = await response.arrayBuffer()
@@ -90,17 +90,17 @@ export async function GET(request: NextRequest) {
 
     // Max 5MB
     if (data.byteLength > 5 * 1024 * 1024) {
-      return NextResponse.json({ error: 'Afbeelding te groot' }, { status: 413 })
+      return NextResponse.json({ error: 'Image too large' }, { status: 413 })
     }
 
-    // Sla op in cache
+    // Store in cache
     cache.set(url, {
       data,
       contentType,
       expires: Date.now() + CACHE_TTL,
     })
 
-    // Ruim oude cache entries op (max 500)
+    // Clean up old cache entries (max 500)
     if (cache.size > 500) {
       const now = Date.now()
       const keys = Array.from(cache.keys())
@@ -119,7 +119,7 @@ export async function GET(request: NextRequest) {
     })
   } catch (err: any) {
     return NextResponse.json(
-      { error: `Proxy fout: ${err.message}` },
+      { error: `Proxy error: ${err.message}` },
       { status: 502 }
     )
   }

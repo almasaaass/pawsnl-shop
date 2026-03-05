@@ -35,12 +35,12 @@ export default function BundleAddToCart({ products, bundleName }: Props) {
       {added ? (
         <>
           <Check className="w-5 h-5" />
-          Toegevoegd aan winkelwagen!
+          Toegevoegd!
         </>
       ) : (
         <>
           <ShoppingCart className="w-5 h-5" />
-          Voeg hele bundel toe
+          Hele bundel toevoegen
         </>
       )}
     </button>

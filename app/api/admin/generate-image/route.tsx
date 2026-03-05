@@ -4,10 +4,16 @@ import { NextRequest } from 'next/server'
 export const runtime = 'edge'
 
 /**
- * Genereert professionele productafbeeldingen voor social media en webshop.
+ * Generates professional product images for social media and webshop.
  * Templates: infographic, social, banner, feature
  */
 export async function GET(request: NextRequest) {
+  // Auth check
+  const cookie = request.cookies.get('admin-auth')?.value
+  if (!cookie || cookie !== process.env.ADMIN_SECRET) {
+    return new Response('Unauthorized', { status: 401 })
+  }
+
   const { searchParams } = new URL(request.url)
 
   const template = searchParams.get('template') ?? 'infographic'
@@ -167,7 +173,7 @@ export async function GET(request: NextRequest) {
             </div>
 
             <div style={{ background: '#F97316', padding: '14px 0', borderRadius: '16px', textAlign: 'center', fontSize: '22px', fontWeight: 700, marginTop: '8px' }}>
-              Bestel nu op pawsshop.nl
+              Bestel nu op pawsnlshop.com
             </div>
           </div>
         </div>
@@ -277,7 +283,7 @@ export async function GET(request: NextRequest) {
           </div>
           {discount && (
             <div style={{ background: '#EF4444', color: 'white', padding: '8px 20px', borderRadius: '50px', fontSize: '20px', fontWeight: 800 }}>
-              -{discount}% KORTING
+              -{discount}% OFF
             </div>
           )}
           {badge && !discount && (
@@ -335,7 +341,7 @@ export async function GET(request: NextRequest) {
             )}
           </div>
           <div style={{ background: '#F97316', color: 'white', padding: '16px 32px', borderRadius: '16px', fontSize: '22px', fontWeight: 700 }}>
-            pawsshop.nl
+            pawsnlshop.com
           </div>
         </div>
 
@@ -343,7 +349,7 @@ export async function GET(request: NextRequest) {
         <div style={{ background: '#1F2937', padding: '20px 50px', display: 'flex', justifyContent: 'space-around', borderRadius: '0 0 0 0' }}>
           <span style={{ color: '#D1D5DB', fontSize: '16px' }}>🚚 Gratis verzending vanaf €35</span>
           <span style={{ color: '#D1D5DB', fontSize: '16px' }}>↩️ 30 dagen retour</span>
-          <span style={{ color: '#D1D5DB', fontSize: '16px' }}>🔒 Veilig betalen met iDEAL</span>
+          <span style={{ color: '#D1D5DB', fontSize: '16px' }}>🔒 Veilig betalen</span>
         </div>
       </div>
     ),

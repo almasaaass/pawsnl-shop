@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { X, Gift, Mail, CheckCircle } from 'lucide-react'
 
-const STORAGE_KEY = 'pawsnl-lead-magnet-closed'
+const STORAGE_KEY = 'pawsshop-lead-magnet-closed'
 
 export default function LeadMagnet() {
   const [show, setShow] = useState(false)
@@ -83,7 +83,7 @@ export default function LeadMagnet() {
           </div>
           <h2 className="text-xl font-bold mb-1">Gratis PDF Gids!</h2>
           <p className="text-orange-100 text-sm">
-            De Ultieme Gids voor een Gelukkig Huisdier
+            De Ultieme Gids voor een Blij Huisdier
           </p>
         </div>
 
@@ -105,7 +105,7 @@ export default function LeadMagnet() {
           ) : (
             <>
               <p className="text-sm text-gray-600 text-center mb-4">
-                Ontvang onze gratis PDF met tips voor een gezond & gelukkig huisdier.
+                Ontvang onze gratis PDF met tips voor een gezond &amp; blij huisdier.
                 Plus exclusieve aanbiedingen!
               </p>
 
@@ -136,12 +136,12 @@ export default function LeadMagnet() {
                   ) : (
                     <Gift className="w-4 h-4" />
                   )}
-                  {loading ? 'Verzenden...' : 'Download gratis'}
+                  {loading ? 'Versturen...' : 'Gratis ontvangen'}
                 </button>
               </form>
 
               <p className="text-xs text-gray-400 text-center mt-3">
-                We respecteren je privacy. Geen spam, beloofd.
+                We respecteren je privacy. Nooit spam.
               </p>
             </>
           )}

@@ -5,7 +5,7 @@ export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 })
 
 export function formatPrice(cents: number): string {
-  return new Intl.NumberFormat('nl-NL', {
+  return new Intl.NumberFormat('en-GB', {
     style: 'currency',
     currency: 'EUR',
   }).format(cents / 100)

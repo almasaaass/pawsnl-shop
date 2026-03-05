@@ -43,11 +43,11 @@ const WINNING_KEYWORDS = [
 ]
 
 const CATEGORY_LABELS: Record<string, string> = {
-  honden: '🐶 Honden',
-  katten: '🐱 Katten',
-  vogels: '🐦 Vogels',
-  knaagdieren: '🐹 Knaagdieren',
-  vissen: '🐟 Vissen',
+  honden: '🐶 Dogs',
+  katten: '🐱 Cats',
+  vogels: '🐦 Birds',
+  knaagdieren: '🐹 Rodents',
+  vissen: '🐟 Fish',
 }
 
 function eur(n: number) {
@@ -65,7 +65,7 @@ interface ImportModal {
 
 export default function ImporterenPage() {
   return (
-    <Suspense fallback={<div className="text-center py-16 text-gray-400">Laden...</div>}>
+    <Suspense fallback={<div className="text-center py-16 text-gray-400">Loading...</div>}>
       <ImporterenContent />
     </Suspense>
   )
@@ -88,7 +88,7 @@ function ImporterenContent() {
   const [linked, setLinked] = useState<Set<string>>(new Set())
   const searchParams = useSearchParams()
 
-  // Auto-zoek als ?q= in URL staat (vanuit trending pagina)
+  // Auto-search if ?q= is in URL (from trending page)
   useEffect(() => {
     const q = searchParams.get('q')
     if (q) {
@@ -177,7 +177,7 @@ function ImporterenContent() {
       setImported((prev) => { const next = new Set(Array.from(prev)); next.add(importModal.product.pid); return next })
       setImportModal(null)
     } catch (e: any) {
-      alert(`Fout bij importeren: ${e.message}`)
+      alert(`Error importing: ${e.message}`)
     } finally {
       setImporting(false)
     }
@@ -202,7 +202,7 @@ function ImporterenContent() {
     setLinking(true)
     try {
       const cj = linkModal.cjProduct
-      // Haal detail op voor eerste variant vid
+      // Fetch detail for first variant vid
       const detailRes = await fetch(`/api/admin/cj?pid=${encodeURIComponent(cj.pid)}`)
       const detailData = await detailRes.json()
       const vid = detailData.products?.[0]?.variants?.[0]?.vid ?? null
@@ -224,7 +224,7 @@ function ImporterenContent() {
       setShopProducts((prev) => prev.map((p) => p.id === shopProductId ? { ...p, cj_pid: cj.pid, cj_vid: vid } : p))
       setLinkModal(null)
     } catch (e: any) {
-      alert(`Fout bij koppelen: ${e.message}`)
+      alert(`Error linking: ${e.message}`)
     } finally {
       setLinking(false)
     }
@@ -235,15 +235,15 @@ function ImporterenContent() {
 
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">📦 Producten importeren</h1>
-        <p className="text-gray-500 mt-1">Zoek producten op CJdropshipping en importeer ze direct naar jouw shop</p>
+        <h1 className="text-2xl font-bold text-gray-900">📦 Import Products</h1>
+        <p className="text-gray-500 mt-1">Search products on CJdropshipping and import them directly to your shop</p>
       </div>
 
       {/* PID / URL import */}
       <div className="bg-white rounded-2xl shadow-sm border border-emerald-100 p-5 mb-4">
         <p className="text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
           <Link2 className="w-4 h-4 text-emerald-600" />
-          Direct importeren via CJ Product URL
+          Direct import via CJ Product URL
         </p>
         <div className="flex gap-3">
           <div className="flex-1 relative">
@@ -253,7 +253,7 @@ function ImporterenContent() {
               onChange={(e) => setPidInput(e.target.value)}
               onPaste={handlePidPaste}
               onKeyDown={(e) => e.key === 'Enter' && fetchByPid()}
-              placeholder="Plak CJ product URL (bijv. cjdropshipping.com/product/...)"
+              placeholder="Paste CJ product URL (e.g. cjdropshipping.com/product/...)"
               className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
             />
           </div>
@@ -263,13 +263,13 @@ function ImporterenContent() {
             className="flex items-center gap-2 bg-emerald-600 text-white px-5 py-2.5 rounded-xl font-medium text-sm hover:bg-emerald-700 transition-colors disabled:opacity-60"
           >
             <RefreshCw className={`w-4 h-4 ${pidLoading ? 'animate-spin' : ''}`} />
-            {pidLoading ? 'Ophalen...' : 'Ophalen'}
+            {pidLoading ? 'Fetching...' : 'Fetch'}
           </button>
         </div>
-        <p className="text-xs text-gray-400 mt-2">Tip: kopieer de volledige URL uit je browser van een product op cjdropshipping.com en plak het hier</p>
+        <p className="text-xs text-gray-400 mt-2">Tip: copy the full URL from your browser of a product on cjdropshipping.com and paste it here</p>
       </div>
 
-      {/* Zoekbalk */}
+      {/* Search bar */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 mb-6">
         <div className="flex gap-3">
           <div className="flex-1 relative">
@@ -279,7 +279,7 @@ function ImporterenContent() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && search()}
-              placeholder='Zoek op Engels, bijv. "dog harness no pull"'
+              placeholder="Search e.g. 'dog harness no pull'"
               className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
             />
           </div>
@@ -289,14 +289,14 @@ function ImporterenContent() {
             className="flex items-center gap-2 bg-emerald-600 text-white px-5 py-2.5 rounded-xl font-medium text-sm hover:bg-emerald-700 transition-colors disabled:opacity-60"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-            {loading ? 'Zoeken...' : 'Zoeken'}
+            {loading ? 'Searching...' : 'Search'}
           </button>
         </div>
 
-        {/* Winnende zoekwoorden */}
+        {/* Winning keywords */}
         <div className="mt-4">
           <p className="text-xs text-gray-400 mb-2 flex items-center gap-1">
-            <TrendingUp className="w-3 h-3" /> Bewezen winnende producten:
+            <TrendingUp className="w-3 h-3" /> Proven winning products:
           </p>
           <div className="flex flex-wrap gap-2">
             {WINNING_KEYWORDS.map((kw) => (
@@ -312,42 +312,42 @@ function ImporterenContent() {
         </div>
       </div>
 
-      {/* Foutmelding */}
+      {/* Error message */}
       {error && (
         <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-6 flex items-start gap-3">
           <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
           <div>
-            <p className="text-sm font-medium text-red-700">Fout bij zoeken</p>
+            <p className="text-sm font-medium text-red-700">Error searching</p>
             <p className="text-sm text-red-600 mt-1">{error}</p>
             {error.includes('CJ_EMAIL') && (
               <p className="text-xs text-red-500 mt-2">
-                Voeg <code className="bg-red-100 px-1 rounded">CJ_EMAIL</code> en{' '}
-                <code className="bg-red-100 px-1 rounded">CJ_PASSWORD</code> toe aan Vercel en herstart de deploy.
+                Add <code className="bg-red-100 px-1 rounded">CJ_EMAIL</code> and{' '}
+                <code className="bg-red-100 px-1 rounded">CJ_PASSWORD</code> to Vercel and restart the deploy.
               </p>
             )}
           </div>
         </div>
       )}
 
-      {/* Resultaten */}
+      {/* Results */}
       {results.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {results.map((p) => (
             <div key={p.pid} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-              {/* Afbeelding */}
+              {/* Image */}
               <div className="aspect-square bg-gray-50 relative">
                 {p.productImage ? (
                   <img src={p.productImage} alt={p.productName} className="w-full h-full object-cover" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-4xl">📦</div>
                 )}
-                {/* Marge badge */}
+                {/* Margin badge */}
                 <div className={`absolute top-2 right-2 text-xs font-bold px-2 py-1 rounded-full ${
                   p.margin >= 60 ? 'bg-emerald-500 text-white' :
                   p.margin >= 45 ? 'bg-amber-500 text-white' :
                   'bg-gray-500 text-white'
                 }`}>
-                  {p.margin}% marge
+                  {p.margin}% margin
                 </div>
                 {imported.has(p.pid) && (
                   <div className="absolute inset-0 bg-emerald-500/80 flex items-center justify-center">
@@ -362,11 +362,11 @@ function ImporterenContent() {
 
                 <div className="flex items-center justify-between mb-3">
                   <div>
-                    <span className="text-xs text-gray-400">Inkoop: </span>
+                    <span className="text-xs text-gray-400">Cost: </span>
                     <span className="text-sm font-medium text-gray-700">{eur(p.sellPrice)}</span>
                   </div>
                   <div className="text-right">
-                    <span className="text-xs text-gray-400">Verkoop: </span>
+                    <span className="text-xs text-gray-400">Selling: </span>
                     <span className="text-sm font-bold text-emerald-600">{eur(p.suggestedPrice)}</span>
                   </div>
                 </div>
@@ -378,16 +378,16 @@ function ImporterenContent() {
                     className="flex-1 flex items-center justify-center gap-1.5 bg-gray-900 text-white text-sm font-medium py-2 rounded-xl hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {imported.has(p.pid) ? (
-                      <><Check className="w-4 h-4" /> Nieuw</>
+                      <><Check className="w-4 h-4" /> New</>
                     ) : (
-                      <><Plus className="w-4 h-4" /> Nieuw</>
+                      <><Plus className="w-4 h-4" /> New</>
                     )}
                   </button>
                   <button
                     onClick={() => openLink(p)}
                     className="flex-1 flex items-center justify-center gap-1.5 bg-blue-600 text-white text-sm font-medium py-2 rounded-xl hover:bg-blue-700 transition-colors"
                   >
-                    <LinkIcon className="w-4 h-4" /> Koppelen
+                    <LinkIcon className="w-4 h-4" /> Link
                   </button>
                 </div>
               </div>
@@ -396,12 +396,12 @@ function ImporterenContent() {
         </div>
       )}
 
-      {/* Leeg */}
+      {/* Empty */}
       {results.length === 0 && !loading && !error && (
         <div className="text-center py-16 text-gray-400">
           <div className="text-5xl mb-4">🔍</div>
-          <p className="font-medium text-gray-500">Klik op een zoekterm hierboven of typ je eigen zoekopdracht</p>
-          <p className="text-sm mt-1">Tip: zoek in het Engels voor de beste resultaten</p>
+          <p className="font-medium text-gray-500">Click a search term above or type your own search query</p>
+          <p className="text-sm mt-1">Tip: search in English for best results</p>
         </div>
       )}
 
@@ -410,7 +410,7 @@ function ImporterenContent() {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6">
-              <h2 className="text-lg font-bold text-gray-900 mb-4">Product importeren</h2>
+              <h2 className="text-lg font-bold text-gray-900 mb-4">Import product</h2>
 
               <div className="flex gap-3 mb-5">
                 <img
@@ -419,14 +419,14 @@ function ImporterenContent() {
                   className="w-20 h-20 rounded-xl object-cover flex-shrink-0"
                 />
                 <div>
-                  <p className="text-xs text-gray-400">CJ inkoopprijs: <strong>{eur(importModal.product.sellPrice)}</strong></p>
+                  <p className="text-xs text-gray-400">CJ cost price: <strong>{eur(importModal.product.sellPrice)}</strong></p>
                   <p className="text-xs text-gray-400 mt-0.5">PID: {importModal.product.pid}</p>
                 </div>
               </div>
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Naam (Nederlands)</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
                   <input
                     type="text"
                     value={importModal.nameNL}
@@ -436,19 +436,19 @@ function ImporterenContent() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Beschrijving (Nederlands)</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
                   <textarea
                     value={importModal.descriptionNL}
                     onChange={(e) => setImportModal({ ...importModal, descriptionNL: e.target.value })}
                     rows={4}
-                    placeholder="Schrijf een Nederlandse productomschrijving..."
+                    placeholder="Write a product description..."
                     className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Categorie</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
                     <select
                       value={importModal.category}
                       onChange={(e) => setImportModal({ ...importModal, category: e.target.value })}
@@ -461,7 +461,7 @@ function ImporterenContent() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Verkoopprijs (€)</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Selling price (€)</label>
                     <input
                       type="number"
                       step="0.05"
@@ -474,7 +474,7 @@ function ImporterenContent() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Vergelijkingsprijs (€) <span className="text-gray-400 font-normal">— doorgestreepte prijs</span>
+                    Compare price (€) <span className="text-gray-400 font-normal">— strikethrough price</span>
                   </label>
                   <input
                     type="number"
@@ -484,23 +484,23 @@ function ImporterenContent() {
                       ...importModal,
                       comparePrice: e.target.value ? parseFloat(e.target.value) : null,
                     })}
-                    placeholder="Leeg laten = geen actie"
+                    placeholder="Leave empty = no action"
                     className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   />
                 </div>
 
-                {/* Marge preview */}
+                {/* Margin preview */}
                 <div className="bg-gray-50 rounded-xl p-3 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-gray-500">Inkoop:</span>
+                    <span className="text-gray-500">Cost:</span>
                     <span className="font-medium">{eur(importModal.product.sellPrice)}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-500">Verkoop:</span>
+                    <span className="text-gray-500">Selling:</span>
                     <span className="font-medium text-emerald-600">{eur(importModal.price)}</span>
                   </div>
                   <div className="flex justify-between border-t border-gray-200 mt-2 pt-2">
-                    <span className="text-gray-500">Winst per stuk:</span>
+                    <span className="text-gray-500">Profit per unit:</span>
                     <span className="font-bold text-emerald-600">
                       {eur(importModal.price - importModal.product.sellPrice)}
                       {' '}({Math.round(((importModal.price - importModal.product.sellPrice) / importModal.price) * 100)}%)
@@ -514,14 +514,14 @@ function ImporterenContent() {
                   onClick={() => setImportModal(null)}
                   className="flex-1 border border-gray-200 text-gray-700 py-2.5 rounded-xl text-sm font-medium hover:bg-gray-50"
                 >
-                  Annuleren
+                  Cancel
                 </button>
                 <button
                   onClick={doImport}
                   disabled={importing || !importModal.nameNL}
                   className="flex-1 bg-emerald-600 text-white py-2.5 rounded-xl text-sm font-medium hover:bg-emerald-700 transition-colors disabled:opacity-60"
                 >
-                  {importing ? 'Importeren...' : '✅ Importeren naar shop'}
+                  {importing ? 'Importing...' : '✅ Import to shop'}
                 </button>
               </div>
             </div>
@@ -534,7 +534,7 @@ function ImporterenContent() {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6">
-              <h2 className="text-lg font-bold text-gray-900 mb-2">Koppel aan bestaand product</h2>
+              <h2 className="text-lg font-bold text-gray-900 mb-2">Link to existing product</h2>
               <p className="text-sm text-gray-500 mb-4">
                 CJ product: <strong>{linkModal.cjProduct.productName}</strong>
                 <br />
@@ -542,7 +542,7 @@ function ImporterenContent() {
               </p>
 
               {shopLoading ? (
-                <div className="text-center py-8 text-gray-400">Producten laden...</div>
+                <div className="text-center py-8 text-gray-400">Loading products...</div>
               ) : (
                 <div className="space-y-2 max-h-96 overflow-y-auto">
                   {shopProducts.map((sp) => (
@@ -570,7 +570,7 @@ function ImporterenContent() {
                         </p>
                       </div>
                       {sp.cj_pid ? (
-                        <span className="text-xs text-green-600 font-medium flex-shrink-0">Al gekoppeld</span>
+                        <span className="text-xs text-green-600 font-medium flex-shrink-0">Already linked</span>
                       ) : linked.has(sp.id) ? (
                         <Check className="w-5 h-5 text-blue-600 flex-shrink-0" />
                       ) : (
@@ -585,7 +585,7 @@ function ImporterenContent() {
                 onClick={() => setLinkModal(null)}
                 className="w-full mt-4 border border-gray-200 text-gray-700 py-2.5 rounded-xl text-sm font-medium hover:bg-gray-50"
               >
-                Sluiten
+                Close
               </button>
             </div>
           </div>

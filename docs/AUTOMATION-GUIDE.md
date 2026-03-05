@@ -3,7 +3,7 @@
 > Configuratiegids voor het automatiseren van de PawsNL dierenwebshop met n8n.
 > Alle technische termen staan in het Engels; toelichtingen in het Nederlands.
 
-**Stack:** Next.js 14 (Vercel) | Supabase (PostgreSQL) | Stripe (iDEAL + cards) | CJ Dropshipping | Resend | Telegram | Domain: `pawsshop.nl`
+**Stack:** Next.js 14 (Vercel) | Supabase (PostgreSQL) | Stripe (iDEAL + cards) | CJ Dropshipping | Resend | Telegram | Domain: `pawsnlshop.com`
 
 ---
 
@@ -31,10 +31,10 @@ docker run -d \
   --restart unless-stopped \
   -p 5678:5678 \
   -v n8n_data:/home/node/.n8n \
-  -e N8N_HOST=n8n.pawsshop.nl \
+  -e N8N_HOST=n8n.pawsnlshop.com \
   -e N8N_PORT=5678 \
   -e N8N_PROTOCOL=https \
-  -e WEBHOOK_URL=https://n8n.pawsshop.nl/ \
+  -e WEBHOOK_URL=https://n8n.pawsnlshop.com/ \
   -e GENERIC_TIMEZONE=Europe/Amsterdam \
   -e TZ=Europe/Amsterdam \
   n8nio/n8n
@@ -53,7 +53,7 @@ De 18 workflow JSON-bestanden staan in:
 
 Importeren via n8n UI:
 
-1. Open `https://n8n.pawsshop.nl` in je browser.
+1. Open `https://n8n.pawsnlshop.com` in je browser.
 2. Ga naar **Workflows > Import from File**.
 3. Selecteer alle `.json`-bestanden uit bovenstaande map.
 4. Pas per workflow de credentials en endpoints aan volgens deze gids (sectie 4).
@@ -133,7 +133,7 @@ Stel de volgende credentials in via **n8n > Settings > Credentials**:
 > webshop uit te voeren. Maak een nieuw bestand aan:
 > `app/api/webhooks/n8n/route.ts`
 
-**Endpoint:** `POST https://pawsshop.nl/api/webhooks/n8n`
+**Endpoint:** `POST https://pawsnlshop.com/api/webhooks/n8n`
 
 **Authenticatie:** `Authorization: Bearer {ADMIN_SECRET}`
 
@@ -214,7 +214,7 @@ Alle admin endpoints vereisen de cookie `admin-auth` (voor browser) of de header
 
 ```
 Method: GET
-URL: https://pawsshop.nl/api/admin/orders
+URL: https://pawsnlshop.com/api/admin/orders
 Headers:
   Authorization: Bearer {ADMIN_SECRET}
 ```
@@ -223,7 +223,7 @@ Headers:
 
 ```
 Method: PUT
-URL: https://pawsshop.nl/api/admin/orders/{{ $json.order_id }}
+URL: https://pawsnlshop.com/api/admin/orders/{{ $json.order_id }}
 Headers:
   Authorization: Bearer {ADMIN_SECRET}
   Content-Type: application/json
@@ -300,13 +300,13 @@ Hieronder staat per workflow precies wat aangepast moet worden voor PawsNL.
 
 | Onderdeel | Origineel | PawsNL |
 |-----------|----------|--------|
-| Trigger | Shopify webhook `shopify-order-created` | Stripe webhook via `https://pawsshop.nl/api/webhooks/n8n` of Supabase `orders` insert trigger |
+| Trigger | Shopify webhook `shopify-order-created` | Stripe webhook via `https://pawsnlshop.com/api/webhooks/n8n` of Supabase `orders` insert trigger |
 | Supplier routing | CJ + AliExpress + Generic | **Alleen CJ Dropshipping** -- verwijder AliExpress en Generic branches |
 | CJ API endpoint | `https://developers.cjdropshipping.com/api2.0/shopping/order/createOrder` | Behouden -- dit is correct |
 | CJ Auth header | `CJ-Access-Token: {token}` | Gebruik credential `CJ Dropshipping API Token` |
 | Order tracker | Google Sheets | Vervang door **Supabase `orders` tabel** update |
 | Slack notifications | Slack `#orders` channel | Vervang door **Telegram** (zie sectie 6) |
-| Customer email | SMTP `orders@yourstore.com` | **Resend** `info@pawsshop.nl` |
+| Customer email | SMTP `orders@yourstore.com` | **Resend** `info@pawsnlshop.com` |
 | Manual review queue | Google Sheets | Supabase nieuwe tabel of Telegram alert |
 
 **CJ API format voor PawsNL orders:**
@@ -344,7 +344,7 @@ Hieronder staat per workflow precies wat aangepast moet worden voor PawsNL.
 |-----------|----------|--------|
 | Data source | Google Sheets `Order Tracker` | **Supabase** `orders` tabel: `SELECT * FROM orders WHERE status = 'shipped' AND tracking_number IS NOT NULL` |
 | Tracking API | 17Track | Behouden, of gebruik CJ tracking API: `https://developers.cjdropshipping.com/api2.0/shopping/order/getOrderDetail` |
-| Customer emails | SMTP `shipping@yourstore.com` | **Resend** `info@pawsshop.nl` |
+| Customer emails | SMTP `shipping@yourstore.com` | **Resend** `info@pawsnlshop.com` |
 | Shipping alerts | Slack `#shipping-alerts` | **Telegram** |
 | Tracking log | Google Sheets | **Supabase** |
 | Email taal | Engels | **Nederlands** (zie emailtemplates hieronder) |
@@ -367,13 +367,13 @@ Hieronder staat per workflow precies wat aangepast moet worden voor PawsNL.
 
 | Onderdeel | Origineel | PawsNL |
 |-----------|----------|--------|
-| Trigger | Webhook `new-subscriber` | Supabase trigger op `email_signups` insert of `https://pawsshop.nl/api/webhooks/n8n` |
+| Trigger | Webhook `new-subscriber` | Supabase trigger op `email_signups` insert of `https://pawsnlshop.com/api/webhooks/n8n` |
 | Email provider | SendGrid | **Resend** via HTTP Request node |
-| From address | `$env.STORE_EMAIL` | `info@pawsshop.nl` |
+| From address | `$env.STORE_EMAIL` | `info@pawsnlshop.com` |
 | Discount code | `WELCOME10` | **`WELKOM10`** (10% korting) |
 | Taal | Engels | **Nederlands** |
 | Brand voice | Generic e-commerce | **Vriendelijk, huisdier-themed, Nederlands** |
-| Best sellers fetch | `$env.STORE_API_URL/products/best-sellers` | `https://pawsshop.nl/api/admin/products` (filter op `featured = true`) |
+| Best sellers fetch | `$env.STORE_API_URL/products/best-sellers` | `https://pawsnlshop.com/api/admin/products` (filter op `featured = true`) |
 | Logging | Google Sheets | **Supabase** of behoud Sheets voor overzicht |
 | Timezone | `America/New_York` | **`Europe/Amsterdam`** |
 
@@ -387,7 +387,7 @@ Headers:
   Content-Type: application/json
 Body:
 {
-  "from": "PawsNL <info@pawsshop.nl>",
+  "from": "PawsNL <info@pawsnlshop.com>",
   "to": ["{{ $json.subscriber_email }}"],
   "subject": "{{ $json.email_subject }}",
   "html": "{{ $json.email_body }}"
@@ -414,10 +414,10 @@ Body:
 |-----------|----------|--------|
 | Trigger | Webhook `cart-abandoned` | Cron endpoint of Supabase query op verlaten sessies |
 | Email provider | SendGrid | **Resend** |
-| From address | `$env.STORE_EMAIL` | `info@pawsshop.nl` |
+| From address | `$env.STORE_EMAIL` | `info@pawsnlshop.com` |
 | Taal | Engels | **Nederlands** |
 | Discount code (Email 3) | `COMEBACK15` | **`TERUGKOM15`** (15% korting) |
-| Cart recovery URL | `$env.STORE_URL/cart/{cart_id}` | `https://pawsshop.nl/winkelwagen?recover={cart_id}` |
+| Cart recovery URL | `$env.STORE_URL/cart/{cart_id}` | `https://pawsnlshop.com/winkelwagen?recover={cart_id}` |
 | Cart status check | HTTP Request naar store API | Supabase query |
 | Timezone | `America/New_York` | **`Europe/Amsterdam`** |
 
@@ -441,10 +441,10 @@ Body:
 |-----------|----------|--------|
 | Trigger | Webhook `order-confirmed` | Stripe webhook `checkout.session.completed` of Supabase `orders` trigger |
 | Email provider | SendGrid | **Resend** |
-| From address | `$env.STORE_EMAIL` | `info@pawsshop.nl` |
+| From address | `$env.STORE_EMAIL` | `info@pawsnlshop.com` |
 | Taal | Engels | **Nederlands** |
 | Levertijd mededeling | "7-14 business days" | **"5-12 werkdagen naar Nederland, 7-15 werkdagen naar Belgie en Duitsland"** |
-| Review link | `$env.STORE_URL/review/{order_id}` | `https://pawsshop.nl/review/{order_id}` |
+| Review link | `$env.STORE_URL/review/{order_id}` | `https://pawsnlshop.com/review/{order_id}` |
 | Cross-sell discount | 5% returning customer | `VIP25` is te hoog voor standaard; gebruik **10% terugkerende klant** |
 | Timezone | `America/New_York` | **`Europe/Amsterdam`** |
 
@@ -456,7 +456,7 @@ Body:
 
 | Onderdeel | PawsNL waarde |
 |-----------|---------------|
-| Email provider | **Resend** via `info@pawsshop.nl` |
+| Email provider | **Resend** via `info@pawsnlshop.com` |
 | Taal | **Nederlands** |
 | Inactiviteitsperiode | 60 dagen geen bestelling |
 | Korting | **`TERUGKOM15`** (15%) of **`VIP25`** (25% voor high-value klanten met >3 bestellingen) |
@@ -478,7 +478,7 @@ Body:
 | Daily costs | Google Sheets `DailyCosts` | Google Sheets behouden of Supabase tabel |
 | Dashboard output | Slack + Email | **Telegram** + Email via Resend |
 | Currency | USD `$` | **EUR** |
-| Stats endpoint | Shopify | `https://pawsshop.nl/api/admin/stats` |
+| Stats endpoint | Shopify | `https://pawsnlshop.com/api/admin/stats` |
 | Timezone | `America/New_York` | **`Europe/Amsterdam`** |
 | Trigger time | 20:00 EST | **20:00 CET**: `0 20 * * *` (Amsterdam timezone) |
 
@@ -577,7 +577,7 @@ Vervang alle system prompts in de content generatie nodes met:
 Je bent een ervaren social media content creator voor PawsNL, een Nederlandse
 online dierenwinkel. Schrijf in het Nederlands, gebruik een warme en
 vriendelijke toon. Focus op huisdierliefhebbers in Nederland en Belgie.
-Gebruik emoji's passend bij het platform. Verwijs naar pawsshop.nl.
+Gebruik emoji's passend bij het platform. Verwijs naar pawsnlshop.com.
 ```
 
 ---
@@ -619,7 +619,7 @@ Gebruik emoji's passend bij het platform. Verwijs naar pawsshop.nl.
 
 - Retourbeleid: **30 dagen**
 - Retouradres: Configureer in workflow
-- Email via: **Resend** `info@pawsshop.nl`
+- Email via: **Resend** `info@pawsnlshop.com`
 - Taal: **Nederlands**
 
 #### Customer Ticket Handler (`customer-ticket-handler.json`)
@@ -636,7 +636,7 @@ Gebruik emoji's passend bij het platform. Verwijs naar pawsshop.nl.
 #### Review Collector (`review-collector.json`)
 
 - Trigger: 7 dagen na levering
-- Email via: **Resend** `info@pawsshop.nl`
+- Email via: **Resend** `info@pawsnlshop.com`
 - Taal: **Nederlands**
 - Incentive: 10% korting met code `REVIEW10`
 
@@ -779,7 +779,7 @@ STRIPE_SECRET_KEY=sk_live_51...                       # Secret Stripe key
 STRIPE_WEBHOOK_SECRET=whsec_...                       # Webhook signing secret
 
 # --- App ---
-NEXT_PUBLIC_APP_URL=https://pawsshop.nl               # Productie URL
+NEXT_PUBLIC_APP_URL=https://pawsnlshop.com               # Productie URL
 
 # --- Admin ---
 ADMIN_SECRET=<sterk-wachtwoord-minimaal-32-tekens>    # Bearer token voor admin API + n8n
@@ -802,17 +802,17 @@ Stel deze in via Docker `-e` flags of in de n8n UI onder **Settings > Variables*
 
 ```bash
 # --- n8n Core ---
-N8N_HOST=n8n.pawsshop.nl
+N8N_HOST=n8n.pawsnlshop.com
 N8N_PORT=5678
 N8N_PROTOCOL=https
-WEBHOOK_URL=https://n8n.pawsshop.nl/
+WEBHOOK_URL=https://n8n.pawsnlshop.com/
 GENERIC_TIMEZONE=Europe/Amsterdam
 TZ=Europe/Amsterdam
 
 # --- PawsNL Store ---
-STORE_URL=https://pawsshop.nl
-STORE_API_URL=https://pawsshop.nl/api
-STORE_EMAIL=info@pawsshop.nl
+STORE_URL=https://pawsnlshop.com
+STORE_API_URL=https://pawsnlshop.com/api
+STORE_EMAIL=info@pawsnlshop.com
 ADMIN_SECRET=<zelfde-als-in-vercel>
 CRON_SECRET=<zelfde-als-in-vercel>
 
@@ -834,7 +834,7 @@ TELEGRAM_BOT_TOKEN=123456789:ABCdefGHIjklMNOpqrsTUVwxyz
 TELEGRAM_CHAT_ID=-100...
 
 # --- Email ---
-NOTIFICATION_TO_EMAIL=fariha@pawsshop.nl              # Jouw persoonlijke email voor alerts
+NOTIFICATION_TO_EMAIL=fariha@pawsnlshop.com              # Jouw persoonlijke email voor alerts
 
 # --- Optioneel (voor toekomstige workflows) ---
 # OPENAI_API_KEY=sk-...                               # Voor AI-content generatie in workflows
@@ -874,7 +874,7 @@ NOTIFICATION_TO_EMAIL=fariha@pawsshop.nl              # Jouw persoonlijke email 
 | **Retourbeleid** | 30 dagen retourrecht na ontvangst |
 | **Verzendlanden** | Nederland, Belgie, Duitsland |
 | **Betaalmethoden** | iDEAL, creditcard (Visa/Mastercard), Bancontact |
-| **Contact** | info@pawsshop.nl |
+| **Contact** | info@pawsnlshop.com |
 | **Tracking** | Wordt per email verstuurd zodra het pakket is verzonden |
 
 ---

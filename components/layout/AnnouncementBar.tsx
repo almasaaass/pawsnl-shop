@@ -2,22 +2,25 @@
 
 import { useState, useEffect } from 'react'
 import { Truck, RotateCcw, ShieldCheck } from 'lucide-react'
-
-const messages = [
-  { icon: Truck, text: 'Gratis verzending vanaf €35' },
-  { icon: RotateCcw, text: '30 dagen retour' },
-  { icon: ShieldCheck, text: 'Veilig betalen met iDEAL' },
-]
+import { useTranslations } from 'next-intl'
 
 export default function AnnouncementBar() {
+  const t = useTranslations('announcement')
   const [current, setCurrent] = useState(0)
+
+  const messages = [
+    { icon: Truck, text: t('freeShipping') },
+    { icon: RotateCcw, text: t('returnPolicy') },
+    { icon: ShieldCheck, text: t('safePayment') },
+    { icon: ShieldCheck, text: t('discountCode') },
+  ]
 
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrent((c) => (c + 1) % messages.length)
     }, 3500)
     return () => clearInterval(timer)
-  }, [])
+  }, [messages.length])
 
   return (
     <div className="bg-trust-700 text-white text-xs sm:text-sm py-2">
@@ -29,7 +32,7 @@ export default function AnnouncementBar() {
               <msg.icon className="w-3.5 h-3.5" />
               <span>{msg.text}</span>
               {i < messages.length - 1 && (
-                <span className="ml-6 text-trust-300">·</span>
+                <span className="ml-6 text-trust-300">&middot;</span>
               )}
             </div>
           ))}

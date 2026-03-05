@@ -1,0 +1,48 @@
+{
+  "mcpServers": {
+    "supabase": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@supabase/mcp-server-supabase@latest",
+        "--supabase-url",
+        "env:NEXT_PUBLIC_SUPABASE_URL",
+        "--supabase-key",
+        "env:SUPABASE_SERVICE_ROLE_KEY"
+      ]
+    },
+    "stripe": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@stripe/mcp",
+        "--api-key",
+        "env:STRIPE_SECRET_KEY"
+      ]
+    },
+    "shopify-dev": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@anthropic-ai/shopify-mcp-server@latest"
+      ],
+      "description": "Shopify API docs, schema explorer, and Functions builder"
+    },
+    "playwright": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@anthropic-ai/mcp-server-playwright"
+      ],
+      "description": "Browser automation for competitor research and product scraping"
+    },
+    "fetch": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@anthropic-ai/mcp-server-fetch"
+      ],
+      "description": "Fetch web content for product research, supplier APIs, and trend analysis"
+    }
+  }
+}

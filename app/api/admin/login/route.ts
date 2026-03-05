@@ -5,7 +5,7 @@ export async function POST(request: NextRequest) {
   const adminSecret = process.env.ADMIN_SECRET
 
   if (!adminSecret || wachtwoord !== adminSecret) {
-    return NextResponse.json({ error: 'Ongeldig wachtwoord' }, { status: 401 })
+    return NextResponse.json({ error: 'Invalid password' }, { status: 401 })
   }
 
   const response = NextResponse.json({ success: true })
@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
-    maxAge: 60 * 60 * 24 * 7, // 7 dagen
+    maxAge: 60 * 60 * 24 * 7, // 7 days
     path: '/',
   })
 

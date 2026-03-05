@@ -3,28 +3,28 @@
 import { Star } from 'lucide-react'
 import { useInView } from '@/hooks/useInView'
 
-// Voorbeeld reviews – vervang door echte reviews uit je database
+// Demo reviews – vervang door echte reviews uit je database
 const DEMO_REVIEWS = [
   {
     id: '1',
     author: 'Marieke V.',
     rating: 5,
-    comment: 'Geweldig product! Mijn hond is er super blij mee. Snelle levering en prima verpakt.',
+    comment: 'Geweldig product! Mijn hond is er helemaal gek op. Snelle levering en mooi verpakt.',
     date: '2024-11-15',
   },
   {
     id: '2',
-    author: 'Joost K.',
+    author: 'Bas K.',
     rating: 4,
-    comment: 'Goede kwaliteit voor de prijs. Zou zeker opnieuw bestellen bij PawsNL.',
+    comment: 'Uitstekende kwaliteit voor de prijs. Bestel zeker nog een keer bij PawsNL.',
     date: '2024-10-28',
   },
   {
     id: '3',
-    author: 'Sandra M.',
+    author: 'Laura M.',
     rating: 5,
     comment:
-      'Precies wat ik zocht. Mijn kat accepteert dit meteen, wat ik zeker niet verwachtte. Aanrader!',
+      'Precies wat ik zocht. Mijn kat accepteerde het meteen, wat ik écht niet had verwacht. Zeker een aanrader!',
     date: '2024-10-10',
   },
 ]
@@ -57,7 +57,7 @@ export default function ReviewsSection({ productId: _productId, productName }: P
   return (
     <section ref={ref}>
       <h2 className={`text-2xl font-bold text-gray-900 mb-6 ${isInView ? 'animate-fade-in-up' : 'opacity-0'}`}>
-        Klantbeoordelingen voor {productName}
+        Klantreviews voor {productName}
       </h2>
 
       {/* Samenvatting */}
@@ -65,7 +65,7 @@ export default function ReviewsSection({ productId: _productId, productName }: P
         <div className="text-center flex-shrink-0">
           <p className="text-5xl font-bold text-gray-900">{avgRating.toFixed(1)}</p>
           <StarRating rating={Math.round(avgRating)} />
-          <p className="text-sm text-gray-500 mt-1">{DEMO_REVIEWS.length} beoordelingen</p>
+          <p className="text-sm text-gray-500 mt-1">{DEMO_REVIEWS.length} reviews</p>
         </div>
         <div className="flex-1">
           {[5, 4, 3, 2, 1].map((star) => {
@@ -88,7 +88,7 @@ export default function ReviewsSection({ productId: _productId, productName }: P
         </div>
       </div>
 
-      {/* Review lijst */}
+      {/* Reviewlijst */}
       <div className="space-y-4">
         {DEMO_REVIEWS.map((review, i) => (
           <div

@@ -115,6 +115,40 @@ export async function POST(request: NextRequest) {
     // Eerste variant ID ophalen voor CJ order koppeling
     const firstVid = product.variants?.[0]?.vid ?? null
 
+    // Build variants JSONB if product has multiple CJ variants
+    let variants = null
+    let optionTypes = null
+    if (product.variants && product.variants.length > 1) {
+      variants = product.variants.map((v: any, i: number) => {
+        const options: Record<string, string> = {}
+        if (v.variantProperty) {
+          const parts = v.variantProperty.split(';').filter(Boolean)
+          for (const part of parts) {
+            const [key, ...valParts] = part.split(':')
+            if (key && valParts.length > 0) {
+              const translations: Record<string, string> = {
+                Color: 'Kleur', color: 'Kleur', Colour: 'Kleur',
+                Size: 'Maat', size: 'Maat',
+                Style: 'Stijl', style: 'Stijl',
+                Material: 'Materiaal', material: 'Materiaal',
+              }
+              options[translations[key.trim()] || key.trim()] = valParts.join(':').trim()
+            }
+          }
+        }
+        return {
+          id: `new-v${i}`,
+          cj_vid: v.vid,
+          sku: v.variantSku,
+          options,
+          image: v.variantImage || undefined,
+          stock: 999,
+        }
+      })
+      optionTypes = Object.keys(variants[0]?.options ?? {})
+      if (optionTypes.length === 0) optionTypes = null
+    }
+
     const { data, error } = await supabase.from('products').insert({
       name: nameNL,
       slug: finalSlug,
@@ -127,6 +161,8 @@ export async function POST(request: NextRequest) {
       featured: false,
       cj_pid: product.pid,
       cj_vid: firstVid,
+      variants,
+      option_types: optionTypes,
     }).select().single()
 
     if (error) throw error

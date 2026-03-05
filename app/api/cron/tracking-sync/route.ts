@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
           items: order.items as any[],
         })
 
-        console.log(`✅ Tracking synced voor order ${order.id}: ${detail.trackNumber}`)
+        // Tracking synced successfully
         synced++
       }
     } catch (err: any) {

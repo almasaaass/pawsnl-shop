@@ -2,7 +2,7 @@
 
 import { useRouter, usePathname, useSearchParams } from 'next/navigation'
 import { useCallback } from 'react'
-import { X, Dog, Cat, Bird, Rabbit, Fish, Snail } from 'lucide-react'
+import { X, Dog, Cat, Bird, Rabbit, Fish, Snail, TrendingUp } from 'lucide-react'
 import { LucideIcon } from 'lucide-react'
 
 const iconMap: Record<string, LucideIcon> = {
@@ -71,7 +71,7 @@ export default function ProductFilters({ categories, activeCategory, minPrijs, m
 
   return (
     <div className="space-y-6">
-      {/* Actieve filters wissen */}
+      {/* Clear active filters */}
       {hasFilters && (
         <button
           onClick={clearAll}
@@ -82,7 +82,30 @@ export default function ProductFilters({ categories, activeCategory, minPrijs, m
         </button>
       )}
 
-      {/* Categorieën */}
+      {/* Trending filter */}
+      <div>
+        <button
+          onClick={() => {
+            const qs = createQueryString({
+              trending: searchParams.get('trending') === '1' ? null : '1',
+            })
+            router.push(`${pathname}?${qs}`)
+          }}
+          className={`w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-bold transition-all ${
+            searchParams.get('trending') === '1'
+              ? 'bg-charcoal text-white shadow-md'
+              : 'bg-gray-50 text-charcoal hover:bg-gray-100 border border-gray-200'
+          }`}
+        >
+          <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+            <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 00-.79-.05A6.34 6.34 0 003.15 15.2a6.34 6.34 0 0010.86 4.48 6.3 6.3 0 001.86-4.49V8.87a8.28 8.28 0 004.84 1.56V6.96a4.84 4.84 0 01-1.12-.27z" />
+          </svg>
+          Trending op TikTok
+          <TrendingUp className="w-3.5 h-3.5 ml-auto" />
+        </button>
+      </div>
+
+      {/* Categories */}
       <div>
         <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
           Categorie
@@ -122,14 +145,14 @@ export default function ProductFilters({ categories, activeCategory, minPrijs, m
         </div>
       </div>
 
-      {/* Prijs */}
+      {/* Price */}
       <div>
         <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
           Prijs
         </p>
         <div className="space-y-2">
           {[
-            { label: 'Tot €15', min: '', max: '15' },
+            { label: 'Onder €15', min: '', max: '15' },
             { label: '€15 – €30', min: '15', max: '30' },
             { label: '€30 – €50', min: '30', max: '50' },
             { label: 'Boven €50', min: '50', max: '' },

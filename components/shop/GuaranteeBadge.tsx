@@ -10,11 +10,10 @@ export default function GuaranteeBadge({ variant = 'inline' }: Props) {
       <div className="bg-gradient-to-r from-trust-50 to-trust-50/50 border border-trust-200 rounded-2xl p-6 text-center">
         <div className="flex items-center justify-center gap-2 mb-2">
           <ShieldCheck className="w-7 h-7 text-trust-600" />
-          <span className="text-xl font-bold text-trust-800">100% Blij-Dier Garantie</span>
+          <span className="text-xl font-bold text-trust-800">100% Blij Huisdier Garantie</span>
         </div>
         <p className="text-sm text-trust-700 max-w-md mx-auto">
-          Is jouw huisdier niet blij? Dan krijg je je geld terug. Geen vragen, geen gedoe.
-          30 dagen lang.
+          Niet tevreden? Volledige terugbetaling. Zonder vragen. 30 dagen garantie.
         </p>
       </div>
     )
@@ -24,7 +23,7 @@ export default function GuaranteeBadge({ variant = 'inline' }: Props) {
     return (
       <div className="flex items-center gap-2 text-trust-700 bg-trust-50 border border-trust-200 rounded-xl px-3 py-2">
         <ShieldCheck className="w-4 h-4 flex-shrink-0" />
-        <span className="text-xs font-semibold">100% Blij-Dier Garantie</span>
+        <span className="text-xs font-semibold">100% Blij Huisdier Garantie</span>
       </div>
     )
   }
@@ -36,8 +35,8 @@ export default function GuaranteeBadge({ variant = 'inline' }: Props) {
         <ShieldCheck className="w-5 h-5 text-trust-600" />
       </div>
       <div>
-        <p className="font-bold text-trust-800 text-sm">100% Blij-Dier Garantie</p>
-        <p className="text-xs text-trust-600">Niet tevreden? Geld terug, geen vragen.</p>
+        <p className="font-bold text-trust-800 text-sm">100% Blij Huisdier Garantie</p>
+        <p className="text-xs text-trust-600">Niet tevreden? Geld terug, zonder vragen.</p>
       </div>
     </div>
   )

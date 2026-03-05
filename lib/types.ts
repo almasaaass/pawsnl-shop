@@ -1,8 +1,21 @@
+export interface ProductVariant {
+  id: string
+  cj_vid: string
+  sku: string
+  options: Record<string, string>  // { Kleur: "Rood", Maat: "M" }
+  price?: number
+  compare_price?: number | null
+  image?: string
+  stock?: number
+}
+
 export interface Product {
   id: string
   name: string
+  name_en?: string | null
   slug: string
   description: string
+  description_en?: string | null
   price: number
   compare_price: number | null
   images: string[]
@@ -11,6 +24,8 @@ export interface Product {
   featured: boolean
   cj_pid?: string | null
   cj_vid?: string | null
+  variants?: ProductVariant[] | null
+  option_types?: string[] | null
   created_at: string
 }
 
@@ -27,6 +42,9 @@ export interface OrderItem {
   price: number
   quantity: number
   image: string
+  variant_id?: string
+  variant_label?: string
+  cj_vid?: string
 }
 
 export interface Order {
@@ -54,6 +72,7 @@ export interface Customer {
 export interface CartItem {
   product: Product
   quantity: number
+  selectedVariant?: ProductVariant | null
 }
 
 export interface Review {
@@ -72,6 +91,46 @@ export const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
   shipped: 'Verzonden',
   delivered: 'Afgeleverd',
   cancelled: 'Geannuleerd',
+}
+
+// ─── TikTok Video Pipeline ─────────────────────────────────────────────────
+
+export type TikTokVideoStatus = 'draft' | 'generating' | 'ready' | 'posted' | 'viral' | 'failed'
+
+export interface TikTokVideo {
+  id: string
+  product_id: string | null
+  product_name: string
+  product_url: string
+  script: string | null
+  caption: string | null
+  hashtags: string[]
+
+  creatify_task_id: string | null
+  video_url: string | null
+  thumbnail_url: string | null
+
+  blotato_post_id: string | null
+  tiktok_post_url: string | null
+
+  views: number
+  viral_alert_sent: boolean
+
+  status: TikTokVideoStatus
+  failed_reason: string | null
+
+  scheduled_at: string | null
+  posted_at: string | null
+  created_at: string
+}
+
+export const TIKTOK_STATUS_LABELS: Record<TikTokVideoStatus, string> = {
+  draft: 'Concept',
+  generating: 'Genereren...',
+  ready: 'Klaar',
+  posted: 'Gepost',
+  viral: 'Viraal!',
+  failed: 'Mislukt',
 }
 
 export const CATEGORIES = [
