@@ -83,6 +83,15 @@ export interface Review {
   date: string
 }
 
+// Helper: get localized product name/description (falls back to Dutch)
+export function getLocalizedName(product: Product, locale: string): string {
+  return (locale === 'en' && product.name_en) ? product.name_en : product.name
+}
+
+export function getLocalizedDescription(product: Product, locale: string): string {
+  return (locale === 'en' && product.description_en) ? product.description_en : product.description
+}
+
 export type OrderStatus = Order['status']
 
 export const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {

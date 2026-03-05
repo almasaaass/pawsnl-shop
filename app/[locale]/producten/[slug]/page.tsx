@@ -1,6 +1,6 @@
 import { cache } from 'react'
 import { supabase } from '@/lib/supabase'
-import { Product } from '@/lib/types'
+import { Product, getLocalizedName, getLocalizedDescription } from '@/lib/types'
 import { notFound } from 'next/navigation'
 import { getProductRating } from '@/lib/utils'
 import Link from 'next/link'
@@ -52,17 +52,20 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: PageProps) {
+  const { locale } = await params
   const product = await getProduct(params.slug)
   if (!product) return {}
+  const name = getLocalizedName(product, locale)
+  const desc = getLocalizedDescription(product, locale)
   return {
-    title: `${product.name} | PawsNL`,
-    description: product.description.substring(0, 160),
+    title: `${name} | PawsNL`,
+    description: desc.substring(0, 160),
     alternates: {
       canonical: `https://pawsnlshop.com/producten/${product.slug}`,
     },
     openGraph: {
-      title: product.name,
-      description: product.description.substring(0, 160),
+      title: name,
+      description: desc.substring(0, 160),
       type: 'website',
       images: product.images[0] ? [{ url: product.images[0] }] : [],
       locale: 'nl_NL',
@@ -71,6 +74,7 @@ export async function generateMetadata({ params }: PageProps) {
 }
 
 export default async function ProductDetailPage({ params }: PageProps) {
+  const { locale } = await params
   const t = await getTranslations('product')
   const product = await getProduct(params.slug)
 
@@ -86,11 +90,14 @@ export default async function ProductDetailPage({ params }: PageProps) {
 
   const { rating, count: reviewCount } = getProductRating(product.id)
 
+  const localName = getLocalizedName(product, locale)
+  const localDesc = getLocalizedDescription(product, locale)
+
   const productJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Product',
-    name: product.name,
-    description: product.description,
+    name: localName,
+    description: localDesc,
     image: product.images,
     sku: product.id,
     brand: { '@type': 'Brand', name: 'PawsNL' },
@@ -113,7 +120,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
       { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://pawsnlshop.com' },
       { '@type': 'ListItem', position: 2, name: 'Producten', item: 'https://pawsnlshop.com/producten' },
       { '@type': 'ListItem', position: 3, name: product.category, item: `https://pawsnlshop.com/producten?categorie=${product.category}` },
-      { '@type': 'ListItem', position: 4, name: product.name },
+      { '@type': 'ListItem', position: 4, name: localName },
     ],
   }
 
@@ -140,7 +147,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
           {product.category}
         </Link>
         <ChevronRight className="w-3.5 h-3.5" />
-        <span className="text-charcoal font-medium line-clamp-1">{product.name}</span>
+        <span className="text-charcoal font-medium line-clamp-1">{localName}</span>
       </nav>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
@@ -150,7 +157,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
             <TikTokBadge slug={product.slug} size="sm" />
           </div>
 
-          <h1 className="text-3xl font-bold text-charcoal mb-3">{product.name}</h1>
+          <h1 className="text-3xl font-bold text-charcoal mb-3">{localName}</h1>
 
           <div className="flex items-center gap-3 mb-4">
             <StarRating rating={rating} count={reviewCount} size="md" />
@@ -172,7 +179,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
           )}
 
           <div className="prose prose-gray mb-6 text-gray-600 leading-relaxed">
-            <p>{product.description}</p>
+            <p>{localDesc}</p>
           </div>
 
           <div className="mt-6 grid grid-cols-2 gap-3">

@@ -26,13 +26,17 @@ export const LOCALE_CONFIGS = {
       'NO', 'DK', 'FI', 'PL', 'CZ', 'GR', 'HR', 'RO', 'BG', 'HU',
       'SK', 'SI', 'EE', 'LV', 'LT', 'CY', 'MT', 'IS', 'LU', 'BE',
       // North America
-      'US', 'CA',
+      'US', 'CA', 'MX',
+      // Central & South America
+      'BR', 'AR', 'CL', 'CO', 'PE', 'EC', 'UY', 'PA', 'CR', 'DO',
       // Oceania
       'AU', 'NZ',
       // Asia
-      'SG', 'JP', 'KR', 'HK', 'MY', 'TH',
+      'SG', 'JP', 'KR', 'HK', 'MY', 'TH', 'PH', 'ID', 'VN', 'TW', 'IN',
       // Middle East
-      'AE', 'SA', 'QA', 'KW', 'BH',
+      'AE', 'SA', 'QA', 'KW', 'BH', 'OM', 'IL', 'TR',
+      // Africa
+      'ZA', 'NG', 'KE', 'MA', 'EG', 'GH',
     ] as const,
     paymentMethods: ['card', 'klarna', 'link'] as const,
     deliveryDays: { min: 7, max: 18 },

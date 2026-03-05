@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
-import { Product } from '@/lib/types'
+import { Product, getLocalizedName, getLocalizedDescription } from '@/lib/types'
 import { getImageSrc, getProductRating } from '@/lib/utils'
 import { ShoppingCart, Tag, PawPrint, Heart, Check, Flame } from 'lucide-react'
 import { useCart } from '@/components/cart/CartContext'
@@ -55,7 +55,7 @@ export default function ProductCard({ product }: Props) {
           {imgSrc && !imgError ? (
             <Image
               src={imgSrc}
-              alt={product.name}
+              alt={getLocalizedName(product, locale)}
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-300"
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 25vw"
@@ -109,7 +109,7 @@ export default function ProductCard({ product }: Props) {
         </span>
         <Link href={{ pathname: '/producten/[slug]', params: { slug: product.slug } }} className="block mb-1 min-h-[2.75rem]">
           <h3 className="font-semibold text-charcoal hover:text-accent-500 transition-colors leading-snug line-clamp-2">
-            {product.name}
+            {getLocalizedName(product, locale)}
           </h3>
         </Link>
 
@@ -118,7 +118,7 @@ export default function ProductCard({ product }: Props) {
         </div>
 
         <p className="text-gray-500 text-sm mb-3 line-clamp-2 min-h-[2.5rem]">
-          {product.description}
+          {getLocalizedDescription(product, locale)}
         </p>
 
         {/* Price + button */}

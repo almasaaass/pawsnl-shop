@@ -47,11 +47,25 @@ export function middleware(request: NextRequest) {
     return addSecurityHeaders(NextResponse.next())
   }
 
-  // All other routes: apply next-intl middleware
-  // Domain-based routing handles locale detection automatically:
-  // - pawsshop.nl → Dutch (default)
-  // - pawsnlshop.com → English (default)
-  // - Users can still switch: pawsshop.nl/en or pawsnlshop.com/nl
+  // Auto-detect locale for first-time visitors (no locale cookie yet)
+  const hasLocaleCookie = request.cookies.has('NEXT_LOCALE')
+  const isLocalePath = pathname.startsWith('/en') || pathname.startsWith('/nl')
+
+  if (!hasLocaleCookie && !isLocalePath && pathname === '/') {
+    // Vercel provides country code via header
+    const country = request.headers.get('x-vercel-ip-country') || ''
+    const dutchCountries = ['NL', 'BE', 'SR'] // Nederland, België, Suriname
+
+    if (!dutchCountries.includes(country) && country !== '') {
+      // Non-Dutch visitor → redirect to English
+      const url = new URL('/en', request.url)
+      const response = NextResponse.redirect(url)
+      response.cookies.set('NEXT_LOCALE', 'en', { path: '/', maxAge: 365 * 24 * 60 * 60 })
+      return addSecurityHeaders(response)
+    }
+  }
+
+  // Apply next-intl middleware for all other routes
   const response = intlMiddleware(request)
   return addSecurityHeaders(response)
 }

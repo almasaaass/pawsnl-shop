@@ -4,28 +4,7 @@ export const routing = defineRouting({
   locales: ['nl', 'en'],
   defaultLocale: 'nl',
   localePrefix: 'as-needed',
-  domains: [
-    {
-      domain: 'pawsshop.nl',
-      defaultLocale: 'nl',
-      locales: ['nl', 'en'],
-    },
-    {
-      domain: 'www.pawsshop.nl',
-      defaultLocale: 'nl',
-      locales: ['nl', 'en'],
-    },
-    {
-      domain: 'pawsnlshop.com',
-      defaultLocale: 'en',
-      locales: ['en', 'nl'],
-    },
-    {
-      domain: 'www.pawsnlshop.com',
-      defaultLocale: 'en',
-      locales: ['en', 'nl'],
-    },
-  ],
+  localeDetection: true,
   pathnames: {
     '/': '/',
     '/producten': { nl: '/producten', en: '/products' },

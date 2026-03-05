@@ -9,6 +9,7 @@ import { useState } from 'react'
 import { useTranslations, useLocale } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import { formatLocalPrice, LOCALE_CONFIGS, convertPrice, type AppLocale } from '@/lib/locale-config'
+import { getLocalizedName } from '@/lib/types'
 
 export default function WinkelwagenPage() {
   const t = useTranslations('cart')
@@ -48,7 +49,7 @@ export default function WinkelwagenPage() {
             const price = getVariantPrice(item.product, item.selectedVariant)
             return {
               product_id: item.product.id,
-              name: vLabel ? `${item.product.name} (${vLabel})` : item.product.name,
+              name: vLabel ? `${getLocalizedName(item.product, locale)} (${vLabel})` : getLocalizedName(item.product, locale),
               price,
               quantity: item.quantity,
               image: item.selectedVariant?.image || item.product.images[0] || '',
@@ -128,7 +129,7 @@ export default function WinkelwagenPage() {
                   {displayImage ? (
                     <Image
                       src={getImageSrc(displayImage)}
-                      alt={item.product.name}
+                      alt={getLocalizedName(item.product, locale)}
                       fill
                       className="object-cover"
                       unoptimized
@@ -142,7 +143,7 @@ export default function WinkelwagenPage() {
                 <div className="flex-1 min-w-0">
                   <div className="flex justify-between gap-2 mb-1">
                     <Link href={{ pathname: '/producten/[slug]', params: { slug: item.product.slug } }} className="font-semibold text-gray-900 truncate hover:text-accent-500 transition-colors">
-                      {item.product.name}
+                      {getLocalizedName(item.product, locale)}
                     </Link>
                     <button
                       onClick={() => removeItem(key)}
