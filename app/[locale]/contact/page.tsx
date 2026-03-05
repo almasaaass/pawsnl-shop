@@ -2,8 +2,10 @@
 
 import { useState } from 'react'
 import { Mail, Phone, MapPin, Clock, Send, CheckCircle } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 export default function ContactPage() {
+  const t = useTranslations('contact')
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -34,9 +36,9 @@ export default function ContactPage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       {/* Header */}
       <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">Neem contact op</h1>
+        <h1 className="text-4xl font-bold text-gray-900 mb-4">{t('heroTitle')}</h1>
         <p className="text-lg text-gray-500 max-w-xl mx-auto">
-          Heb je een vraag of opmerking? We helpen je graag!
+          {t('heroDescription')}
         </p>
       </div>
 
@@ -44,12 +46,12 @@ export default function ContactPage() {
         {/* Contactgegevens */}
         <div className="space-y-6">
           <div className="card p-6">
-            <h2 className="text-lg font-bold text-gray-900 mb-5">Contactgegevens</h2>
+            <h2 className="text-lg font-bold text-gray-900 mb-5">{t('contactDetails')}</h2>
             <div className="space-y-4">
               <div className="flex gap-3">
                 <Mail className="w-5 h-5 text-orange-500 flex-shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-medium text-gray-900">E-mail</p>
+                  <p className="font-medium text-gray-900">{t('emailLabel')}</p>
                   <a
                     href="mailto:info@pawsnlshop.com"
                     className="text-gray-500 hover:text-orange-500 transition-colors text-sm"
@@ -61,7 +63,7 @@ export default function ContactPage() {
               <div className="flex gap-3">
                 <Phone className="w-5 h-5 text-orange-500 flex-shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-medium text-gray-900">Telefoon</p>
+                  <p className="font-medium text-gray-900">{t('phoneLabel')}</p>
                   <a
                     href="tel:+31681473561"
                     className="text-gray-500 hover:text-orange-500 transition-colors text-sm"
@@ -73,7 +75,7 @@ export default function ContactPage() {
               <div className="flex gap-3">
                 <MapPin className="w-5 h-5 text-orange-500 flex-shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-medium text-gray-900">Adres</p>
+                  <p className="font-medium text-gray-900">{t('addressLabel')}</p>
                   <p className="text-gray-500 text-sm">
                     Weverstraat 227<br />4204CB Gorinchem
                   </p>
@@ -82,9 +84,9 @@ export default function ContactPage() {
               <div className="flex gap-3">
                 <Clock className="w-5 h-5 text-orange-500 flex-shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-medium text-gray-900">Openingstijden</p>
-                  <p className="text-gray-500 text-sm">
-                    Ma–Vr: 09:00 – 17:00<br />Za: 10:00 – 14:00
+                  <p className="font-medium text-gray-900">{t('hoursLabel')}</p>
+                  <p className="text-gray-500 text-sm whitespace-pre-line">
+                    {t('hoursValue')}
                   </p>
                 </div>
               </div>
@@ -93,7 +95,7 @@ export default function ContactPage() {
 
           <div className="card p-6 bg-orange-50 border-orange-100">
             <p className="text-sm text-gray-700">
-              <strong className="text-orange-600">Snelle reactie:</strong> We reageren doorgaans binnen 24 uur op werkdagen.
+              <strong className="text-orange-600">{t('quickResponse')}</strong> {t('quickResponseText')}
             </p>
           </div>
         </div>
@@ -103,22 +105,22 @@ export default function ContactPage() {
           {status === 'success' ? (
             <div className="card p-10 text-center">
               <CheckCircle className="w-14 h-14 text-green-500 mx-auto mb-4" />
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Bericht ontvangen!</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('successTitle')}</h2>
               <p className="text-gray-500 mb-6">
-                Bedankt voor je bericht. We nemen zo snel mogelijk contact met je op.
+                {t('successDescription')}
               </p>
               <button onClick={() => { setStatus('idle'); setFormData({ name: '', email: '', subject: '', message: '' }) }} className="btn-primary">
-                Nog een bericht sturen
+                {t('sendAnother')}
               </button>
             </div>
           ) : (
             <div className="card p-6">
-              <h2 className="text-lg font-bold text-gray-900 mb-5">Stuur ons een bericht</h2>
+              <h2 className="text-lg font-bold text-gray-900 mb-5">{t('formTitle')}</h2>
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1.5">
-                      Naam *
+                      {t('nameLabel')}
                     </label>
                     <input
                       id="name"
@@ -127,12 +129,12 @@ export default function ContactPage() {
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       className="input"
-                      placeholder="Jan Jansen"
+                      placeholder={t('namePlaceholder')}
                     />
                   </div>
                   <div>
                     <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1.5">
-                      E-mailadres *
+                      {t('emailFieldLabel')}
                     </label>
                     <input
                       id="email"
@@ -141,13 +143,13 @@ export default function ContactPage() {
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       className="input"
-                      placeholder="jan@voorbeeld.nl"
+                      placeholder={t('emailPlaceholder')}
                     />
                   </div>
                 </div>
                 <div>
                   <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-1.5">
-                    Onderwerp *
+                    {t('subjectLabel')}
                   </label>
                   <select
                     id="subject"
@@ -156,17 +158,17 @@ export default function ContactPage() {
                     onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                     className="input"
                   >
-                    <option value="">Kies een onderwerp</option>
-                    <option value="order-inquiry">Vraag over bestelling</option>
-                    <option value="return">Retourverzoek</option>
-                    <option value="product-question">Productvraag</option>
-                    <option value="complaint">Klacht</option>
-                    <option value="other">Overig</option>
+                    <option value="">{t('subjectPlaceholder')}</option>
+                    <option value="order-inquiry">{t('subjectOrder')}</option>
+                    <option value="return">{t('subjectReturn')}</option>
+                    <option value="product-question">{t('subjectProduct')}</option>
+                    <option value="complaint">{t('subjectComplaint')}</option>
+                    <option value="other">{t('subjectOther')}</option>
                   </select>
                 </div>
                 <div>
                   <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1.5">
-                    Bericht *
+                    {t('messageLabel')}
                   </label>
                   <textarea
                     id="message"
@@ -175,13 +177,13 @@ export default function ContactPage() {
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                     className="input resize-none"
-                    placeholder="Schrijf hier je bericht..."
+                    placeholder={t('messagePlaceholder')}
                   />
                 </div>
 
                 {status === 'error' && (
                   <p className="text-red-500 text-sm bg-red-50 p-3 rounded-lg">
-                    Er is iets misgegaan. Probeer het opnieuw of stuur ons een e-mail.
+                    {t('errorMessage')}
                   </p>
                 )}
 
@@ -193,12 +195,12 @@ export default function ContactPage() {
                   {status === 'loading' ? (
                     <>
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      Versturen...
+                      {t('sending')}
                     </>
                   ) : (
                     <>
                       <Send className="w-4 h-4" />
-                      Bericht versturen
+                      {t('submitButton')}
                     </>
                   )}
                 </button>

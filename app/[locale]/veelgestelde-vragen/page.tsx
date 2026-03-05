@@ -2,99 +2,7 @@
 
 import { useState } from 'react'
 import { ChevronDown, ShoppingCart, Truck, RotateCcw, CreditCard, Package, Mail } from 'lucide-react'
-
-const categories = [
-  {
-    name: 'Bestellen',
-    icon: ShoppingCart,
-    faqs: [
-      {
-        question: 'Hoe plaats ik een bestelling?',
-        answer:
-          'Bestellen bij PawsNL is heel eenvoudig! Kies de producten die je wilt, voeg ze toe aan je winkelwagen en ga naar de kassa. Vul je gegevens in, kies een betaalmethode en bevestig je bestelling. Je ontvangt direct een bevestigingsmail.',
-      },
-      {
-        question: 'Kan ik mijn bestelling annuleren?',
-        answer:
-          'Ja, dat kan! Neem binnen 24 uur na het plaatsen van je bestelling contact op via info@pawsnlshop.com. We annuleren je bestelling en restitueren het volledige bedrag. Na 24 uur kan je bestelling al in verwerking zijn en helaas niet meer worden geannuleerd.',
-      },
-    ],
-  },
-  {
-    name: 'Verzending',
-    icon: Truck,
-    faqs: [
-      {
-        question: 'Hoe lang duurt de levering?',
-        answer:
-          'De levering duurt gemiddeld 7 tot 14 werkdagen in Nederland en België. Onze producten worden verzonden vanuit een internationaal magazijn, wat betekent dat de levertijden iets langer kunnen zijn dan bij lokale winkels. We doen er alles aan om je bestelling zo snel mogelijk te leveren.',
-      },
-      {
-        question: 'Hoeveel kosten de verzendkosten?',
-        answer:
-          'Voor bestellingen boven €35 is de verzending volledig gratis in Nederland en België! Voor bestellingen onder €35 betaal je slechts €4,95 aan verzendkosten.',
-      },
-      {
-        question: 'Kan ik mijn bestelling volgen?',
-        answer:
-          'Ja, zodra je bestelling is verzonden ontvang je automatisch een e-mail met een track & trace code. Hiermee kun je de status van je pakket op elk moment volgen.',
-      },
-    ],
-  },
-  {
-    name: 'Retouren',
-    icon: RotateCcw,
-    faqs: [
-      {
-        question: 'Hoe retourneer ik een product?',
-        answer:
-          'Je kunt een product binnen 30 dagen na ontvangst retourneren. Neem contact op via info@pawsnlshop.com met je bestelnummer en de reden voor de retour. We sturen je vervolgens de retourinstructies.',
-      },
-      {
-        question: 'Wanneer krijg ik mijn geld terug na een retour?',
-        answer:
-          'Nadat we je retour hebben ontvangen en gecontroleerd, wordt het bedrag binnen 5 tot 7 werkdagen teruggestort op je rekening via dezelfde betaalmethode waarmee je hebt betaald.',
-      },
-    ],
-  },
-  {
-    name: 'Betaling',
-    icon: CreditCard,
-    faqs: [
-      {
-        question: 'Welke betaalmethoden accepteren jullie?',
-        answer:
-          'We accepteren iDEAL, Bancontact, Visa en Mastercard. Zo kun je altijd op een manier betalen die bij jou past.',
-      },
-      {
-        question: 'Is betalen bij PawsNL veilig?',
-        answer:
-          'Absoluut! Alle betalingen worden verwerkt via Stripe, een van de meest betrouwbare betaalplatforms ter wereld. Je gegevens zijn beveiligd met SSL-encryptie en we slaan nooit je betaalgegevens op.',
-      },
-    ],
-  },
-  {
-    name: 'Producten',
-    icon: Package,
-    faqs: [
-      {
-        question: 'Zijn de producten veilig voor mijn huisdier?',
-        answer:
-          'Ja, alle producten in ons assortiment worden zorgvuldig gecontroleerd op kwaliteit en veiligheid. Ons team beoordeelt elk product voordat het in de winkel komt, zodat je met een gerust hart kunt bestellen.',
-      },
-      {
-        question: 'Waar komen de producten vandaan?',
-        answer:
-          'Onze producten zijn afkomstig van geselecteerde internationale leveranciers. Ons team voert kwaliteitscontroles uit om ervoor te zorgen dat elk product aan onze hoge standaarden voldoet.',
-      },
-      {
-        question: 'Hoe neem ik contact op met PawsNL?',
-        answer:
-          'Je kunt ons bereiken via e-mail op info@pawsnlshop.com of via het contactformulier op onze website. We reageren doorgaans binnen 24 uur op werkdagen.',
-      },
-    ],
-  },
-]
+import { useTranslations } from 'next-intl'
 
 function FAQItem({ question, answer }: { question: string; answer: string }) {
   const [isOpen, setIsOpen] = useState(false)
@@ -124,20 +32,66 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
 }
 
 export default function VeelgesteldeVragenPage() {
+  const t = useTranslations('faq')
+
+  const categories = [
+    {
+      name: t('catOrdering'),
+      icon: ShoppingCart,
+      faqs: [
+        { question: t('orderQ1'), answer: t('orderA1') },
+        { question: t('orderQ2'), answer: t('orderA2') },
+      ],
+    },
+    {
+      name: t('catShipping'),
+      icon: Truck,
+      faqs: [
+        { question: t('shipQ1'), answer: t('shipA1') },
+        { question: t('shipQ2'), answer: t('shipA2') },
+        { question: t('shipQ3'), answer: t('shipA3') },
+      ],
+    },
+    {
+      name: t('catReturns'),
+      icon: RotateCcw,
+      faqs: [
+        { question: t('returnQ1'), answer: t('returnA1') },
+        { question: t('returnQ2'), answer: t('returnA2') },
+      ],
+    },
+    {
+      name: t('catPayment'),
+      icon: CreditCard,
+      faqs: [
+        { question: t('payQ1'), answer: t('payA1') },
+        { question: t('payQ2'), answer: t('payA2') },
+      ],
+    },
+    {
+      name: t('catProducts'),
+      icon: Package,
+      faqs: [
+        { question: t('prodQ1'), answer: t('prodA1') },
+        { question: t('prodQ2'), answer: t('prodA2') },
+        { question: t('prodQ3'), answer: t('prodA3') },
+      ],
+    },
+  ]
+
   return (
     <div>
       {/* Hero */}
       <section className="bg-gradient-to-br from-orange-50 via-white to-orange-50 py-20 px-4">
         <div className="max-w-4xl mx-auto text-center">
           <p className="text-orange-500 font-semibold text-sm uppercase tracking-wider mb-3">
-            Veelgestelde vragen
+            {t('badge')}
           </p>
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-            Veelgestelde <span className="text-orange-500">vragen</span>
+            {t('heroTitle')}<span className="text-orange-500">{t('heroTitleHighlight')}</span>
           </h1>
           <p className="text-xl text-gray-600 leading-relaxed max-w-2xl mx-auto">
-            Vind snel antwoorden op de meest gestelde vragen over bestellen, verzending,
-            retouren en meer.
+            {t('heroDescription')}
           </p>
         </div>
       </section>
@@ -168,16 +122,16 @@ export default function VeelgesteldeVragenPage() {
         <div className="max-w-2xl mx-auto text-center">
           <Mail className="w-12 h-12 text-orange-500 mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-gray-900 mb-3">
-            Geen antwoord gevonden?
+            {t('ctaTitle')}
           </h2>
           <p className="text-gray-600 mb-6">
-            Neem gerust contact met ons op. We helpen je graag!
+            {t('ctaDescription')}
           </p>
           <a
             href="/contact"
             className="bg-orange-500 text-white font-bold py-3 px-8 rounded-xl hover:bg-orange-600 transition-colors inline-block"
           >
-            Neem contact op
+            {t('ctaButton')}
           </a>
         </div>
       </section>

@@ -1,23 +1,29 @@
-export const metadata = {
-  title: 'Klachtenprocedure | PawsNL',
-  description: 'Klachtenprocedure van PawsNL. Lees hoe je een klacht kunt indienen en hoe wij deze behandelen.',
+import { getTranslations } from 'next-intl/server'
+
+export async function generateMetadata() {
+  const t = await getTranslations('complaints')
+  return {
+    title: t('metaTitle'),
+    description: t('metaDescription'),
+  }
 }
 
-export default function KlachtenprocedurePage() {
+export default async function KlachtenprocedurePage() {
+  const t = await getTranslations('complaints')
+
   return (
     <div>
       {/* Hero */}
       <section className="bg-gradient-to-br from-orange-50 via-white to-orange-50 py-20 px-4">
         <div className="max-w-3xl mx-auto text-center">
           <p className="text-orange-500 font-semibold text-sm uppercase tracking-wider mb-3">
-            Klachtenprocedure
+            {t('badge')}
           </p>
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-            Jouw <span className="text-orange-500">tevredenheid</span> staat voorop
+            {t('heroTitle')}<span className="text-orange-500">{t('heroTitleHighlight')}</span>{t('heroTitleEnd')}
           </h1>
           <p className="text-xl text-gray-600 leading-relaxed max-w-2xl mx-auto">
-            Niet tevreden? Wij nemen elke klacht serieus en doen ons best om samen
-            een passende oplossing te vinden.
+            {t('heroDescription')}
           </p>
         </div>
       </section>
@@ -28,87 +34,69 @@ export default function KlachtenprocedurePage() {
           <div className="space-y-10">
             {/* Stap 1 */}
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Stap 1 — Neem contact op</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('step1Title')}</h2>
               <div className="space-y-3 text-gray-600 leading-relaxed">
-                <p>
-                  Heb je een klacht over een product, bestelling of onze service? Neem dan
-                  zo snel mogelijk contact met ons op, bij voorkeur <strong>binnen 48 uur</strong> na
-                  het ontdekken van het probleem.
-                </p>
-                <p>Je kunt ons bereiken via:</p>
+                <p dangerouslySetInnerHTML={{ __html: t('step1P1') }} />
+                <p>{t('step1P2')}</p>
                 <ul className="list-none space-y-2 ml-2">
                   <li>
-                    <strong>E-mail:</strong>{' '}
+                    <strong>{t('step1Email')}</strong>{' '}
                     <a href="mailto:info@pawsnlshop.com" className="text-orange-500 hover:underline font-medium">
                       info@pawsnlshop.com
                     </a>
                   </li>
                   <li>
-                    <strong>Telefoon:</strong>{' '}
+                    <strong>{t('step1Phone')}</strong>{' '}
                     <a href="tel:+31681473561" className="text-orange-500 hover:underline font-medium">
                       06 - 814 73 561
                     </a>{' '}
-                    (ma-vr, 09:00-17:00)
+                    {t('step1PhoneHours')}
                   </li>
                 </ul>
-                <p>Vermeld altijd het volgende in je bericht:</p>
+                <p>{t('step1P3')}</p>
                 <ul className="list-disc list-inside space-y-2 ml-2">
-                  <li>Je bestelnummer</li>
-                  <li>Een duidelijke omschrijving van de klacht</li>
-                  <li>Eventuele foto&apos;s ter onderbouwing</li>
-                  <li>Je gewenste oplossing (indien van toepassing)</li>
+                  <li>{t('step1Item1')}</li>
+                  <li>{t('step1Item2')}</li>
+                  <li>{t('step1Item3')}</li>
+                  <li>{t('step1Item4')}</li>
                 </ul>
               </div>
             </div>
 
             {/* Stap 2 */}
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Stap 2 — Ontvangstbevestiging</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('step2Title')}</h2>
               <div className="space-y-3 text-gray-600 leading-relaxed">
-                <p>
-                  Na ontvangst van je klacht sturen wij binnen <strong>1 werkdag</strong> een
-                  ontvangstbevestiging per e-mail. In deze e-mail bevestigen we dat je klacht
-                  is ontvangen en geven we een indicatie van de verwerkingstijd.
-                </p>
+                <p dangerouslySetInnerHTML={{ __html: t('step2P1') }} />
               </div>
             </div>
 
             {/* Stap 3 */}
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Stap 3 — Verwerking</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('step3Title')}</h2>
               <div className="space-y-3 text-gray-600 leading-relaxed">
-                <p>
-                  Wij streven ernaar elke klacht binnen <strong>5 werkdagen</strong> volledig af te handelen.
-                  In sommige gevallen kan dit langer duren, bijvoorbeeld als wij informatie moeten
-                  opvragen bij onze leverancier. In dat geval houden wij je op de hoogte van de voortgang.
-                </p>
-                <p>Mogelijke oplossingen zijn:</p>
+                <p dangerouslySetInnerHTML={{ __html: t('step3P1') }} />
+                <p>{t('step3P2')}</p>
                 <ul className="list-disc list-inside space-y-2 ml-2">
-                  <li>Vervanging van het product</li>
-                  <li>Gedeeltelijke of volledige terugbetaling</li>
-                  <li>Een kortingscode voor een volgende bestelling</li>
-                  <li>Een andere passende oplossing in onderling overleg</li>
+                  <li>{t('step3Item1')}</li>
+                  <li>{t('step3Item2')}</li>
+                  <li>{t('step3Item3')}</li>
+                  <li>{t('step3Item4')}</li>
                 </ul>
               </div>
             </div>
 
             {/* Stap 4 */}
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Stap 4 — Niet tevreden met de oplossing?</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('step4Title')}</h2>
               <div className="space-y-3 text-gray-600 leading-relaxed">
-                <p>
-                  Als we er samen niet uitkomen, kun je als consument gebruik maken van het
-                  Europees Online Geschillenbeslechting (ODR) platform. Dit platform is opgericht
-                  door de Europese Commissie en biedt een laagdrempelige manier om geschillen
-                  op te lossen.
-                </p>
+                <p>{t('step4P1')}</p>
                 <div className="bg-orange-50 rounded-xl p-5 mt-4">
                   <p className="font-semibold text-gray-900 mb-2">
-                    EU Online Geschillenbeslechting (ODR)
+                    {t('odrTitle')}
                   </p>
                   <p className="text-sm text-gray-600 mb-3">
-                    Via het ODR-platform kun je een klacht indienen over een online aankoop. Het
-                    platform is beschikbaar in alle officiële EU-talen.
+                    {t('odrDescription')}
                   </p>
                   <a
                     href="https://ec.europa.eu/consumers/odr"
@@ -116,7 +104,7 @@ export default function KlachtenprocedurePage() {
                     rel="noopener noreferrer"
                     className="inline-block bg-orange-500 text-white text-sm font-bold py-2.5 px-6 rounded-xl hover:bg-orange-600 transition-colors"
                   >
-                    Ga naar het ODR-platform
+                    {t('odrButton')}
                   </a>
                 </div>
               </div>
@@ -124,33 +112,29 @@ export default function KlachtenprocedurePage() {
 
             {/* Onze belofte */}
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Onze belofte</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('promiseTitle')}</h2>
               <div className="space-y-3 text-gray-600 leading-relaxed">
-                <p>
-                  Bij PawsNL behandelen wij elke klacht vertrouwelijk en met respect. Wij
-                  gebruiken klachten ook als leermomenten om onze producten en service
-                  voortdurend te verbeteren.
-                </p>
+                <p>{t('promiseP1')}</p>
                 <ul className="list-disc list-inside space-y-2 ml-2">
-                  <li>Elke klacht wordt geregistreerd en 2 jaar bewaard</li>
-                  <li>Wij streven naar een eerlijke en snelle afhandeling</li>
-                  <li>Je klacht wordt altijd vertrouwelijk behandeld</li>
-                  <li>Wij leren van klachten en passen onze processen aan waar nodig</li>
+                  <li>{t('promiseItem1')}</li>
+                  <li>{t('promiseItem2')}</li>
+                  <li>{t('promiseItem3')}</li>
+                  <li>{t('promiseItem4')}</li>
                 </ul>
               </div>
             </div>
 
             {/* Bedrijfsgegevens */}
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Bedrijfsgegevens</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('companyTitle')}</h2>
               <div className="space-y-3 text-gray-600 leading-relaxed">
                 <ul className="list-none space-y-1 ml-2">
-                  <li><strong>Bedrijfsnaam:</strong> Multi Talent Service (h/o PawsNL)</li>
-                  <li><strong>Vestigingsadres:</strong> Weverstraat 227, 4204CB Gorinchem</li>
-                  <li><strong>KvK-nummer:</strong> 92754783</li>
-                  <li><strong>BTW-nummer:</strong> NL004974786B65</li>
-                  <li><strong>Telefoon:</strong> 06 - 814 73 561</li>
-                  <li><strong>E-mail:</strong>{' '}
+                  <li><strong>{t('companyNameLabel')}</strong> {t('companyNameValue')}</li>
+                  <li><strong>{t('companyAddressLabel')}</strong> {t('companyAddressValue')}</li>
+                  <li><strong>{t('companyKvkLabel')}</strong> {t('companyKvkValue')}</li>
+                  <li><strong>{t('companyBtwLabel')}</strong> {t('companyBtwValue')}</li>
+                  <li><strong>{t('companyPhoneLabel')}</strong> {t('companyPhoneValue')}</li>
+                  <li><strong>{t('companyEmailLabel')}</strong>{' '}
                     <a href="mailto:info@pawsnlshop.com" className="text-orange-500 hover:underline font-medium">
                       info@pawsnlshop.com
                     </a>
@@ -161,15 +145,15 @@ export default function KlachtenprocedurePage() {
 
             {/* Contact CTA */}
             <div className="bg-orange-50 rounded-2xl p-8 text-center">
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Klacht indienen?</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">{t('ctaTitle')}</h3>
               <p className="text-gray-600 mb-4">
-                Stuur ons een e-mail met je bestelnummer en omschrijving. Wij reageren binnen 1 werkdag.
+                {t('ctaDescription')}
               </p>
               <a
                 href="mailto:info@pawsnlshop.com?subject=Klacht%20-%20Bestelnummer%20"
                 className="inline-block bg-orange-500 text-white font-bold py-3 px-8 rounded-xl hover:bg-orange-600 transition-colors"
               >
-                Klacht indienen via e-mail
+                {t('ctaButton')}
               </a>
             </div>
           </div>

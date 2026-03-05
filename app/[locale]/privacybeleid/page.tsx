@@ -1,23 +1,29 @@
-export const metadata = {
-  title: 'Privacybeleid | PawsNL',
-  description: 'Privacybeleid van PawsNL. Lees hoe wij omgaan met je persoonsgegevens.',
+import { getTranslations } from 'next-intl/server'
+
+export async function generateMetadata() {
+  const t = await getTranslations('privacyPolicy')
+  return {
+    title: t('metaTitle'),
+    description: t('metaDescription'),
+  }
 }
 
-export default function PrivacybeleidPage() {
+export default async function PrivacybeleidPage() {
+  const t = await getTranslations('privacyPolicy')
+
   return (
     <div>
       {/* Hero */}
       <section className="bg-gradient-to-br from-orange-50 via-white to-orange-50 py-20 px-4">
         <div className="max-w-3xl mx-auto text-center">
           <p className="text-orange-500 font-semibold text-sm uppercase tracking-wider mb-3">
-            Privacybeleid
+            {t('badge')}
           </p>
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-            Jouw <span className="text-orange-500">privacy</span> is belangrijk
+            {t('heroTitle')}<span className="text-orange-500">{t('heroTitleHighlight')}</span>{t('heroTitleEnd')}
           </h1>
           <p className="text-xl text-gray-600 leading-relaxed max-w-2xl mx-auto">
-            Wij gaan zorgvuldig om met je persoonsgegevens. Hieronder lees je precies wat
-            wij verzamelen, waarom, en wat je rechten zijn.
+            {t('heroDescription')}
           </p>
         </div>
       </section>
@@ -28,24 +34,21 @@ export default function PrivacybeleidPage() {
           <div className="space-y-10">
             {/* Wie zijn wij */}
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Wie zijn wij?</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('whoTitle')}</h2>
               <div className="space-y-3 text-gray-600 leading-relaxed">
-                <p>
-                  PawsNL is een online winkel gespecialiseerd in producten voor huisdieren.
-                  Wij zijn gevestigd in Gorinchem en ingeschreven bij de Kamer van Koophandel.
-                </p>
+                <p>{t('whoP1')}</p>
                 <ul className="list-none space-y-1 ml-2">
-                  <li><strong>Bedrijfsnaam:</strong> Multi Talent Service (h/o PawsNL)</li>
-                  <li><strong>Adres:</strong> Weverstraat 227, 4204CB Gorinchem</li>
-                  <li><strong>KvK-nummer:</strong> 92754783</li>
-                  <li><strong>BTW-nummer:</strong> NL004974786B65</li>
-                  <li><strong>Telefoon:</strong> 06 - 814 73 561</li>
-                  <li><strong>E-mail:</strong>{' '}
+                  <li><strong>{t('companyName')}</strong> {t('companyNameValue')}</li>
+                  <li><strong>{t('address')}</strong> {t('addressValue')}</li>
+                  <li><strong>{t('kvk')}</strong> {t('kvkValue')}</li>
+                  <li><strong>{t('btw')}</strong> {t('btwValue')}</li>
+                  <li><strong>{t('phone')}</strong> {t('phoneValue')}</li>
+                  <li><strong>{t('email')}</strong>{' '}
                     <a href="mailto:info@pawsnlshop.com" className="text-orange-500 hover:underline font-medium">
                       info@pawsnlshop.com
                     </a>
                   </li>
-                  <li><strong>Website:</strong>{' '}
+                  <li><strong>{t('website')}</strong>{' '}
                     <a href="https://pawsnlshop.com" className="text-orange-500 hover:underline font-medium">
                       pawsnlshop.com
                     </a>
@@ -56,150 +59,125 @@ export default function PrivacybeleidPage() {
 
             {/* Welke gegevens verzamelen wij */}
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Welke gegevens verzamelen wij?</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('dataCollectedTitle')}</h2>
               <div className="space-y-3 text-gray-600 leading-relaxed">
-                <p>
-                  Wanneer je een bestelling plaatst of contact met ons opneemt, verzamelen wij de
-                  volgende persoonsgegevens:
-                </p>
+                <p>{t('dataCollectedP1')}</p>
                 <ul className="list-disc list-inside space-y-2 ml-2">
-                  <li>Voor- en achternaam</li>
-                  <li>E-mailadres</li>
-                  <li>Bezorgadres (straat, huisnummer, postcode, stad, land)</li>
-                  <li>Telefoonnummer (indien opgegeven)</li>
-                  <li>Betaalgegevens (verwerkt via Stripe; wij slaan deze niet zelf op)</li>
-                  <li>Bestelgeschiedenis en bestelnummers</li>
+                  <li>{t('dataItem1')}</li>
+                  <li>{t('dataItem2')}</li>
+                  <li>{t('dataItem3')}</li>
+                  <li>{t('dataItem4')}</li>
+                  <li>{t('dataItem5')}</li>
+                  <li>{t('dataItem6')}</li>
                 </ul>
               </div>
             </div>
 
             {/* Waarvoor gebruiken wij je gegevens */}
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Waarvoor gebruiken wij je gegevens?</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('dataUsageTitle')}</h2>
               <div className="space-y-3 text-gray-600 leading-relaxed">
-                <p>Wij gebruiken je persoonsgegevens uitsluitend voor de volgende doeleinden:</p>
+                <p>{t('dataUsageP1')}</p>
                 <ul className="list-disc list-inside space-y-2 ml-2">
-                  <li><strong>Orderverwerking</strong> — om je bestelling te verwerken, te verzenden en je op de hoogte te houden van de status</li>
-                  <li><strong>Klantenservice</strong> — om je vragen te beantwoorden en eventuele problemen op te lossen</li>
-                  <li><strong>Wettelijke verplichtingen</strong> — om te voldoen aan belasting- en boekhoudkundige vereisten</li>
-                  <li><strong>Marketing</strong> — alleen met je uitdrukkelijke toestemming sturen wij je aanbiedingen en nieuwsbrieven. Je kunt je op elk moment uitschrijven</li>
+                  <li><strong>{t('usageOrder')}</strong> — {t('usageOrderDesc')}</li>
+                  <li><strong>{t('usageService')}</strong> — {t('usageServiceDesc')}</li>
+                  <li><strong>{t('usageLegal')}</strong> — {t('usageLegalDesc')}</li>
+                  <li><strong>{t('usageMarketing')}</strong> — {t('usageMarketingDesc')}</li>
                 </ul>
               </div>
             </div>
 
             {/* Beveiliging */}
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Beveiliging</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('securityTitle')}</h2>
               <div className="space-y-3 text-gray-600 leading-relaxed">
-                <p>
-                  Wij nemen de bescherming van je gegevens serieus en treffen passende maatregelen
-                  om misbruik, verlies en onbevoegde toegang te voorkomen:
-                </p>
+                <p>{t('securityP1')}</p>
                 <ul className="list-disc list-inside space-y-2 ml-2">
-                  <li><strong>SSL-encryptie</strong> — alle communicatie met onze website is beveiligd via HTTPS</li>
-                  <li><strong>Stripe</strong> — betalingen worden veilig verwerkt via Stripe, een gecertificeerde PCI DSS Level 1 betaalprovider. Wij slaan nooit je creditcard- of bankgegevens op</li>
-                  <li><strong>Toegangsbeperking</strong> — alleen bevoegd personeel heeft toegang tot persoonsgegevens</li>
+                  <li><strong>{t('securitySSL')}</strong> — {t('securitySSLDesc')}</li>
+                  <li><strong>{t('securityStripe')}</strong> — {t('securityStripeDesc')}</li>
+                  <li><strong>{t('securityAccess')}</strong> — {t('securityAccessDesc')}</li>
                 </ul>
               </div>
             </div>
 
             {/* Cookies */}
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Cookies</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('cookiesTitle')}</h2>
               <div className="space-y-3 text-gray-600 leading-relaxed">
-                <p>
-                  Onze website maakt gebruik van cookies om je ervaring te verbeteren. Wij gebruiken de
-                  volgende soorten cookies:
-                </p>
+                <p>{t('cookiesP1')}</p>
                 <ul className="list-disc list-inside space-y-2 ml-2">
-                  <li><strong>Functionele cookies</strong> — noodzakelijk voor het functioneren van de website, zoals het onthouden van je winkelwagen</li>
-                  <li><strong>Analytische cookies</strong> — om inzicht te krijgen in hoe bezoekers onze website gebruiken zodat wij deze kunnen verbeteren. Deze gegevens worden anoniem verwerkt</li>
+                  <li><strong>{t('cookiesFunctional')}</strong> — {t('cookiesFunctionalDesc')}</li>
+                  <li><strong>{t('cookiesAnalytical')}</strong> — {t('cookiesAnalyticalDesc')}</li>
                 </ul>
-                <p>
-                  Je kunt cookies uitschakelen via je browserinstellingen. Let op: het uitschakelen van
-                  functionele cookies kan de functionaliteit van de website beperken.
-                </p>
+                <p>{t('cookiesP2')}</p>
               </div>
             </div>
 
             {/* Delen met derden */}
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Delen met derden</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('thirdPartyTitle')}</h2>
               <div className="space-y-3 text-gray-600 leading-relaxed">
-                <p>
-                  Wij verkopen je gegevens nooit aan derden. Wij delen je gegevens alleen met
-                  partijen die noodzakelijk zijn voor onze dienstverlening:
-                </p>
+                <p>{t('thirdPartyP1')}</p>
                 <ul className="list-disc list-inside space-y-2 ml-2">
-                  <li><strong>Stripe</strong> — voor het verwerken van betalingen</li>
-                  <li><strong>Vervoerders</strong> — voor het bezorgen van je bestelling</li>
-                  <li><strong>Resend</strong> — voor het versturen van transactionele e-mails</li>
+                  <li><strong>{t('thirdStripe')}</strong> — {t('thirdStripeDesc')}</li>
+                  <li><strong>{t('thirdCarriers')}</strong> — {t('thirdCarriersDesc')}</li>
+                  <li><strong>{t('thirdResend')}</strong> — {t('thirdResendDesc')}</li>
                 </ul>
               </div>
             </div>
 
             {/* Jouw rechten */}
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Jouw rechten</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('rightsTitle')}</h2>
               <div className="space-y-3 text-gray-600 leading-relaxed">
-                <p>
-                  Op grond van de Algemene Verordening Gegevensbescherming (AVG) heb je de
-                  volgende rechten:
-                </p>
+                <p>{t('rightsP1')}</p>
                 <ul className="list-disc list-inside space-y-2 ml-2">
-                  <li><strong>Recht op inzage</strong> — je kunt opvragen welke gegevens wij van je bewaren</li>
-                  <li><strong>Recht op rectificatie</strong> — je kunt verzoeken om je gegevens te corrigeren</li>
-                  <li><strong>Recht op vergetelheid</strong> — je kunt verzoeken om je gegevens te verwijderen</li>
-                  <li><strong>Recht op overdraagbaarheid</strong> — je kunt verzoeken om je gegevens in een leesbaar formaat te ontvangen</li>
-                  <li><strong>Recht op bezwaar</strong> — je kunt bezwaar maken tegen de verwerking van je gegevens</li>
+                  <li><strong>{t('rightAccess')}</strong> — {t('rightAccessDesc')}</li>
+                  <li><strong>{t('rightRectification')}</strong> — {t('rightRectificationDesc')}</li>
+                  <li><strong>{t('rightErasure')}</strong> — {t('rightErasureDesc')}</li>
+                  <li><strong>{t('rightPortability')}</strong> — {t('rightPortabilityDesc')}</li>
+                  <li><strong>{t('rightObjection')}</strong> — {t('rightObjectionDesc')}</li>
                 </ul>
                 <p>
-                  Wil je een van deze rechten uitoefenen? Stuur een e-mail naar{' '}
-                  <a href="mailto:info@pawsnlshop.com" className="text-orange-500 hover:underline font-medium">
-                    info@pawsnlshop.com
-                  </a>. Wij reageren binnen 30 dagen op je verzoek.
+                  {t.rich('rightsP2', {
+                    email: (chunks) => (
+                      <a href="mailto:info@pawsnlshop.com" className="text-orange-500 hover:underline font-medium">
+                        {chunks}
+                      </a>
+                    ),
+                  })}
                 </p>
               </div>
             </div>
 
             {/* Bewaartermijn */}
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Bewaartermijn</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('retentionTitle')}</h2>
               <div className="space-y-3 text-gray-600 leading-relaxed">
-                <p>
-                  Wij bewaren je persoonsgegevens niet langer dan noodzakelijk voor de
-                  doeleinden waarvoor ze zijn verzameld. Bestelgegevens bewaren wij maximaal
-                  7 jaar in overeenstemming met de wettelijke bewaarplicht.
-                </p>
+                <p>{t('retentionP1')}</p>
               </div>
             </div>
 
             {/* Wijzigingen */}
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Wijzigingen</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('changesTitle')}</h2>
               <div className="space-y-3 text-gray-600 leading-relaxed">
-                <p>
-                  Wij behouden ons het recht voor om dit privacybeleid te wijzigen. De meest
-                  recente versie is altijd beschikbaar op onze website. Bij belangrijke
-                  wijzigingen stellen wij je hiervan op de hoogte.
-                </p>
-                <p className="text-sm text-gray-400">
-                  Laatst bijgewerkt: maart 2026
-                </p>
+                <p>{t('changesP1')}</p>
+                <p className="text-sm text-gray-400">{t('lastUpdated')}</p>
               </div>
             </div>
 
             {/* Contact */}
             <div className="bg-orange-50 rounded-2xl p-8 text-center">
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Vragen over je privacy?</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">{t('ctaTitle')}</h3>
               <p className="text-gray-600 mb-4">
-                Neem gerust contact met ons op als je vragen hebt over hoe wij met je gegevens omgaan.
+                {t('ctaDescription')}
               </p>
               <a
                 href="mailto:info@pawsnlshop.com"
                 className="inline-block bg-orange-500 text-white font-bold py-3 px-8 rounded-xl hover:bg-orange-600 transition-colors"
               >
-                E-mail ons
+                {t('ctaButton')}
               </a>
             </div>
           </div>
