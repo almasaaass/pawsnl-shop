@@ -33,7 +33,7 @@
     "shippingDelivery": "Shipping & delivery",
     "complaints": "Complaints",
     "ourPromise": "Our promise",
-    "freeShipping": "Free shipping over £30",
+    "freeShipping": "Free shipping over €35",
     "returnPolicy": "30-day return policy",
     "safePayment": "Secure payment with Visa & Mastercard",
     "customerSatisfaction": "4.8/5 customer satisfaction",
@@ -46,7 +46,7 @@
     "cookiePolicy": "Cookie policy"
   },
   "announcement": {
-    "freeShipping": "Free shipping over £30",
+    "freeShipping": "Free shipping over €35",
     "returnPolicy": "30-day return policy",
     "safePayment": "Secure payment with Visa & Mastercard",
     "discountCode": "10% off with code WELCOME10"
@@ -70,10 +70,10 @@
   "hero": {
     "title": "Make your pet",
     "titleHighlight": "happy",
-    "subtitle": "Toys, accessories & grooming your pet will love. Fast delivery to the UK & Australia.",
-    "viewProducts": "View products",
+    "subtitle": "Toys, accessories & grooming your pet will love. Fast worldwide delivery.",
+    "viewProducts": "Shop now",
     "discountCode": "10% off: WELCOME10",
-    "freeAbove": "Free over £30",
+    "freeAbove": "Free over €35",
     "safePayment": "Secure payment",
     "return30Days": "30-day returns"
   },
@@ -85,7 +85,7 @@
     "reason2Title": "Fair prices",
     "reason2Description": "Top quality doesn't have to be expensive. Great value guaranteed.",
     "reason3Title": "Fast delivery",
-    "reason3Description": "Free shipping over £30. Delivered to the UK & Australia.",
+    "reason3Description": "Free shipping over €35. Fast worldwide delivery.",
     "reason4Title": "Personal service",
     "reason4Description": "Questions? Our team is always ready to help. 30-day hassle-free returns."
   },
@@ -137,7 +137,7 @@
     "inStock": "In stock",
     "temporarilyOutOfStock": "Temporarily out of stock",
     "offerEndsIn": "Offer ends in",
-    "freeAbove": "Free over £30",
+    "freeAbove": "Free over €35",
     "deliveryDays": "7-14 business days",
     "return30Days": "30-day returns",
     "safePayment": "Secure payment",
@@ -227,7 +227,7 @@
     "customersValue": "15,000+",
     "customersLabel": "happy pet owners",
     "trendingValue": "#1",
-    "trendingLabel": "pet store NL"
+    "trendingLabel": "pet store"
   },
   "asSeenOnTikTok": {
     "title": "As seen on TikTok",

@@ -37,7 +37,11 @@ export function middleware(request: NextRequest) {
     return addSecurityHeaders(NextResponse.next())
   }
 
-  // All other routes: apply next-intl middleware for locale detection
+  // All other routes: apply next-intl middleware
+  // Domain-based routing handles locale detection automatically:
+  // - pawsshop.nl → Dutch (default)
+  // - pawsnlshop.com → English (default)
+  // - Users can still switch: pawsshop.nl/en or pawsnlshop.com/nl
   const response = intlMiddleware(request)
   return addSecurityHeaders(response)
 }
