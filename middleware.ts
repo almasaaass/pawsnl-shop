@@ -16,8 +16,15 @@ function addSecurityHeaders(response: NextResponse) {
 export function middleware(request: NextRequest) {
   const host = request.headers.get('host') || ''
 
-  // Redirect old domain + www → pawsnlshop.com (keep path + query)
-  if (host.includes('pawsshop.nl') || host === 'www.pawsnlshop.com') {
+  // Redirect www → non-www (only when pawsnlshop.com DNS is live)
+  // TODO: Uncomment the full redirect when pawsnlshop.com DNS is active:
+  // if (host.includes('pawsshop.nl') || host === 'www.pawsnlshop.com') {
+  //   const url = new URL(request.url)
+  //   url.host = 'pawsnlshop.com'
+  //   url.protocol = 'https'
+  //   return NextResponse.redirect(url, 301)
+  // }
+  if (host === 'www.pawsnlshop.com') {
     const url = new URL(request.url)
     url.host = 'pawsnlshop.com'
     url.protocol = 'https'
