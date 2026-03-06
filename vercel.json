@@ -15,6 +15,10 @@
     {
       "path": "/api/cron/abandoned-carts",
       "schedule": "0 10 * * *"
+    },
+    {
+      "path": "/api/cron/tiktok-check",
+      "schedule": "0 * * * *"
     }
   ]
 }
