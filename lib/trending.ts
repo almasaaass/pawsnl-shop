@@ -14,6 +14,15 @@ export const TRENDING_SLUGS: Record<string, { views: string }> = {
   'koelvest-voor-honden-verkoeling-op-warme-dagen': { views: '1.2M' },
   'honden-pootjesreiniger-2-in-1': { views: '2.9M' },
   'draagbare-honden-waterfles-drinken-onderweg': { views: '1.6M' },
+  // New viral products
+  'snuffelmat-honden-mentale-stimulatie': { views: '8.2M' },
+  'likmat-honden-katten-anti-stress': { views: '5.4M' },
+  'anti-schrokbak-honden-langzaam-eten': { views: '3.5M' },
+  'puzzel-voerbak-katten-brain-training': { views: '4.1M' },
+  'automatische-voerbak-timer-slim-voeren': { views: '6.7M' },
+  'cactus-krabpaal-katten-stijlvol': { views: '2.9M' },
+  'herbruikbare-pluizenroller-huisdierhaar': { views: '3.2M' },
+  'airtag-houder-halsband-huisdier-tracker': { views: '4.8M' },
 }
 
 export function isTrendingOnTikTok(slug: string): boolean {
