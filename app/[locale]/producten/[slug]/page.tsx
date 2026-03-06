@@ -213,7 +213,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
         </div>
       )}
 
-      <ReviewsSection productId={product.id} productName={product.name} />
+      <ReviewsSection productId={product.id} productName={localName} />
 
       {relatedProducts.length > 0 && (
         <section className="mt-16">

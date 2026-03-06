@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Product, ProductVariant } from '@/lib/types'
+import { Product, ProductVariant, getLocalizedName } from '@/lib/types'
+import { useLocale } from 'next-intl'
 import { formatPrice } from '@/lib/utils'
 import { getVariantPrice, hasVariants } from '@/lib/variants'
 import { useCart } from '@/components/cart/CartContext'
@@ -13,6 +14,7 @@ interface Props {
 }
 
 export default function StickyMobileCTA({ product, selectedVariant }: Props) {
+  const locale = useLocale()
   const { addItem } = useCart()
   const [visible, setVisible] = useState(false)
   const [added, setAdded] = useState(false)
@@ -46,7 +48,7 @@ export default function StickyMobileCTA({ product, selectedVariant }: Props) {
       <div className="bg-white border-t border-gray-200 shadow-[0_-4px_20px_rgba(0,0,0,0.1)] px-4 py-3">
         <div className="flex items-center justify-between gap-4 max-w-lg mx-auto">
           <div className="flex flex-col min-w-0">
-            <span className="text-xs text-gray-500 truncate">{product.name}</span>
+            <span className="text-xs text-gray-500 truncate">{getLocalizedName(product, locale)}</span>
             <span className="text-lg font-bold text-accent-500">{formatPrice(effectivePrice)}</span>
           </div>
           <button

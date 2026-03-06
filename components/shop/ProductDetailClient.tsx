@@ -1,7 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { Product, ProductVariant } from '@/lib/types'
+import { useLocale } from 'next-intl'
+import { Product, ProductVariant, getLocalizedName } from '@/lib/types'
 import { hasVariants, getVariantPrice, getVariantComparePrice } from '@/lib/variants'
 import { formatPrice } from '@/lib/utils'
 import ImageCarousel from './ImageCarousel'
@@ -16,6 +17,7 @@ interface Props {
 }
 
 export default function ProductDetailClient({ product, children }: Props) {
+  const locale = useLocale()
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null)
 
   const showVariants = hasVariants(product)
@@ -35,7 +37,7 @@ export default function ProductDetailClient({ product, children }: Props) {
   return (
     <>
       {/* Image carousel */}
-      <ImageCarousel images={images} name={product.name} />
+      <ImageCarousel images={images} name={getLocalizedName(product, locale)} />
 
       {/* Product info */}
       <div className="flex flex-col">

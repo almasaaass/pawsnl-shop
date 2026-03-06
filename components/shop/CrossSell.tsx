@@ -2,7 +2,8 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
-import { Product } from '@/lib/types'
+import { Product, getLocalizedName } from '@/lib/types'
+import { useLocale } from 'next-intl'
 import { formatPrice, getImageSrc } from '@/lib/utils'
 import { useCart } from '@/components/cart/CartContext'
 import { ShoppingCart, Check, Plus } from 'lucide-react'
@@ -13,6 +14,7 @@ interface Props {
 }
 
 export default function CrossSell({ products, currentProduct }: Props) {
+  const locale = useLocale()
   const { addItem } = useCart()
   const [added, setAdded] = useState(false)
   const [selected, setSelected] = useState<Set<string>>(
@@ -86,7 +88,7 @@ export default function CrossSell({ products, currentProduct }: Props) {
                 {product.images[0] && (
                   <Image
                     src={getImageSrc(product.images[0])}
-                    alt={product.name}
+                    alt={getLocalizedName(product, locale)}
                     fill
                     className="object-cover"
                     sizes="48px"
@@ -95,7 +97,7 @@ export default function CrossSell({ products, currentProduct }: Props) {
                 )}
               </div>
               <div className="min-w-0">
-                <p className="text-xs font-medium text-charcoal truncate max-w-[120px]">{product.name}</p>
+                <p className="text-xs font-medium text-charcoal truncate max-w-[120px]">{getLocalizedName(product, locale)}</p>
                 <p className="text-xs text-accent-500 font-bold">{formatPrice(product.price)}</p>
               </div>
             </button>
