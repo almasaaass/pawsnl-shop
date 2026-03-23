@@ -86,6 +86,9 @@ export async function generateMetadata({
         en: 'https://pawsnlshop.com/en',
       },
     },
+    verification: {
+      google: 'O--8X-JBIQOUQ6gUK4xTm2cvr8SAw6xGy5fZhlKjPoY',
+    },
   }
 }
 
