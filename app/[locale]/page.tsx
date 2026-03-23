@@ -1,6 +1,7 @@
 import { supabase } from '@/lib/supabase'
 import { Product } from '@/lib/types'
 import HeroBanner from '@/components/shop/HeroBanner'
+import TopProducts from '@/components/shop/TopProducts'
 import AppleGrid from '@/components/shop/AppleGrid'
 import HomepageReviews from '@/components/shop/HomepageReviews'
 import LeadMagnet from '@/components/shop/LeadMagnet'
@@ -72,6 +73,7 @@ export default async function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(homepageJsonLd) }}
       />
       <HeroBanner products={featuredProducts} />
+      <TopProducts products={allProducts} />
       <div className="pt-3">
         <AppleGrid featuredProducts={featuredProducts} allProducts={allProducts} />
       </div>
