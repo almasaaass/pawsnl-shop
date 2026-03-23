@@ -236,7 +236,7 @@ export default function AppleGrid({ featuredProducts, allProducts }: Props) {
   const catBirds = getProductsByCategory(allProducts, 'vogels')
   const catRodents = getProductsByCategory(allProducts, 'knaagdieren')
 
-  // Get unique products for the grid (featured first, then fill from all)
+  // Get unique products with images for the grid
   const usedIds = new Set<string>()
   const gridProducts: Product[] = []
 
@@ -245,145 +245,193 @@ export default function AppleGrid({ featuredProducts, allProducts }: Props) {
       usedIds.add(p.id)
       gridProducts.push(p)
     }
-    if (gridProducts.length >= 10) break
+    if (gridProducts.length >= 16) break
   }
+
+  // Find specific highlight product (stoom-verzorgingsborstel)
+  const steamBrush = allProducts.find(p => p.slug?.includes('stoom') || p.slug?.includes('steam') || p.slug?.includes('grooming-brush'))
 
   return (
     <div className="space-y-3">
-      {/* ── Row 1: Full-width hero product (edge to edge) ── */}
+
+      {/* ══════ TOP PRODUCT — Full-width ══════ */}
       {gridProducts[0] && (
         <ScrollReveal animation="fade-up" duration={800}>
-          <AppleFullCard
-            product={gridProducts[0]}
-            theme={CARD_THEMES[0]}
-            locale={locale}
-          />
+          <AppleFullCard product={gridProducts[0]} theme={CARD_THEMES[0]} locale={locale} />
         </ScrollReveal>
       )}
 
-      {/* ── Row 2: Two products side by side ── */}
+      {/* ══════ 2 PRODUCTEN ══════ */}
       <div className="max-w-[1280px] mx-auto px-3">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {gridProducts[1] && (
             <ScrollReveal animation="fade-up" duration={800}>
-              <AppleHalfCard
-                product={gridProducts[1]}
-                theme={CARD_THEMES[1]}
-                locale={locale}
-              />
+              <AppleHalfCard product={gridProducts[1]} theme={CARD_THEMES[1]} locale={locale} />
             </ScrollReveal>
           )}
           {gridProducts[2] && (
             <ScrollReveal animation="fade-up" duration={800} delay={100}>
-              <AppleHalfCard
-                product={gridProducts[2]}
-                theme={CARD_THEMES[2]}
-                locale={locale}
-              />
+              <AppleHalfCard product={gridProducts[2]} theme={CARD_THEMES[2]} locale={locale} />
             </ScrollReveal>
           )}
         </div>
       </div>
 
-      {/* ── Row 3: Two products side by side ── */}
+      {/* ══════ KATTEN SECTIE — Full-width donker ══════ */}
+      <ScrollReveal animation="fade-up" duration={800}>
+        <div className="bg-[#1d1d1f] py-20 md:py-28">
+          <div className="max-w-[1280px] mx-auto px-6 text-center">
+            <h2 className="text-[36px] md:text-[56px] font-semibold text-white tracking-tight leading-[1.05] mb-3">
+              Katten
+            </h2>
+            <p className="text-[17px] md:text-[21px] text-[#a1a1a6] mb-4">
+              Speelgoed, verzorging & accessoires voor je kat
+            </p>
+            <div className="flex items-center justify-center gap-4 mb-12">
+              <a href="/producten?categorie=katten" className="inline-flex items-center text-[14px] font-medium bg-white text-[#1d1d1f] px-5 py-2.5 rounded-full hover:bg-[#f5f5f7] transition-colors">
+                Ontdek
+              </a>
+              <a href="/producten?categorie=katten" className="inline-flex items-center text-[14px] text-[#2997ff] hover:underline">
+                Bekijk alles <ArrowRight className="w-3.5 h-3.5 ml-1" />
+              </a>
+            </div>
+            {/* Cat products grid */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {catCats.slice(0, 4).map((product) => {
+                const imgSrc = getCleanPhoto(product)
+                const name = getLocalizedName(product, locale)
+                return (
+                  <Link
+                    key={product.id}
+                    href={{ pathname: '/producten/[slug]', params: { slug: product.slug } }}
+                    className="group bg-[#2d2d2f] rounded-[20px] overflow-hidden p-5 md:p-6 flex flex-col items-center text-center transition-all duration-300 hover:bg-[#3a3a3c]"
+                  >
+                    {imgSrc && (
+                      <div className="relative w-full aspect-square mb-4">
+                        <Image
+                          src={getImageSrc(imgSrc)}
+                          alt={name}
+                          fill
+                          className="object-contain drop-shadow-lg group-hover:scale-105 transition-transform duration-500"
+                          sizes="(max-width: 768px) 40vw, 20vw"
+                        />
+                      </div>
+                    )}
+                    <h3 className="text-[14px] md:text-[16px] font-semibold text-white leading-tight line-clamp-2 mb-1">
+                      {name}
+                    </h3>
+                    <p className="text-[13px] text-[#a1a1a6]">
+                      {formatLocalPrice(product.price, locale)}
+                    </p>
+                  </Link>
+                )
+              })}
+            </div>
+          </div>
+        </div>
+      </ScrollReveal>
+
+      {/* ══════ 2 PRODUCTEN ══════ */}
       <div className="max-w-[1280px] mx-auto px-3">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {gridProducts[3] && (
             <ScrollReveal animation="fade-up" duration={800}>
-              <AppleHalfCard
-                product={gridProducts[3]}
-                theme={CARD_THEMES[3]}
-                locale={locale}
-              />
+              <AppleHalfCard product={gridProducts[3]} theme={CARD_THEMES[3]} locale={locale} />
             </ScrollReveal>
           )}
           {gridProducts[4] && (
             <ScrollReveal animation="fade-up" duration={800} delay={100}>
-              <AppleHalfCard
-                product={gridProducts[4]}
-                theme={CARD_THEMES[4]}
-                locale={locale}
-              />
+              <AppleHalfCard product={gridProducts[4]} theme={CARD_THEMES[4]} locale={locale} />
             </ScrollReveal>
           )}
         </div>
       </div>
 
-      {/* ── Row 4: Full-width product (edge to edge) ── */}
-      {gridProducts[5] && (
+      {/* ══════ STOOM BORSTEL HIGHLIGHT — Full-width ══════ */}
+      {steamBrush && (
         <ScrollReveal animation="fade-up" duration={800}>
-          <AppleFullCard
-            product={gridProducts[5]}
-            theme={CARD_THEMES[1]}
-            locale={locale}
-          />
+          <AppleFullCard product={steamBrush} theme={CARD_THEMES[1]} locale={locale} />
         </ScrollReveal>
       )}
 
-      {/* ── Row 5: Two categories ── */}
-      <div className="max-w-[1280px] mx-auto px-3">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          <ScrollReveal animation="fade-up" duration={800}>
-            <AppleCategoryCard
-              title="Honden"
-              subtitle="Alles voor je trouwe viervoeter"
-              href="/producten?categorie=honden"
-              theme={CARD_THEMES[0]}
-              emoji="🐕"
-              products={catDogs}
-              locale={locale}
-            />
-          </ScrollReveal>
-          <ScrollReveal animation="fade-up" duration={800} delay={100}>
-            <AppleCategoryCard
-              title="Katten"
-              subtitle="Speelgoed, verzorging & meer"
-              href="/producten?categorie=katten"
-              theme={CARD_THEMES[1]}
-              emoji="🐈"
-              products={catCats}
-              locale={locale}
-            />
-          </ScrollReveal>
+      {/* ══════ HONDEN SECTIE — Full-width licht ══════ */}
+      <ScrollReveal animation="fade-up" duration={800}>
+        <div className="bg-[#fbfbfd] py-20 md:py-28">
+          <div className="max-w-[1280px] mx-auto px-6 text-center">
+            <h2 className="text-[36px] md:text-[56px] font-semibold text-[#1d1d1f] tracking-tight leading-[1.05] mb-3">
+              Honden
+            </h2>
+            <p className="text-[17px] md:text-[21px] text-[#6e6e73] mb-4">
+              Alles voor je trouwe viervoeter
+            </p>
+            <div className="flex items-center justify-center gap-4 mb-12">
+              <a href="/producten?categorie=honden" className="inline-flex items-center text-[14px] font-medium bg-[#0071e3] text-white px-5 py-2.5 rounded-full hover:bg-[#0077ED] transition-colors">
+                Ontdek
+              </a>
+              <a href="/producten?categorie=honden" className="inline-flex items-center text-[14px] text-[#0071e3] hover:underline">
+                Bekijk alles <ArrowRight className="w-3.5 h-3.5 ml-1" />
+              </a>
+            </div>
+            {/* Dog products grid */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {catDogs.slice(0, 4).map((product) => {
+                const imgSrc = getCleanPhoto(product)
+                const name = getLocalizedName(product, locale)
+                return (
+                  <Link
+                    key={product.id}
+                    href={{ pathname: '/producten/[slug]', params: { slug: product.slug } }}
+                    className="group bg-white rounded-[20px] overflow-hidden p-5 md:p-6 flex flex-col items-center text-center shadow-[0_2px_12px_rgba(0,0,0,0.06)] transition-all duration-300 hover:shadow-[0_8px_30px_rgba(0,0,0,0.1)]"
+                  >
+                    {imgSrc && (
+                      <div className="relative w-full aspect-square mb-4">
+                        <Image
+                          src={getImageSrc(imgSrc)}
+                          alt={name}
+                          fill
+                          className="object-contain group-hover:scale-105 transition-transform duration-500"
+                          sizes="(max-width: 768px) 40vw, 20vw"
+                        />
+                      </div>
+                    )}
+                    <h3 className="text-[14px] md:text-[16px] font-semibold text-[#1d1d1f] leading-tight line-clamp-2 mb-1">
+                      {name}
+                    </h3>
+                    <p className="text-[13px] text-[#6e6e73]">
+                      {formatLocalPrice(product.price, locale)}
+                    </p>
+                  </Link>
+                )
+              })}
+            </div>
+          </div>
         </div>
-      </div>
+      </ScrollReveal>
 
-      {/* ── Row 6: Two more products ── */}
+      {/* ══════ 2 PRODUCTEN ══════ */}
       <div className="max-w-[1280px] mx-auto px-3">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {gridProducts[6] && (
+          {gridProducts[5] && (
             <ScrollReveal animation="fade-up" duration={800}>
-              <AppleHalfCard
-                product={gridProducts[6]}
-                theme={CARD_THEMES[5]}
-                locale={locale}
-              />
+              <AppleHalfCard product={gridProducts[5]} theme={CARD_THEMES[5]} locale={locale} />
             </ScrollReveal>
           )}
-          {gridProducts[7] && (
+          {gridProducts[6] && (
             <ScrollReveal animation="fade-up" duration={800} delay={100}>
-              <AppleHalfCard
-                product={gridProducts[7]}
-                theme={CARD_THEMES[3]}
-                locale={locale}
-              />
+              <AppleHalfCard product={gridProducts[6]} theme={CARD_THEMES[0]} locale={locale} />
             </ScrollReveal>
           )}
         </div>
       </div>
 
-      {/* ── Row 7: Full-width product (edge to edge) ── */}
-      {gridProducts[8] && (
+      {/* ══════ FEATURED PRODUCT — Full-width ══════ */}
+      {gridProducts[7] && (
         <ScrollReveal animation="fade-up" duration={800}>
-          <AppleFullCard
-            product={gridProducts[8]}
-            theme={CARD_THEMES[5]}
-            locale={locale}
-          />
+          <AppleFullCard product={gridProducts[7]} theme={CARD_THEMES[4]} locale={locale} />
         </ScrollReveal>
       )}
 
-      {/* ── Row 8: Two categories ── */}
+      {/* ══════ VOGELS & KNAAGDIEREN ══════ */}
       <div className="max-w-[1280px] mx-auto px-3">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <ScrollReveal animation="fade-up" duration={800}>
@@ -411,41 +459,46 @@ export default function AppleGrid({ featuredProducts, allProducts }: Props) {
         </div>
       </div>
 
-      {/* ── Row 9: Last product + trust bar side by side ── */}
+      {/* ══════ MEER PRODUCTEN ══════ */}
       <div className="max-w-[1280px] mx-auto px-3">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {gridProducts[9] && (
+          {gridProducts[8] && (
             <ScrollReveal animation="fade-up" duration={800}>
-              <AppleHalfCard
-                product={gridProducts[9]}
-                theme={CARD_THEMES[0]}
-                locale={locale}
-              />
+              <AppleHalfCard product={gridProducts[8]} theme={CARD_THEMES[1]} locale={locale} />
             </ScrollReveal>
           )}
-          <ScrollReveal animation="fade-up" duration={800} delay={100}>
-            <div className="bg-[#1d1d1f] rounded-[20px] py-12 px-8 flex flex-col items-center justify-center min-h-[480px] md:min-h-[580px]">
-              <h2 className="text-[28px] md:text-[36px] font-semibold text-white tracking-tight text-center mb-10">
-                Waarom PawsNL?
-              </h2>
-              <div className="grid grid-cols-2 gap-8 text-center w-full max-w-md">
-                {[
-                  { icon: '🚚', title: 'Gratis verzending', sub: 'Vanaf €35' },
-                  { icon: '↩️', title: '30 dagen retour', sub: 'Geen gedoe' },
-                  { icon: '🔒', title: 'Veilig betalen', sub: 'iDEAL & Klarna' },
-                  { icon: '⭐', title: 'Klanttevredenheid', sub: 'Groeiende community' },
-                ].map((item) => (
-                  <div key={item.title}>
-                    <span className="text-3xl mb-3 block">{item.icon}</span>
-                    <p className="text-[15px] font-semibold text-white">{item.title}</p>
-                    <p className="text-[13px] text-[#a1a1a6]">{item.sub}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </ScrollReveal>
+          {gridProducts[9] && (
+            <ScrollReveal animation="fade-up" duration={800} delay={100}>
+              <AppleHalfCard product={gridProducts[9]} theme={CARD_THEMES[3]} locale={locale} />
+            </ScrollReveal>
+          )}
         </div>
       </div>
+
+      {/* ══════ TRUST BAR — Full-width donker ══════ */}
+      <ScrollReveal animation="fade-up" duration={800}>
+        <div className="bg-[#1d1d1f] py-16 md:py-20">
+          <div className="max-w-[1280px] mx-auto px-6">
+            <h2 className="text-[28px] md:text-[36px] font-semibold text-white tracking-tight text-center mb-12">
+              Waarom PawsNL?
+            </h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+              {[
+                { icon: '🚚', title: 'Gratis verzending', sub: 'Vanaf €35' },
+                { icon: '↩️', title: '30 dagen retour', sub: 'Geen gedoe' },
+                { icon: '🔒', title: 'Veilig betalen', sub: 'iDEAL & Klarna' },
+                { icon: '⭐', title: 'Klanttevredenheid', sub: 'Groeiende community' },
+              ].map((item) => (
+                <div key={item.title}>
+                  <span className="text-3xl mb-3 block">{item.icon}</span>
+                  <p className="text-[15px] font-semibold text-white">{item.title}</p>
+                  <p className="text-[13px] text-[#a1a1a6]">{item.sub}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </ScrollReveal>
     </div>
   )
 }
