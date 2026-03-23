@@ -168,7 +168,6 @@ export default function AdminProductenPage() {
                               width={40}
                               height={40}
                               className="object-cover w-full h-full"
-                              unoptimized
                             />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center text-lg">🐾</div>

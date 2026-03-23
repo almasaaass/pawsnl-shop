@@ -2,10 +2,10 @@
 
 import { Product } from '@/lib/types'
 import ProductCard from './ProductCard'
-import { ArrowRight, TrendingUp } from 'lucide-react'
-import { useInView } from '@/hooks/useInView'
+import { ArrowRight } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
+import ScrollReveal from '@/components/ui/ScrollReveal'
 
 // Product slugs that are trending on TikTok — matched to actual Supabase products
 const TIKTOK_TRENDING_SLUGS = [
@@ -25,7 +25,6 @@ interface Props {
 
 export default function AsSeenOnTikTok({ products }: Props) {
   const t = useTranslations('asSeenOnTikTok')
-  const { ref, isInView } = useInView({ threshold: 0.1 })
 
   // Filter products that are trending
   const trendingProducts = products.filter(p =>
@@ -38,55 +37,47 @@ export default function AsSeenOnTikTok({ products }: Props) {
   if (displayProducts.length === 0) return null
 
   return (
-    <section ref={ref} className="section bg-gradient-to-b from-white to-accent-50/30">
-      <div className={`flex items-center justify-between mb-8 ${isInView ? 'animate-fade-in-up' : 'opacity-0'}`}>
-        <div>
-          <div className="flex items-center gap-2 mb-2">
-            <div className="flex items-center gap-1.5 bg-charcoal text-white px-3 py-1 rounded-full text-sm font-bold">
-              <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+    <section className="bg-[#f5f5f7] py-16 md:py-24">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <ScrollReveal animation="fade-up">
+          <div className="text-center mb-12 md:mb-16">
+            <div className="inline-flex items-center gap-2 bg-white px-4 py-2 rounded-full mb-5 shadow-sm">
+              <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-[#1d1d1f]">
                 <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 00-.79-.05A6.34 6.34 0 003.15 15.2a6.34 6.34 0 0010.86 4.48 6.3 6.3 0 001.86-4.49V8.87a8.28 8.28 0 004.84 1.56V6.96a4.84 4.84 0 01-1.12-.27z" />
               </svg>
-              TRENDING
+              <span className="text-[#1d1d1f] font-semibold text-sm">Trending</span>
             </div>
-            <TrendingUp className="w-5 h-5 text-accent-500" />
+            <h2 className="text-4xl md:text-5xl font-semibold text-[#1d1d1f] tracking-tight mb-3">
+              {t('title')}
+            </h2>
+            <p className="text-[#6e6e73] text-lg max-w-2xl mx-auto">
+              {t('subtitle')}
+            </p>
           </div>
-          <h2 className="text-3xl font-bold text-charcoal mb-1">{t('title')}</h2>
-          <p className="text-gray-500">{t('subtitle')}</p>
-        </div>
-        <Link
-          href="/producten"
-          className="hidden sm:flex items-center gap-2 text-accent-500 hover:text-accent-600 font-semibold transition-colors"
-        >
-          {t('viewAll')}
-          <ArrowRight className="w-4 h-4" />
-        </Link>
-      </div>
+        </ScrollReveal>
 
-      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-        {displayProducts.map((product, i) => (
-          <div
-            key={product.id}
-            className={`relative ${isInView ? `animate-fade-in-up stagger-${Math.min(i + 1, 8)}` : 'opacity-0'}`}
-          >
-            {/* TikTok trending overlay badge */}
-            <div className="absolute -top-2 -right-2 z-20">
-              <div className="bg-charcoal text-white text-[10px] font-bold px-2 py-1 rounded-full flex items-center gap-1 shadow-lg">
-                <svg viewBox="0 0 24 24" fill="currentColor" className="w-3 h-3">
-                  <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 00-.79-.05A6.34 6.34 0 003.15 15.2a6.34 6.34 0 0010.86 4.48 6.3 6.3 0 001.86-4.49V8.87a8.28 8.28 0 004.84 1.56V6.96a4.84 4.84 0 01-1.12-.27z" />
-                </svg>
-                VIRAL
-              </div>
+        {/* Product Grid */}
+        <ScrollReveal animation="fade-up" stagger staggerDelay={100} className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
+          {displayProducts.map((product) => (
+            <div key={product.id} className="relative">
+              <ProductCard product={product} />
             </div>
-            <ProductCard product={product} />
-          </div>
-        ))}
-      </div>
+          ))}
+        </ScrollReveal>
 
-      <div className="mt-8 text-center sm:hidden">
-        <Link href="/producten" className="btn-secondary inline-flex items-center gap-2">
-          {t('viewAll')}
-          <ArrowRight className="w-4 h-4" />
-        </Link>
+        {/* View All Link */}
+        <ScrollReveal animation="fade-up" delay={400}>
+          <div className="mt-12 text-center">
+            <Link
+              href="/producten"
+              className="inline-flex items-center gap-2 text-[#0066cc] hover:text-[#0055b3] font-medium text-lg transition-colors"
+            >
+              {t('viewAll')}
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </ScrollReveal>
       </div>
     </section>
   )

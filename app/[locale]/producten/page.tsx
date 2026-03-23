@@ -62,7 +62,16 @@ async function getProducts(filters: PageProps['searchParams']): Promise<Product[
     return []
   }
 
-  return data || []
+  const products = data || []
+
+  // Push out-of-stock products to the end of the list
+  products.sort((a, b) => {
+    const aInStock = (a.stock ?? 0) > 0 ? 0 : 1
+    const bInStock = (b.stock ?? 0) > 0 ? 0 : 1
+    return aInStock - bInStock
+  })
+
+  return products
 }
 
 export default async function ProductenPage({ searchParams }: PageProps) {
@@ -104,7 +113,7 @@ export default async function ProductenPage({ searchParams }: PageProps) {
             {products.length} {products.length === 1 ? 'product' : 'producten'} gevonden
           </p>
         </div>
-        <SortDropdown currentSort={searchParams.sort} />
+        <SortDropdown currentSort={searchParams.sort || ''} />
       </div>
 
       <div className="flex flex-col lg:flex-row gap-8">

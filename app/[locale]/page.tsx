@@ -1,14 +1,7 @@
 import { supabase } from '@/lib/supabase'
 import { Product } from '@/lib/types'
 import HeroBanner from '@/components/shop/HeroBanner'
-import SocialProofBar from '@/components/shop/SocialProofBar'
-import FeaturedProducts from '@/components/shop/FeaturedProducts'
-import AsSeenOnTikTok from '@/components/shop/AsSeenOnTikTok'
-import CategoryOverview from '@/components/shop/CategoryOverview'
-import TrustBadges from '@/components/shop/TrustBadges'
-import TikTokShowcase from '@/components/shop/TikTokShowcase'
-import GuaranteeBanner from '@/components/shop/GuaranteeBanner'
-import WhyPawsNL from '@/components/shop/WhyPawsNL'
+import AppleGrid from '@/components/shop/AppleGrid'
 import HomepageReviews from '@/components/shop/HomepageReviews'
 import LeadMagnet from '@/components/shop/LeadMagnet'
 import NewsletterSection from '@/components/shop/NewsletterSection'
@@ -73,22 +66,17 @@ export default async function HomePage() {
   const allProducts = await getAllProducts()
 
   return (
-    <div>
+    <div className="bg-[#f5f5f7]">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(homepageJsonLd) }}
       />
       <HeroBanner products={featuredProducts} />
-      <SocialProofBar />
-      <TrustBadges />
-      <FeaturedProducts products={featuredProducts} />
-      <AsSeenOnTikTok products={allProducts} />
-      <WhyPawsNL />
-      <TikTokShowcase />
-      <GuaranteeBanner />
+      <div className="pt-3">
+        <AppleGrid featuredProducts={featuredProducts} allProducts={allProducts} />
+      </div>
       <HomepageReviews />
-      <CategoryOverview />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+      <div className="max-w-[980px] mx-auto px-3 pb-3">
         <RecentlyViewed />
       </div>
       <NewsletterSection />

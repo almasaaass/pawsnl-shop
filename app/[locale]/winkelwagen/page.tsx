@@ -73,14 +73,37 @@ export default function WinkelwagenPage() {
 
   if (items.length === 0) {
     return (
-      <div className="max-w-2xl mx-auto px-4 py-20 text-center">
-        <ShoppingBag className="w-20 h-20 text-gray-200 mx-auto mb-6" />
-        <h1 className="text-2xl font-bold text-gray-900 mb-3">{t('empty')}</h1>
-        <p className="text-gray-500 mb-8">{t('emptyDescription')}</p>
-        <Link href="/producten" className="btn-primary inline-flex items-center gap-2">
-          <ArrowLeft className="w-4 h-4" />
-          {t('continueShopping')}
-        </Link>
+      <div className="max-w-4xl mx-auto px-4 py-16">
+        <div className="text-center mb-12">
+          <ShoppingBag className="w-20 h-20 text-gray-200 mx-auto mb-6" />
+          <h1 className="text-2xl font-bold text-gray-900 mb-3">{t('empty')}</h1>
+          <p className="text-gray-500 mb-8">{t('emptyDescription')}</p>
+          <Link href="/producten" className="btn-primary inline-flex items-center gap-2">
+            <ArrowLeft className="w-4 h-4" />
+            {t('continueShopping')}
+          </Link>
+        </div>
+
+        <div className="border-t border-gray-100 pt-10">
+          <h2 className="text-xl font-bold text-gray-900 mb-6 text-center">{t('popularProducts')}</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            {[
+              { emoji: '🐕', label: t('catDogs'), slug: 'honden' },
+              { emoji: '🐈', label: t('catCats'), slug: 'katten' },
+              { emoji: '🐦', label: t('catBirds'), slug: 'vogels' },
+              { emoji: '🐹', label: t('catRodents'), slug: 'knaagdieren' },
+            ].map((cat) => (
+              <a
+                key={cat.slug}
+                href={`/producten?categorie=${cat.slug}`}
+                className="card p-6 text-center hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300"
+              >
+                <span className="text-3xl mb-2 block">{cat.emoji}</span>
+                <span className="font-medium text-gray-700 text-sm">{cat.label}</span>
+              </a>
+            ))}
+          </div>
+        </div>
       </div>
     )
   }
@@ -132,7 +155,6 @@ export default function WinkelwagenPage() {
                       alt={getLocalizedName(item.product, locale)}
                       fill
                       className="object-cover"
-                      unoptimized
                       onError={(e) => { e.currentTarget.style.display = 'none' }}
                     />
                   ) : (
@@ -227,7 +249,7 @@ export default function WinkelwagenPage() {
             <button
               onClick={handleCheckout}
               disabled={isLoading}
-              className="btn-primary w-full flex items-center justify-center gap-2"
+              className="btn-primary w-full flex items-center justify-center gap-2 text-base py-3.5"
             >
               {isLoading ? (
                 <>
@@ -235,18 +257,21 @@ export default function WinkelwagenPage() {
                   {t('processing')}
                 </>
               ) : (
-                <>{t('checkout')}</>
+                <>
+                  <ShieldCheck className="w-5 h-5" />
+                  {t('checkout')}
+                </>
               )}
             </button>
 
             {/* Trust signals */}
-            <div className="mt-3 space-y-2">
-              <div className="flex items-center gap-2 text-xs text-gray-500">
-                <ShieldCheck className="w-3.5 h-3.5 text-trust-500" />
+            <div className="mt-3 space-y-2 bg-trust-50 rounded-xl p-3 border border-trust-100">
+              <div className="flex items-center gap-2 text-xs text-trust-700">
+                <ShieldCheck className="w-3.5 h-3.5 text-trust-500 flex-shrink-0" />
                 <span>{t('safePaymentMethods')}</span>
               </div>
-              <div className="flex items-center gap-2 text-xs text-gray-500">
-                <Truck className="w-3.5 h-3.5 text-trust-500" />
+              <div className="flex items-center gap-2 text-xs text-trust-700">
+                <Truck className="w-3.5 h-3.5 text-trust-500 flex-shrink-0" />
                 <span>{t('returnNoHassle')}</span>
               </div>
             </div>

@@ -76,7 +76,6 @@ export default function ImageCarousel({ images, name }: Props) {
               fill
               className="object-cover transition-opacity duration-300 opacity-0"
               sizes="(max-width: 1024px) 100vw, 50vw"
-              unoptimized
             />
           )}
 
@@ -91,7 +90,6 @@ export default function ImageCarousel({ images, name }: Props) {
               } group-hover:scale-105 transition-transform duration-500`}
               sizes="(max-width: 1024px) 100vw, 50vw"
               priority
-              unoptimized
               onError={() => handleError(current)}
             />
           ) : (
@@ -163,7 +161,6 @@ export default function ImageCarousel({ images, name }: Props) {
                     fill
                     className="object-cover"
                     sizes="64px"
-                    unoptimized
                     onError={() => handleError(i)}
                   />
                 )}
@@ -229,7 +226,6 @@ export default function ImageCarousel({ images, name }: Props) {
               fill
               className="object-contain"
               sizes="90vw"
-              unoptimized
             />
           </div>
         </div>

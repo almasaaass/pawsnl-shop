@@ -1,10 +1,11 @@
 'use client'
 
 import { CATEGORIES } from '@/lib/types'
-import { Dog, Cat, Bird, Rabbit, Fish, Snail } from 'lucide-react'
+import { Dog, Cat, Bird, Rabbit, Fish, Snail, ArrowRight } from 'lucide-react'
 import { LucideIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
+import ScrollReveal from '@/components/ui/ScrollReveal'
 
 const iconMap: Record<string, LucideIcon> = {
   Dog, Cat, Bird, Rabbit, Fish, Snail,
@@ -14,34 +15,67 @@ export default function CategoryOverview() {
   const t = useTranslations('categories')
 
   return (
-    <section className="bg-warm-100 py-16 md:py-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-10">
-          <h2 className="text-3xl font-bold text-charcoal mb-2">{t('title')}</h2>
-          <p className="text-gray-500">{t('subtitle')}</p>
-        </div>
+    <section className="py-20 md:py-28 bg-white">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Apple-style centered headline */}
+        <ScrollReveal animation="fade-up">
+          <div className="text-center mb-14">
+            <h2 className="text-4xl md:text-5xl font-semibold tracking-tight text-[#1d1d1f] mb-3">
+              {t('title')}
+            </h2>
+            <p className="text-lg text-[#86868b] max-w-2xl mx-auto">
+              {t('subtitle')}
+            </p>
+          </div>
+        </ScrollReveal>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+        {/* Category grid: 3-col desktop, 2-col mobile */}
+        <ScrollReveal
+          stagger
+          staggerDelay={100}
+          animation="fade-up"
+          className="grid grid-cols-2 md:grid-cols-3 gap-5 md:gap-6"
+        >
           {CATEGORIES.map((category) => {
             const Icon = iconMap[category.icon]
             return (
               <a
                 key={category.slug}
                 href={`/producten?categorie=${category.slug}`}
-                className="card p-5 text-center hover:shadow-card-hover hover:border-accent-200 transition-all group cursor-pointer"
+                className="group bg-white rounded-[20px] p-6 md:p-8 text-center
+                  shadow-[0_2px_12px_rgba(0,0,0,0.06)]
+                  hover:shadow-[0_8px_30px_rgba(0,0,0,0.1)]
+                  transform hover:scale-[1.02]
+                  transition-all duration-300 ease-out
+                  cursor-pointer"
               >
-                <div className="w-12 h-12 bg-accent-50 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
+                {/* Large rounded icon area */}
+                <div className="w-16 h-16 md:w-20 md:h-20 bg-[#f5f5f7] rounded-2xl flex items-center justify-center mx-auto mb-4 md:mb-5
+                  group-hover:bg-[#e8e8ed] transition-colors duration-300"
+                >
                   {Icon ? (
-                    <Icon className="w-6 h-6 text-accent-500" />
+                    <Icon className="w-8 h-8 md:w-10 md:h-10 text-[#1d1d1f] stroke-[1.5]" />
                   ) : (
-                    <span className="text-2xl">{category.emoji}</span>
+                    <span className="text-3xl md:text-4xl">{category.emoji}</span>
                   )}
                 </div>
-                <p className="font-semibold text-charcoal text-sm">{category.label}</p>
+
+                {/* Category name */}
+                <p className="font-semibold text-[#1d1d1f] text-base md:text-lg tracking-tight mb-2">
+                  {category.label}
+                </p>
+
+                {/* Arrow link */}
+                <span className="inline-flex items-center gap-1 text-sm text-[#0071e3] font-medium
+                  opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                >
+                  Bekijk
+                  <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-0.5 transition-transform duration-300" />
+                </span>
               </a>
             )
           })}
-        </div>
+        </ScrollReveal>
       </div>
     </section>
   )

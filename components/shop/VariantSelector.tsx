@@ -72,7 +72,6 @@ export default function VariantSelector({ product, onVariantChange }: Props) {
                     alt={`Variant ${variants.indexOf(variant) + 1}`}
                     fill
                     className="object-cover"
-                    unoptimized
                   />
                 ) : (
                   <div className="w-full h-full bg-gray-100 flex items-center justify-center text-xs text-gray-400">
@@ -137,8 +136,7 @@ export default function VariantSelector({ product, onVariantChange }: Props) {
                       alt={value}
                       fill
                       className="object-cover"
-                      unoptimized
-                    />
+                      />
                   </button>
                 )
               }

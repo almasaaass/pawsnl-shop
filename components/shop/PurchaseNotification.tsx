@@ -42,12 +42,20 @@ export default function PurchaseNotification() {
   const t = useTranslations('purchaseNotification')
   const locale = useLocale()
   const [visible, setVisible] = useState(false)
-  const [notification, setNotification] = useState({ name: '', city: '', minutes: 0 })
-
-  const names = locale === 'en' ? EN_NAMES : NL_NAMES
-  const cities = locale === 'en' ? UK_AU_CITIES : NL_BE_CITIES
+  const [notification, setNotification] = useState(() => {
+    const names = locale === 'en' ? EN_NAMES : NL_NAMES
+    const cities = locale === 'en' ? UK_AU_CITIES : NL_BE_CITIES
+    return {
+      name: getRandomItem(names),
+      city: getRandomItem(cities),
+      minutes: getRandomItem(MINUTES),
+    }
+  })
 
   useEffect(() => {
+    const names = locale === 'en' ? EN_NAMES : NL_NAMES
+    const cities = locale === 'en' ? UK_AU_CITIES : NL_BE_CITIES
+
     function showNotification() {
       setNotification({
         name: getRandomItem(names),
@@ -59,14 +67,17 @@ export default function PurchaseNotification() {
     }
 
     const initialDelay = 15000 + Math.random() * 10000
+    let interval: ReturnType<typeof setInterval> | null = null
     const timeout = setTimeout(() => {
       showNotification()
-      const interval = setInterval(showNotification, 30000 + Math.random() * 30000)
-      return () => clearInterval(interval)
+      interval = setInterval(showNotification, 30000 + Math.random() * 30000)
     }, initialDelay)
 
-    return () => clearTimeout(timeout)
-  }, [names, cities])
+    return () => {
+      clearTimeout(timeout)
+      if (interval) clearInterval(interval)
+    }
+  }, [locale])
 
   return (
     <div

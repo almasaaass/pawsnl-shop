@@ -99,6 +99,36 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} className={`${inter.variable} ${poppins.variable}`}>
       <body className={inter.className}>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'PetStore',
+              name: 'PawsNL',
+              url: 'https://pawsnlshop.com',
+              logo: 'https://pawsnlshop.com/logo-pawsnl.svg',
+              description: 'Online dierenwinkel voor honden, katten en andere huisdieren. Speelgoed, accessoires & verzorging.',
+              address: {
+                '@type': 'PostalAddress',
+                streetAddress: 'Weverstraat 227',
+                addressLocality: 'Gorinchem',
+                postalCode: '4204CB',
+                addressCountry: 'NL',
+              },
+              telephone: '+31681473561',
+              email: 'info@pawsnlshop.com',
+              priceRange: '€€',
+              openingHoursSpecification: {
+                '@type': 'OpeningHoursSpecification',
+                dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+                opens: '00:00',
+                closes: '23:59',
+              },
+              sameAs: [],
+            }),
+          }}
+        />
         <NextIntlClientProvider messages={messages}>
           <CartProvider>
             <WishlistProvider>

@@ -57,18 +57,25 @@ export async function generateMetadata({ params }: PageProps) {
   if (!product) return {}
   const name = getLocalizedName(product, locale)
   const desc = getLocalizedDescription(product, locale)
+  const isEn = locale === 'en'
   return {
     title: `${name} | PawsNL`,
     description: desc.substring(0, 160),
     alternates: {
-      canonical: `https://pawsnlshop.com/producten/${product.slug}`,
+      canonical: isEn
+        ? `https://pawsnlshop.com/en/products/${product.slug}`
+        : `https://pawsnlshop.com/producten/${product.slug}`,
+      languages: {
+        nl: `https://pawsnlshop.com/producten/${product.slug}`,
+        en: `https://pawsnlshop.com/en/products/${product.slug}`,
+      },
     },
     openGraph: {
       title: name,
       description: desc.substring(0, 160),
       type: 'website',
       images: product.images[0] ? [{ url: product.images[0] }] : [],
-      locale: 'nl_NL',
+      locale: isEn ? 'en_GB' : 'nl_NL',
     },
   }
 }

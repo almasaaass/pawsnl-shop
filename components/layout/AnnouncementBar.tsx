@@ -23,16 +23,16 @@ export default function AnnouncementBar() {
   }, [messages.length])
 
   return (
-    <div className="bg-trust-700 text-white text-xs sm:text-sm py-2">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="bg-[#1d1d1f] text-[#f5f5f7] text-[12px] py-2.5">
+      <div className="max-w-[980px] mx-auto px-4 sm:px-6">
         {/* Desktop: alle berichten inline */}
-        <div className="hidden sm:flex items-center justify-center gap-6">
+        <div className="hidden sm:flex items-center justify-center gap-8">
           {messages.map((msg, i) => (
             <div key={i} className="flex items-center gap-1.5">
-              <msg.icon className="w-3.5 h-3.5" />
-              <span>{msg.text}</span>
+              <msg.icon className="w-3 h-3 text-[#86868b]" />
+              <span className="tracking-wide">{msg.text}</span>
               {i < messages.length - 1 && (
-                <span className="ml-6 text-trust-300">&middot;</span>
+                <span className="ml-8 text-[#424245]">|</span>
               )}
             </div>
           ))}
@@ -44,8 +44,8 @@ export default function AnnouncementBar() {
             const Icon = messages[current].icon
             return (
               <>
-                <Icon className="w-3.5 h-3.5" />
-                <span>{messages[current].text}</span>
+                <Icon className="w-3 h-3 text-[#86868b]" />
+                <span className="tracking-wide">{messages[current].text}</span>
               </>
             )
           })()}

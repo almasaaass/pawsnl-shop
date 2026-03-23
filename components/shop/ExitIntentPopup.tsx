@@ -79,57 +79,84 @@ export default function ExitIntentPopup() {
   if (!show) return null
 
   return (
-    <div className={`fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm ${
-      isClosing ? 'animate-fade-in [animation-direction:reverse]' : 'animate-fade-in'
-    }`}>
-      <div className={`relative bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden ${
-        isClosing ? 'animate-scale-in [animation-direction:reverse]' : 'animate-scale-in'
-      }`}>
+    <div
+      className={`fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xl ${
+        isClosing ? 'animate-fade-in [animation-direction:reverse]' : 'animate-fade-in'
+      }`}
+    >
+      <div
+        className={`relative bg-white/95 backdrop-blur-2xl rounded-[20px] max-w-[400px] w-full overflow-hidden ${
+          isClosing ? 'animate-scale-in [animation-direction:reverse]' : 'animate-scale-in'
+        }`}
+        style={{
+          boxShadow: '0 24px 80px rgba(0,0,0,0.14), 0 0 1px rgba(0,0,0,0.12)',
+        }}
+      >
+        {/* Close button */}
         <button
           onClick={close}
-          className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-white/80 hover:bg-white transition-colors z-10"
+          className="absolute top-4 right-4 w-7 h-7 flex items-center justify-center rounded-full hover:bg-[#f5f5f7] transition-colors duration-200 z-10"
         >
-          <X className="w-4 h-4 text-gray-500" />
+          <X className="w-4 h-4 text-[#86868b]" />
         </button>
 
-        <div className="bg-gradient-to-br from-accent-500 to-accent-600 px-6 py-8 text-center text-white">
-          <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Gift className="w-8 h-8" />
+        {/* Content area — flat white, no gradient */}
+        <div className="px-8 pt-10 pb-2 text-center">
+          <div className="w-14 h-14 bg-[#f5f5f7] rounded-full flex items-center justify-center mx-auto mb-5">
+            <Gift className="w-7 h-7 text-[#1d1d1f]" />
           </div>
-          <h2 className="text-2xl font-bold mb-1">{t('waitTitle')}</h2>
-          <p className="text-accent-100 text-lg font-semibold">{t('discountOffer')}</p>
+
+          <h2 className="text-[28px] font-bold text-[#1d1d1f] tracking-[-0.03em] leading-tight mb-2">
+            {t('waitTitle')}
+          </h2>
+          <p className="text-[17px] font-semibold text-[#1d1d1f] tracking-[-0.01em]">
+            {t('discountOffer')}
+          </p>
         </div>
 
-        <div className="p-6">
+        <div className="px-8 pb-8 pt-4">
           {success ? (
             <div className="text-center py-4">
-              <div className="w-12 h-12 bg-trust-100 rounded-full flex items-center justify-center mx-auto mb-3 animate-scale-in">
-                <CheckCircle className="w-6 h-6 text-trust-500" />
+              <div className="w-12 h-12 bg-[#e8faf0] rounded-full flex items-center justify-center mx-auto mb-3 animate-scale-in">
+                <CheckCircle className="w-6 h-6 text-[#34c759]" />
               </div>
-              <h3 className="font-bold text-gray-900 mb-1">{t('discountSentTitle')}</h3>
-              <p className="text-sm text-gray-500">{t('discountSentDescription')}</p>
-              <button onClick={close} className="btn-primary mt-4 text-sm">{t('continueShopping')}</button>
+              <h3 className="font-bold text-[#1d1d1f] text-[17px] mb-1">{t('discountSentTitle')}</h3>
+              <p className="text-[13px] text-[#86868b] leading-relaxed">{t('discountSentDescription')}</p>
+              <button
+                onClick={close}
+                className="mt-5 inline-flex items-center justify-center bg-accent-500 hover:bg-accent-600 text-white text-[14px] font-medium px-6 py-2.5 rounded-full transition-colors duration-200"
+              >
+                {t('continueShopping')}
+              </button>
             </div>
           ) : (
             <>
-              <p className="text-sm text-gray-600 text-center mb-4">{t('emailDescription')}</p>
+              <p className="text-[13px] text-[#86868b] text-center mb-5 leading-relaxed">
+                {t('emailDescription')}
+              </p>
 
               <form onSubmit={handleSubmit} className="space-y-3">
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#86868b]" />
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder={t('emailPlaceholder')}
                     required
-                    className="input pl-10"
+                    className="w-full bg-[#f5f5f7] border-0 rounded-full py-3 pl-11 pr-4 text-[14px] text-[#1d1d1f] placeholder-[#86868b] outline-none focus:ring-2 focus:ring-[#0071e3] focus:ring-offset-0 transition-all duration-200"
                   />
                 </div>
 
-                {error && <p className="text-sm text-red-600">{error}</p>}
+                {error && (
+                  <p className="text-[13px] text-[#ff3b30] text-center">{error}</p>
+                )}
 
-                <button type="submit" disabled={loading} className="btn-primary w-full flex items-center justify-center gap-2 text-base">
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full flex items-center justify-center gap-2 bg-accent-500 hover:bg-accent-600 disabled:bg-[#d2d2d7] disabled:text-white text-white text-[15px] font-medium py-3 rounded-full transition-colors duration-200"
+                >
                   {loading ? (
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   ) : (
@@ -139,7 +166,10 @@ export default function ExitIntentPopup() {
                 </button>
               </form>
 
-              <button onClick={close} className="w-full text-center text-xs text-gray-400 mt-3 hover:text-gray-500">
+              <button
+                onClick={close}
+                className="w-full text-center text-[12px] text-[#86868b] mt-4 hover:text-[#1d1d1f] transition-colors duration-200"
+              >
                 {t('noThanks')}
               </button>
             </>

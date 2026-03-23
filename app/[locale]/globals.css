@@ -4,7 +4,11 @@
 
 @layer base {
   body {
-    @apply text-charcoal bg-warm-50 antialiased;
+    @apply text-charcoal antialiased;
+    background-color: #f5f5f7;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -14,19 +18,19 @@
 
 @layer components {
   .btn-primary {
-    @apply bg-accent-500 hover:bg-accent-600 active:bg-accent-700 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed min-h-[45px];
+    @apply bg-accent-500 hover:bg-accent-600 active:bg-accent-700 text-white font-semibold py-3 px-6 rounded-[980px] transition-all duration-300 shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed min-h-[45px];
   }
 
   .btn-secondary {
-    @apply bg-white hover:bg-gray-50 text-charcoal font-semibold py-3 px-6 rounded-xl border border-gray-200 transition-all duration-200 hover:border-gray-300 min-h-[45px];
+    @apply bg-transparent hover:bg-gray-50 text-charcoal font-semibold py-3 px-6 rounded-[980px] border-2 border-gray-200 transition-all duration-300 hover:border-gray-400 min-h-[45px];
   }
 
   .btn-outline {
-    @apply border-2 border-accent-500 text-accent-500 hover:bg-accent-500 hover:text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 min-h-[45px];
+    @apply border-2 border-accent-500 text-accent-500 hover:bg-accent-500 hover:text-white font-semibold py-3 px-6 rounded-[980px] transition-all duration-300 min-h-[45px];
   }
 
   .card {
-    @apply bg-white rounded-2xl shadow-card border border-gray-100 overflow-hidden;
+    @apply bg-[#fbfbfd] rounded-[20px] shadow-apple-md border border-gray-100/80 overflow-hidden;
   }
 
   .input {
@@ -50,7 +54,7 @@
   }
 
   .section {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20;
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28;
   }
 }
 
@@ -154,6 +158,109 @@ html {
 }
 
 /* ══════════════════════════════════════════════════════════════
+   APPLE-INSPIRED ANIMATION KEYFRAMES
+   ══════════════════════════════════════════════════════════════ */
+
+@keyframes appleReveal {
+  0% {
+    opacity: 0;
+    clip-path: inset(100% 0 0 0);
+  }
+  100% {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes appleFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes appleScale {
+  0% {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes appleFadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes appleParallax {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-20%);
+  }
+}
+
+@keyframes counterUp {
+  0% {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes appleGlow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(0, 113, 227, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(0, 113, 227, 0.3);
+  }
+}
+
+@keyframes appleSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-60px);
+  }
+  60% {
+    transform: translateX(4px);
+  }
+  80% {
+    transform: translateX(-2px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes appleHeroImageScale {
+  from {
+    opacity: 0;
+    transform: scale(1.08);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
    ANIMATION UTILITY CLASSES
    ══════════════════════════════════════════════════════════════ */
 
@@ -247,6 +354,172 @@ html {
 }
 
 /* ══════════════════════════════════════════════════════════════
+   APPLE-INSPIRED UTILITY CLASSES
+   ══════════════════════════════════════════════════════════════ */
+
+/* Apple scroll-triggered reveal */
+.apple-reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.apple-reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Stagger children for Apple cascade */
+.apple-stagger > *:nth-child(1) { transition-delay: 0s; }
+.apple-stagger > *:nth-child(2) { transition-delay: 0.1s; }
+.apple-stagger > *:nth-child(3) { transition-delay: 0.2s; }
+.apple-stagger > *:nth-child(4) { transition-delay: 0.3s; }
+.apple-stagger > *:nth-child(5) { transition-delay: 0.4s; }
+.apple-stagger > *:nth-child(6) { transition-delay: 0.5s; }
+.apple-stagger > *:nth-child(7) { transition-delay: 0.6s; }
+.apple-stagger > *:nth-child(8) { transition-delay: 0.7s; }
+
+/* Apple text gradient */
+.apple-text-gradient {
+  background: linear-gradient(to right, #1d1d1f, #6e6e73);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Apple glass nav */
+.apple-glass {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.apple-glass-dropdown {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+}
+
+/* Apple hero typography — fluid sizing */
+.apple-headline {
+  font-size: clamp(32px, 6vw, 80px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  color: #1d1d1f;
+}
+
+.apple-subheadline {
+  font-size: clamp(19px, 2.5vw, 28px);
+  font-weight: 400;
+  letter-spacing: 0.004em;
+  line-height: 1.4;
+  color: #6e6e73;
+}
+
+/* Apple section spacing */
+.apple-section {
+  padding: 80px 0;
+}
+@media (max-width: 767px) {
+  .apple-section {
+    padding: 48px 0;
+  }
+}
+
+/* Apple card style */
+.apple-card {
+  border-radius: 20px;
+  overflow: hidden;
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              box-shadow 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.apple-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+}
+
+/* Apple CTA buttons */
+.apple-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 980px;
+  font-size: 17px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  padding: 12px 24px;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  cursor: pointer;
+}
+
+.apple-btn-primary {
+  background: #0071e3;
+  color: white;
+}
+.apple-btn-primary:hover {
+  background: #0077ED;
+}
+
+.apple-btn-secondary {
+  color: #0071e3;
+  background: transparent;
+}
+.apple-btn-secondary:hover {
+  text-decoration: underline;
+}
+
+/* Apple parallax container */
+.apple-parallax {
+  will-change: transform;
+}
+
+/* Apple sticky section (like iPhone showcase) */
+.apple-sticky-section {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* Apple hero image reveal */
+.apple-hero-image-reveal {
+  animation: appleHeroImageScale 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.4s both;
+}
+
+/* Apple animation utilities */
+.animate-apple-reveal {
+  animation: appleReveal 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+.animate-apple-float {
+  animation: appleFloat 6s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+}
+
+.animate-apple-scale {
+  animation: appleScale 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+.animate-apple-fade-up {
+  animation: appleFadeUp 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+.animate-apple-glow {
+  animation: appleGlow 3s ease-in-out infinite;
+}
+
+.animate-apple-slide-in {
+  animation: appleSlideIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
+
+.animate-counter-up {
+  animation: counterUp 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+/* ══════════════════════════════════════════════════════════════
    ACCESSIBILITY — Respect reduced motion preferences
    ══════════════════════════════════════════════════════════════ */
 
@@ -262,5 +535,10 @@ html {
 
   .animate-on-scroll {
     opacity: 1;
+  }
+
+  .apple-reveal {
+    opacity: 1;
+    transform: none;
   }
 }

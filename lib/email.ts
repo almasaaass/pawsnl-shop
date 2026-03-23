@@ -115,7 +115,7 @@ export async function sendOrderConfirmation(data: OrderEmailData) {
 
               <!-- Delivery info -->
               <div style="background:#f0fdfa;border-left:4px solid #0D9488;padding:16px 20px;border-radius:0 8px 8px 0;margin:24px 0;">
-                <strong style="color:#115E59;font-size:14px;">${isEn ? 'Estimated delivery: 7-14 business days' : 'Verwachte levertijd: 5-10 werkdagen'}</strong>
+                <strong style="color:#115E59;font-size:14px;">${isEn ? 'Estimated delivery: 5-10 business days' : 'Verwachte levertijd: 5-10 werkdagen'}</strong>
               </div>
 
               <p style="font-size:14px;color:#777;margin:24px 0 0;">
@@ -130,7 +130,7 @@ export async function sendOrderConfirmation(data: OrderEmailData) {
           <tr>
             <td style="background:#f9fafb;padding:24px 40px;text-align:center;border-top:1px solid #e5e7eb;">
               <p style="margin:0;font-size:13px;color:#9ca3af;">
-                &copy; 2026 PawsNL &middot; ${isEn ? 'Pet products for UK & Australia' : 'Dierenproducten voor Nederland & België'}
+                &copy; 2026 PawsNL &middot; ${isEn ? 'Pet products for Nederland & België' : 'Dierenproducten voor Nederland & België'}
               </p>
             </td>
           </tr>

@@ -157,7 +157,6 @@ export default async function BundelsPage() {
                             fill
                             className="object-cover"
                             sizes="64px"
-                            unoptimized
                           />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center text-2xl bg-orange-50">🐾</div>

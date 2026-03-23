@@ -17,7 +17,7 @@ export default function LeadMagnet() {
     const closed = localStorage.getItem(STORAGE_KEY)
     if (closed) return
 
-    const timer = setTimeout(() => setShow(true), 5000)
+    const timer = setTimeout(() => setShow(true), 30000)
     return () => clearTimeout(timer)
   }, [])
 

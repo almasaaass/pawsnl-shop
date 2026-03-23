@@ -63,7 +63,6 @@ export default function CrossSell({ products, currentProduct }: Props) {
                 fill
                 className="object-cover"
                 sizes="48px"
-                unoptimized
               />
             )}
           </div>
@@ -92,7 +91,6 @@ export default function CrossSell({ products, currentProduct }: Props) {
                     fill
                     className="object-cover"
                     sizes="48px"
-                    unoptimized
                   />
                 )}
               </div>
