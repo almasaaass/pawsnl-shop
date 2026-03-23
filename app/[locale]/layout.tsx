@@ -61,6 +61,14 @@ export async function generateMetadata({
       locale: isEn ? 'en_GB' : 'nl_NL',
       url: isEn ? 'https://pawsnlshop.com/en' : 'https://pawsnlshop.com',
       siteName: 'PawsNL',
+      images: [
+        {
+          url: '/og-image.jpg',
+          width: 1200,
+          height: 630,
+          alt: 'PawsNL - Dierenproducten voor Hond & Kat',
+        },
+      ],
     },
     twitter: {
       card: 'summary_large_image',
