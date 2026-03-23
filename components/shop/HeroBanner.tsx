@@ -52,9 +52,9 @@ export default function HeroBanner({ products = [] }: Props) {
         </ScrollReveal>
       </div>
 
-      {/* ── Hero image: Apple-style edge-to-edge ── */}
-      <div className="w-full max-w-[1120px] mx-auto px-3">
-        <div className="apple-hero-image-reveal relative w-full aspect-[16/9] md:aspect-[21/9] rounded-[28px] overflow-hidden">
+      {/* ── Hero image: full-width edge-to-edge ── */}
+      <div className="w-full px-0">
+        <div className="apple-hero-image-reveal relative w-full aspect-[16/9] md:aspect-[21/9] overflow-hidden">
           <Image
             src="/hero-cat.jpg"
             alt="Schattige kat met PawsNL dierenproducten - online dierenwinkel"
