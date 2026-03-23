@@ -59,7 +59,7 @@ export async function generateMetadata({ params }: PageProps) {
   const desc = getLocalizedDescription(product, locale)
   const isEn = locale === 'en'
   return {
-    title: `${name} | PawsNL`,
+    title: name,
     description: desc.substring(0, 160),
     alternates: {
       canonical: isEn
