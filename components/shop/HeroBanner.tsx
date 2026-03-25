@@ -55,7 +55,7 @@ export default function HeroBanner({ products = [] }: Props) {
       <div className="max-w-[1280px] mx-auto px-3">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <ScrollReveal animation="fade-up" duration={800}>
-            <Link href="/producten?categorie=katten" className="group block relative rounded-apple overflow-hidden aspect-[4/3]">
+            <a href="/producten?categorie=katten" className="group block relative rounded-apple overflow-hidden aspect-[4/3]">
               <Image
                 src="/hero-cat.jpg"
                 alt="Kattenproducten - PawsNL"
@@ -71,10 +71,10 @@ export default function HeroBanner({ products = [] }: Props) {
                   Ontdek <ArrowRight className="w-3.5 h-3.5 ml-1" />
                 </span>
               </div>
-            </Link>
+            </a>
           </ScrollReveal>
           <ScrollReveal animation="fade-up" duration={800} delay={100}>
-            <Link href="/producten?categorie=honden" className="group block relative rounded-apple overflow-hidden aspect-[4/3]">
+            <a href="/producten?categorie=honden" className="group block relative rounded-apple overflow-hidden aspect-[4/3]">
               <Image
                 src="/hero-dog.jpg"
                 alt="Hondenproducten - PawsNL"
@@ -90,7 +90,7 @@ export default function HeroBanner({ products = [] }: Props) {
                   Ontdek <ArrowRight className="w-3.5 h-3.5 ml-1" />
                 </span>
               </div>
-            </Link>
+            </a>
           </ScrollReveal>
         </div>
       </div>
