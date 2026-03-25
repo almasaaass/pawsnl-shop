@@ -14,7 +14,7 @@ export default function HomepageReviews() {
   ]
 
   return (
-    <section className="py-16 md:py-24 bg-apple-offwhite">
+    <section className="py-12 md:py-16 bg-apple-offwhite">
       <div className="max-w-[1280px] mx-auto px-5 sm:px-6">
         <ScrollReveal animation="fade-up">
           <div className="text-center mb-12">

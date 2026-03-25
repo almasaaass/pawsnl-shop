@@ -43,7 +43,7 @@ export default function NewsletterSection() {
   }
 
   return (
-    <section className="py-16 md:py-24 px-5 sm:px-6 bg-apple-black">
+    <section className="py-12 md:py-16 px-5 sm:px-6 bg-apple-black">
       <div className="max-w-2xl mx-auto text-center">
         <ScrollReveal animation="fade-up" duration={700}>
           <div className="flex items-center justify-center mb-6">

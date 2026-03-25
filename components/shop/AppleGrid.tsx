@@ -75,10 +75,10 @@ function FullCard({ product, theme, locale }: { product: Product; theme: Theme; 
   return (
     <Link
       href={{ pathname: '/producten/[slug]', params: { slug: product.slug } }}
-      className={`group relative ${theme.bg} overflow-hidden flex flex-col items-center justify-between min-h-[420px] md:min-h-[580px] py-12 px-6 md:py-16 md:px-8 transition-colors`}
+      className={`group relative ${theme.bg} overflow-hidden flex flex-col items-center justify-between min-h-[320px] md:min-h-[440px] py-10 px-5 md:py-12 md:px-8 transition-colors`}
     >
       <div className="text-center z-10">
-        <h2 className={`text-[28px] md:text-[48px] font-semibold ${theme.text} tracking-tight leading-[1.05] mb-2`}>
+        <h2 className={`text-[24px] md:text-[40px] font-semibold ${theme.text} tracking-tight leading-[1.05] mb-2`}>
           {name}
         </h2>
         <p className={`text-[15px] md:text-[17px] ${theme.sub} mb-5`}>
@@ -112,7 +112,7 @@ function HalfCard({ product, theme, locale }: { product: Product; theme: Theme; 
   return (
     <Link
       href={{ pathname: '/producten/[slug]', params: { slug: product.slug } }}
-      className={`group relative ${theme.bg} rounded-apple overflow-hidden flex flex-col items-center justify-between min-h-[400px] md:min-h-[540px] py-10 px-5 md:py-12 md:px-8 transition-colors`}
+      className={`group relative ${theme.bg} rounded-apple overflow-hidden flex flex-col items-center justify-between min-h-[300px] md:min-h-[420px] py-8 px-5 md:py-10 md:px-6 transition-colors`}
     >
       <div className="text-center z-10">
         <h2 className={`text-[22px] md:text-[32px] font-semibold ${theme.text} tracking-tight leading-[1.1] mb-2`}>
@@ -150,9 +150,9 @@ function CategorySection({
   const displayProducts = products.filter(p => getCleanPhoto(p)).slice(0, 4)
 
   return (
-    <div className={`${theme.bg} py-16 md:py-24`}>
+    <div className={`${theme.bg} py-12 md:py-16`}>
       <div className="max-w-[1280px] mx-auto px-5 sm:px-6 text-center">
-        <h2 className={`text-[28px] md:text-[40px] font-semibold ${theme.text} tracking-tight leading-[1.05] mb-2`}>
+        <h2 className={`text-[22px] md:text-[32px] font-semibold ${theme.text} tracking-tight leading-[1.05] mb-2`}>
           {title}
         </h2>
         <p className={`text-[15px] md:text-[17px] ${theme.sub} mb-5`}>
@@ -222,7 +222,7 @@ function CategoryCard({
   return (
     <a
       href={href}
-      className={`group ${theme.bg} rounded-apple overflow-hidden flex flex-col items-center justify-between min-h-[400px] md:min-h-[540px] py-10 px-5 md:py-12 md:px-8 transition-colors`}
+      className={`group ${theme.bg} rounded-apple overflow-hidden flex flex-col items-center justify-between min-h-[300px] md:min-h-[420px] py-8 px-5 md:py-10 md:px-6 transition-colors`}
     >
       <div className="text-center z-10">
         <h2 className={`text-[22px] md:text-[32px] font-semibold ${theme.text} tracking-tight leading-[1.1] mb-2`}>
@@ -408,7 +408,7 @@ export default function AppleGrid({ featuredProducts, allProducts }: Props) {
 
       {/* Trust bar — full-width dark */}
       <ScrollReveal animation="fade-up" duration={800}>
-        <div className="bg-apple-black py-16 md:py-20">
+        <div className="bg-apple-black py-12 md:py-16">
           <div className="max-w-[1280px] mx-auto px-5 sm:px-6">
             <h2 className="text-[24px] md:text-[32px] font-semibold text-white tracking-tight text-center mb-10">
               Waarom PawsNL?

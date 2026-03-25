@@ -15,34 +15,34 @@ export default function HeroBanner({ products = [] }: Props) {
   const t = useTranslations('hero')
 
   return (
-    <section className="relative bg-apple-offwhite overflow-hidden flex flex-col">
-      {/* Text block */}
-      <div className="flex flex-col items-center justify-center text-center px-5 sm:px-6 pt-12 pb-6 md:pt-16 md:pb-8">
+    <section className="bg-apple-offwhite overflow-hidden">
+      {/* Text block — compact */}
+      <div className="text-center px-5 sm:px-6 pt-10 pb-6 md:pt-14 md:pb-8">
         <ScrollReveal animation="fade-up" duration={900}>
-          <h1 className="apple-headline max-w-4xl mx-auto">
+          <h1 className="text-[32px] md:text-[56px] font-semibold tracking-tight leading-[1.05] text-apple-black max-w-3xl mx-auto">
             {t('title')}{' '}
             <span className="text-accent-500">{t('titleHighlight')}</span>
           </h1>
         </ScrollReveal>
 
         <ScrollReveal animation="fade-up" delay={150} duration={900}>
-          <p className="apple-subheadline max-w-2xl mx-auto mt-4">
+          <p className="text-[17px] md:text-[21px] text-apple-gray max-w-2xl mx-auto mt-3">
             {t('subtitle')}
           </p>
         </ScrollReveal>
 
         <ScrollReveal animation="fade-up" delay={300} duration={900}>
-          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
               href="/producten"
-              className="inline-flex items-center justify-center gap-2 bg-accent-500 hover:bg-accent-600 text-white font-semibold text-[17px] px-7 py-3 rounded-full transition-colors"
+              className="inline-flex items-center justify-center gap-2 bg-accent-500 hover:bg-accent-600 text-white font-semibold text-[15px] px-6 py-2.5 rounded-full transition-colors"
             >
               {t('viewProducts')}
               <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
               href="/bundels"
-              className="inline-flex items-center gap-1 text-accent-500 hover:text-accent-600 font-semibold text-[17px] transition-colors group"
+              className="inline-flex items-center gap-1 text-accent-500 hover:text-accent-600 font-semibold text-[15px] transition-colors group"
             >
               {t('discountCode')}
               <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
@@ -51,17 +51,47 @@ export default function HeroBanner({ products = [] }: Props) {
         </ScrollReveal>
       </div>
 
-      {/* Hero image — full-width */}
-      <div className="w-full">
-        <div className="apple-hero-image-reveal relative w-full aspect-[16/9] md:aspect-[21/9] overflow-hidden">
-          <Image
-            src="/hero-cat.jpg"
-            alt="Schattige kat met PawsNL dierenproducten - online dierenwinkel"
-            fill
-            className="object-cover"
-            sizes="100vw"
-            priority
-          />
+      {/* Two hero images side by side — cat + dog */}
+      <div className="max-w-[1280px] mx-auto px-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <ScrollReveal animation="fade-up" duration={800}>
+            <Link href="/producten?categorie=katten" className="group block relative rounded-apple overflow-hidden aspect-[4/3]">
+              <Image
+                src="/hero-cat.jpg"
+                alt="Kattenproducten - PawsNL"
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-700"
+                sizes="(max-width: 768px) 100vw, 50vw"
+                priority
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+              <div className="absolute bottom-5 left-5 md:bottom-8 md:left-8">
+                <h2 className="text-white text-[24px] md:text-[32px] font-semibold tracking-tight">Katten</h2>
+                <span className="inline-flex items-center text-white/90 text-sm mt-1 group-hover:underline">
+                  Ontdek <ArrowRight className="w-3.5 h-3.5 ml-1" />
+                </span>
+              </div>
+            </Link>
+          </ScrollReveal>
+          <ScrollReveal animation="fade-up" duration={800} delay={100}>
+            <Link href="/producten?categorie=honden" className="group block relative rounded-apple overflow-hidden aspect-[4/3]">
+              <Image
+                src="/hero-dog.jpg"
+                alt="Hondenproducten - PawsNL"
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-700"
+                sizes="(max-width: 768px) 100vw, 50vw"
+                priority
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+              <div className="absolute bottom-5 left-5 md:bottom-8 md:left-8">
+                <h2 className="text-white text-[24px] md:text-[32px] font-semibold tracking-tight">Honden</h2>
+                <span className="inline-flex items-center text-white/90 text-sm mt-1 group-hover:underline">
+                  Ontdek <ArrowRight className="w-3.5 h-3.5 ml-1" />
+                </span>
+              </div>
+            </Link>
+          </ScrollReveal>
         </div>
       </div>
     </section>
