@@ -67,7 +67,7 @@ function CategorySection({ title, subtitle, href, products, locale, dark = false
   title: string; subtitle: string; href: string
   products: Product[]; locale: AppLocale; dark?: boolean
 }) {
-  const displayProducts = products.filter(p => getCleanPhoto(p) && p.price < 500).slice(0, 4)
+  const displayProducts = products.filter(p => getCleanPhoto(p) && p.price < 500 && p.stock > 0).slice(0, 4)
   if (displayProducts.length === 0) return null
 
   return (
@@ -105,8 +105,8 @@ function CategorySection({ title, subtitle, href, products, locale, dark = false
 export default function AppleGrid({ featuredProducts, allProducts }: Props) {
   const locale = useLocale() as AppLocale
 
-  // Filter out absurdly priced products (>€500 = data error)
-  const validProducts = allProducts.filter(p => p.price < 500)
+  // Filter out absurdly priced products and out of stock
+  const validProducts = allProducts.filter(p => p.price < 500 && p.stock > 0)
 
   const dogs = getByCategory(validProducts, 'honden')
   const cats = getByCategory(validProducts, 'katten')
@@ -114,7 +114,7 @@ export default function AppleGrid({ featuredProducts, allProducts }: Props) {
   // Collect unique bestsellers with images (max 8)
   const usedIds = new Set<string>()
   const bestsellers: Product[] = []
-  for (const p of [...featuredProducts, ...validProducts]) {
+  for (const p of [...featuredProducts.filter(p => p.stock > 0), ...validProducts]) {
     if (!usedIds.has(p.id) && getCleanPhoto(p) && p.price < 500) {
       usedIds.add(p.id)
       bestsellers.push(p)
@@ -126,7 +126,7 @@ export default function AppleGrid({ featuredProducts, allProducts }: Props) {
   const electricKeywords = ['elektr', 'electric', 'automa', 'smart', 'gps', 'led', 'stoom', 'steam', 'laser', 'usb']
   const electricProducts = validProducts.filter(p => {
     const text = (p.name + ' ' + (p.slug || '')).toLowerCase()
-    return electricKeywords.some(kw => text.includes(kw)) && getCleanPhoto(p)
+    return electricKeywords.some(kw => text.includes(kw)) && getCleanPhoto(p) && p.stock > 0
   }).slice(0, 4)
 
   return (
