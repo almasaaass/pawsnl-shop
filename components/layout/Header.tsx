@@ -89,7 +89,8 @@ export default function Header() {
         <div className="max-w-[980px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between" style={{ height: '44px' }}>
             {/* Logo */}
-            <Link href="/" className="flex items-center flex-shrink-0">
+            <Link href="/" className="flex items-center flex-shrink-0 gap-1.5">
+              <img src="/logo-pawsnl-icon.svg" alt="" className="h-5 w-5" />
               <span className="text-[14px] font-semibold tracking-[-0.01em]" style={{ color: '#1d1d1f' }}>
                 PawsNL
               </span>

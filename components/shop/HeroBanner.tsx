@@ -19,7 +19,7 @@ export default function HeroBanner({ products = [] }: Props) {
       {/* Text block — compact */}
       <div className="text-center px-5 sm:px-6 pt-10 pb-6 md:pt-14 md:pb-8">
         <ScrollReveal animation="fade-up" duration={900}>
-          <h1 className="text-[32px] md:text-[56px] font-semibold tracking-tight leading-[1.05] text-apple-black max-w-3xl mx-auto">
+          <h1 className="text-[28px] sm:text-[36px] md:text-[48px] font-semibold tracking-tight leading-[1.05] text-apple-black">
             {t('title')}{' '}
             <span className="text-accent-500">{t('titleHighlight')}</span>
           </h1>
