@@ -276,33 +276,24 @@ export default function AppleGrid({ featuredProducts, allProducts }: Props) {
     if (grid.length >= 12) break
   }
 
-  const steamBrush = allProducts.find(p =>
-    p.slug?.includes('stoom') || p.slug?.includes('steam') || p.slug?.includes('grooming')
-  )
+  // Find electric/smart products
+  const electricKeywords = ['elektr', 'electric', 'automa', 'smart', 'gps', 'led', 'stoom', 'steam', 'laser', 'usb']
+  const electricProducts = allProducts.filter(p => {
+    const name = (p.name + ' ' + (p.slug || '')).toLowerCase()
+    return electricKeywords.some(kw => name.includes(kw)) && getCleanPhoto(p)
+  }).slice(0, 3)
 
   return (
     <div className="space-y-3">
 
-      {/* Row 1: Hero product — full-width */}
-      {grid[0] && (
-        <ScrollReveal animation="fade-up" duration={800}>
-          <FullCard product={grid[0]} theme={THEMES.light} locale={locale} />
-        </ScrollReveal>
-      )}
-
-      {/* Row 2: Two products */}
+      {/* Row 1: Top 3 products */}
       <div className="max-w-[1280px] mx-auto px-3">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {grid[1] && (
-            <ScrollReveal animation="fade-up" duration={800}>
-              <HalfCard product={grid[1]} theme={THEMES.dark} locale={locale} />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          {grid.slice(0, 3).map((product, i) => (
+            <ScrollReveal key={product.id} animation="fade-up" duration={800} delay={i * 80}>
+              <HalfCard product={product} theme={[THEMES.light, THEMES.dark, THEMES.warm][i]} locale={locale} />
             </ScrollReveal>
-          )}
-          {grid[2] && (
-            <ScrollReveal animation="fade-up" duration={800} delay={100}>
-              <HalfCard product={grid[2]} theme={THEMES.gray} locale={locale} />
-            </ScrollReveal>
-          )}
+          ))}
         </div>
       </div>
 
@@ -315,28 +306,66 @@ export default function AppleGrid({ featuredProducts, allProducts }: Props) {
         />
       </ScrollReveal>
 
-      {/* Row 3: Two products */}
+      {/* Two products */}
       <div className="max-w-[1280px] mx-auto px-3">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {grid[3] && (
             <ScrollReveal animation="fade-up" duration={800}>
-              <HalfCard product={grid[3]} theme={THEMES.warm} locale={locale} />
+              <HalfCard product={grid[3]} theme={THEMES.green} locale={locale} />
             </ScrollReveal>
           )}
           {grid[4] && (
             <ScrollReveal animation="fade-up" duration={800} delay={100}>
-              <HalfCard product={grid[4]} theme={THEMES.dark} locale={locale} />
+              <HalfCard product={grid[4]} theme={THEMES.light} locale={locale} />
             </ScrollReveal>
           )}
         </div>
       </div>
 
-      {/* Steam Brush highlight — full-width */}
-      {steamBrush && (
-        <ScrollReveal animation="fade-up" duration={800}>
-          <FullCard product={steamBrush} theme={THEMES.dark} locale={locale} />
-        </ScrollReveal>
-      )}
+      {/* Elektrische producten — 3 compact cards */}
+      <ScrollReveal animation="fade-up" duration={800}>
+        <div className="bg-apple-black py-12 md:py-16">
+          <div className="max-w-[1280px] mx-auto px-5 sm:px-6 text-center">
+            <h2 className="text-[22px] md:text-[32px] font-semibold text-white tracking-tight mb-2">
+              Elektrische producten
+            </h2>
+            <p className="text-[15px] text-[#86868b] mb-8">
+              Slim & elektrisch voor jouw huisdier
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              {electricProducts.slice(0, 3).map((product) => {
+                const imgSrc = getCleanPhoto(product)
+                const name = getLocalizedName(product, locale)
+                return (
+                  <Link
+                    key={product.id}
+                    href={{ pathname: '/producten/[slug]', params: { slug: product.slug } }}
+                    className="group bg-white/5 hover:bg-white/10 rounded-apple overflow-hidden p-5 md:p-6 flex flex-col items-center text-center transition-all duration-300"
+                  >
+                    {imgSrc && (
+                      <div className="relative w-full aspect-square mb-4 max-w-[200px]">
+                        <Image
+                          src={getImageSrc(imgSrc)}
+                          alt={name}
+                          fill
+                          className="object-contain group-hover:scale-105 transition-transform duration-500"
+                          sizes="(max-width: 768px) 80vw, 25vw"
+                        />
+                      </div>
+                    )}
+                    <h3 className="text-[15px] font-semibold text-white leading-tight line-clamp-2 mb-1">
+                      {name}
+                    </h3>
+                    <p className="text-sm text-[#86868b]">
+                      {formatLocalPrice(product.price, locale)}
+                    </p>
+                  </Link>
+                )
+              })}
+            </div>
+          </div>
+        </div>
+      </ScrollReveal>
 
       {/* Honden — full-width light section */}
       <ScrollReveal animation="fade-up" duration={800}>
@@ -363,12 +392,16 @@ export default function AppleGrid({ featuredProducts, allProducts }: Props) {
         </div>
       </div>
 
-      {/* Featured product — full-width */}
-      {grid[7] && (
-        <ScrollReveal animation="fade-up" duration={800}>
-          <FullCard product={grid[7]} theme={THEMES.dark} locale={locale} />
-        </ScrollReveal>
-      )}
+      {/* 3 extra producten — compact row */}
+      <div className="max-w-[1280px] mx-auto px-3">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          {grid.slice(7, 10).map((product, i) => (
+            <ScrollReveal key={product.id} animation="fade-up" duration={800} delay={i * 80}>
+              <HalfCard product={product} theme={i === 1 ? THEMES.dark : THEMES.gray} locale={locale} />
+            </ScrollReveal>
+          ))}
+        </div>
+      </div>
 
       {/* Vogels & Knaagdieren */}
       <div className="max-w-[1280px] mx-auto px-3">
