@@ -15,9 +15,9 @@ export default function HeroBanner({ products = [] }: Props) {
   const t = useTranslations('hero')
 
   return (
-    <section className="relative bg-[#fbfbfd] overflow-hidden flex flex-col">
-      {/* ── Text block: centered, Apple-style ── */}
-      <div className="flex flex-col items-center justify-center text-center px-4 sm:px-6 lg:px-8 pt-12 pb-4 md:pt-16 md:pb-6">
+    <section className="relative bg-apple-offwhite overflow-hidden flex flex-col">
+      {/* Text block */}
+      <div className="flex flex-col items-center justify-center text-center px-5 sm:px-6 pt-12 pb-6 md:pt-16 md:pb-8">
         <ScrollReveal animation="fade-up" duration={900}>
           <h1 className="apple-headline max-w-4xl mx-auto">
             {t('title')}{' '}
@@ -31,36 +31,35 @@ export default function HeroBanner({ products = [] }: Props) {
           </p>
         </ScrollReveal>
 
-        {/* ── Two CTAs: pill primary + text link secondary ── */}
         <ScrollReveal animation="fade-up" delay={300} duration={900}>
-          <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
               href="/producten"
-              className="inline-flex items-center justify-center gap-2 bg-accent-500 hover:bg-accent-600 text-white font-semibold text-base px-8 py-3.5 rounded-full transition-all duration-200 shadow-sm hover:shadow-md"
+              className="inline-flex items-center justify-center gap-2 bg-accent-500 hover:bg-accent-600 text-white font-semibold text-[17px] px-7 py-3 rounded-full transition-colors"
             >
               {t('viewProducts')}
               <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
               href="/bundels"
-              className="inline-flex items-center gap-1 text-accent-500 hover:text-accent-600 font-semibold text-base transition-colors duration-200 group"
+              className="inline-flex items-center gap-1 text-accent-500 hover:text-accent-600 font-semibold text-[17px] transition-colors group"
             >
               {t('discountCode')}
-              <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
+              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
             </Link>
           </div>
         </ScrollReveal>
       </div>
 
-      {/* ── Hero image: full-width edge-to-edge ── */}
-      <div className="w-full px-0">
+      {/* Hero image — full-width */}
+      <div className="w-full">
         <div className="apple-hero-image-reveal relative w-full aspect-[16/9] md:aspect-[21/9] overflow-hidden">
           <Image
             src="/hero-cat.jpg"
             alt="Schattige kat met PawsNL dierenproducten - online dierenwinkel"
             fill
             className="object-cover"
-            sizes="(max-width: 1200px) 100vw, 980px"
+            sizes="100vw"
             priority
           />
         </div>

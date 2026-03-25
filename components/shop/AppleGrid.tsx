@@ -4,46 +4,70 @@ import Image from 'next/image'
 import { ArrowRight } from 'lucide-react'
 import { Product, getLocalizedName } from '@/lib/types'
 import { getImageSrc } from '@/lib/utils'
-import { useTranslations, useLocale } from 'next-intl'
+import { useLocale } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import { formatLocalPrice, type AppLocale } from '@/lib/locale-config'
 import ScrollReveal from '@/components/ui/ScrollReveal'
 
+/* ─── Types ─── */
 interface Props {
   featuredProducts: Product[]
   allProducts: Product[]
 }
 
+type Theme = {
+  bg: string
+  text: string
+  sub: string
+  variant: 'light' | 'dark'
+}
+
+/* ─── Consistent Apple design tokens ─── */
+const THEMES: Record<string, Theme> = {
+  light:   { bg: 'bg-[#fbfbfd]', text: 'text-apple-black', sub: 'text-apple-gray', variant: 'light' },
+  dark:    { bg: 'bg-apple-black', text: 'text-white', sub: 'text-[#86868b]', variant: 'dark' },
+  gray:    { bg: 'bg-apple-offwhite', text: 'text-apple-black', sub: 'text-apple-gray', variant: 'light' },
+  warm:    { bg: 'bg-[#faf5ee]', text: 'text-apple-black', sub: 'text-apple-gray', variant: 'light' },
+  green:   { bg: 'bg-[#e8f0e3]', text: 'text-apple-black', sub: 'text-apple-gray', variant: 'light' },
+}
+
+/* ─── Helpers ─── */
 function getCleanPhoto(product: Product): string {
-  const GENERATED_PREFIX = 'https://mumuorbsfiklktwqtveb.supabase.co/storage/v1/object/public/product-images/'
-  const cjPhotos = product.images.filter(img => !img.startsWith(GENERATED_PREFIX))
+  const PREFIX = 'https://mumuorbsfiklktwqtveb.supabase.co/storage/v1/object/public/product-images/'
+  const cjPhotos = product.images.filter(img => !img.startsWith(PREFIX))
   return cjPhotos[1] || cjPhotos[0] || product.images[0] || ''
 }
 
-function getProductsByCategory(products: Product[], category: string): Product[] {
+function getByCategory(products: Product[], category: string): Product[] {
   return products.filter(p => p.category === category)
 }
 
-/* ── Card themes: alternate light/dark like Apple ── */
-const CARD_THEMES = [
-  { bg: 'bg-[#fbfbfd]', text: 'text-[#1d1d1f]', sub: 'text-[#6e6e73]', cta: 'primary' as const },
-  { bg: 'bg-[#1d1d1f]', text: 'text-white', sub: 'text-[#a1a1a6]', cta: 'light' as const },
-  { bg: 'bg-[#f5f5f7]', text: 'text-[#1d1d1f]', sub: 'text-[#6e6e73]', cta: 'primary' as const },
-  { bg: 'bg-[#faf5ee]', text: 'text-[#1d1d1f]', sub: 'text-[#86868b]', cta: 'primary' as const },
-  { bg: 'bg-[#1d1d1f]', text: 'text-white', sub: 'text-[#a1a1a6]', cta: 'light' as const },
-  { bg: 'bg-[#e8f0e3]', text: 'text-[#1d1d1f]', sub: 'text-[#6e6e73]', cta: 'primary' as const },
-] as const
-
-/* ─── Full-width Apple product card ──────────────────── */
-function AppleFullCard({
-  product,
-  theme,
-  locale,
-}: {
-  product: Product
-  theme: typeof CARD_THEMES[number]
-  locale: AppLocale
+/* ─── CTA Buttons (consistent everywhere) ─── */
+function CTAButtons({ variant, primaryLabel = 'Meer info', secondaryLabel = 'Koop' }: {
+  variant: 'light' | 'dark'
+  primaryLabel?: string
+  secondaryLabel?: string
 }) {
+  return (
+    <div className="flex items-center justify-center gap-4">
+      <span className={`inline-flex items-center text-sm font-medium px-5 py-2.5 rounded-full transition-colors ${
+        variant === 'light'
+          ? 'bg-apple-blue text-white hover:bg-[#0077ED]'
+          : 'bg-white text-apple-black hover:bg-apple-offwhite'
+      }`}>
+        {primaryLabel}
+      </span>
+      <span className={`inline-flex items-center text-sm hover:underline ${
+        variant === 'light' ? 'text-apple-blue' : 'text-[#2997ff]'
+      }`}>
+        {secondaryLabel} <ArrowRight className="w-3.5 h-3.5 ml-1" />
+      </span>
+    </div>
+  )
+}
+
+/* ─── Full-width product card ─── */
+function FullCard({ product, theme, locale }: { product: Product; theme: Theme; locale: AppLocale }) {
   const name = getLocalizedName(product, locale)
   const imgSrc = getCleanPhoto(product)
   const price = formatLocalPrice(product.price, locale)
@@ -51,60 +75,36 @@ function AppleFullCard({
   return (
     <Link
       href={{ pathname: '/producten/[slug]', params: { slug: product.slug } }}
-      className={`group relative ${theme.bg} overflow-hidden flex flex-col items-center justify-between min-h-[500px] md:min-h-[580px] p-8 md:p-16 transition-all duration-500`}
+      className={`group relative ${theme.bg} overflow-hidden flex flex-col items-center justify-between min-h-[420px] md:min-h-[580px] py-12 px-6 md:py-16 md:px-8 transition-colors`}
     >
-      <div className="text-center z-10 relative">
-        <h2 className={`text-[36px] md:text-[56px] font-semibold ${theme.text} tracking-tight leading-[1.05] mb-2`}>
+      <div className="text-center z-10">
+        <h2 className={`text-[28px] md:text-[48px] font-semibold ${theme.text} tracking-tight leading-[1.05] mb-2`}>
           {name}
         </h2>
-        <p className={`text-[17px] md:text-[21px] ${theme.sub} mb-5`}>
+        <p className={`text-[15px] md:text-[17px] ${theme.sub} mb-5`}>
           Vanaf {price}
         </p>
-        <div className="flex items-center justify-center gap-4">
-          <span className={`inline-flex items-center text-[14px] font-medium px-5 py-2.5 rounded-full transition-colors ${
-            theme.cta === 'primary'
-              ? 'bg-[#0071e3] text-white hover:bg-[#0077ED]'
-              : 'bg-white/90 text-[#1d1d1f] hover:bg-white'
-          }`}>
-            Meer info
-          </span>
-          <span className={`inline-flex items-center text-[14px] hover:underline ${
-            theme.cta === 'primary' ? 'text-[#0071e3]' : 'text-[#2997ff]'
-          }`}>
-            Koop <ArrowRight className="w-3.5 h-3.5 ml-1" />
-          </span>
-        </div>
+        <CTAButtons variant={theme.variant} />
       </div>
-
-      <div className="relative w-full flex-1 flex items-end justify-center mt-4">
-        {imgSrc ? (
-          <div className="relative w-[50%] md:w-[35%] aspect-square">
+      <div className="relative flex-1 flex items-end justify-center mt-6 w-full">
+        {imgSrc && (
+          <div className="relative w-[55%] md:w-[30%] aspect-square max-w-[320px]">
             <Image
               src={getImageSrc(imgSrc)}
               alt={name}
               fill
               className="object-contain drop-shadow-lg group-hover:scale-105 transition-transform duration-700"
-              sizes="(max-width: 768px) 50vw, 35vw"
+              sizes="(max-width: 768px) 55vw, 30vw"
             />
           </div>
-        ) : (
-          <div className="w-[35%] aspect-square bg-white/5 rounded-3xl" />
         )}
       </div>
     </Link>
   )
 }
 
-/* ─── Half-width Apple product card ──────────────────── */
-function AppleHalfCard({
-  product,
-  theme,
-  locale,
-}: {
-  product: Product
-  theme: typeof CARD_THEMES[number]
-  locale: AppLocale
-}) {
+/* ─── Half-width product card ─── */
+function HalfCard({ product, theme, locale }: { product: Product; theme: Theme; locale: AppLocale }) {
   const name = getLocalizedName(product, locale)
   const imgSrc = getCleanPhoto(product)
   const price = formatLocalPrice(product.price, locale)
@@ -112,377 +112,308 @@ function AppleHalfCard({
   return (
     <Link
       href={{ pathname: '/producten/[slug]', params: { slug: product.slug } }}
-      className={`group relative ${theme.bg} rounded-[20px] overflow-hidden flex flex-col items-center justify-between min-h-[480px] md:min-h-[580px] p-8 md:p-10 transition-all duration-500`}
+      className={`group relative ${theme.bg} rounded-apple overflow-hidden flex flex-col items-center justify-between min-h-[400px] md:min-h-[540px] py-10 px-5 md:py-12 md:px-8 transition-colors`}
     >
-      <div className="text-center z-10 relative">
-        <h2 className={`text-[24px] md:text-[36px] font-semibold ${theme.text} tracking-tight leading-[1.1] mb-2`}>
+      <div className="text-center z-10">
+        <h2 className={`text-[22px] md:text-[32px] font-semibold ${theme.text} tracking-tight leading-[1.1] mb-2`}>
           {name}
         </h2>
         <p className={`text-[14px] md:text-[17px] ${theme.sub} mb-4`}>
           Vanaf {price}
         </p>
-        <div className="flex items-center justify-center gap-3">
-          <span className={`inline-flex items-center text-[14px] font-medium px-5 py-2.5 rounded-full transition-colors ${
-            theme.cta === 'primary'
-              ? 'bg-[#0071e3] text-white hover:bg-[#0077ED]'
-              : 'bg-white/90 text-[#1d1d1f] hover:bg-white'
-          }`}>
-            Meer info
-          </span>
-          <span className={`inline-flex items-center text-[14px] hover:underline ${
-            theme.cta === 'primary' ? 'text-[#0071e3]' : 'text-[#2997ff]'
-          }`}>
-            Koop <ArrowRight className="w-3.5 h-3.5 ml-1" />
-          </span>
-        </div>
+        <CTAButtons variant={theme.variant} />
       </div>
-
-      <div className="relative w-full flex-1 flex items-end justify-center mt-4">
-        {imgSrc ? (
-          <div className="relative w-[70%] md:w-[60%] aspect-square">
+      <div className="relative flex-1 flex items-end justify-center mt-4 w-full">
+        {imgSrc && (
+          <div className="relative w-[65%] md:w-[55%] aspect-square max-w-[280px]">
             <Image
               src={getImageSrc(imgSrc)}
               alt={name}
               fill
               className="object-contain drop-shadow-lg group-hover:scale-105 transition-transform duration-700"
-              sizes="(max-width: 768px) 70vw, 35vw"
+              sizes="(max-width: 768px) 65vw, 30vw"
             />
           </div>
-        ) : (
-          <div className="w-[60%] aspect-square bg-white/5 rounded-3xl" />
         )}
       </div>
     </Link>
   )
 }
 
-/* ─── Category card ──────────────────── */
-function AppleCategoryCard({
-  title,
-  subtitle,
-  href,
-  theme,
-  products,
-  emoji,
-  locale,
+/* ─── Category showcase section (full-width) ─── */
+function CategorySection({
+  title, subtitle, href, theme, products, locale, emoji,
 }: {
-  title: string
-  subtitle: string
-  href: string
-  theme: typeof CARD_THEMES[number]
-  products: Product[]
-  emoji: string
-  locale: AppLocale
+  title: string; subtitle: string; href: string; theme: Theme
+  products: Product[]; locale: AppLocale; emoji: string
 }) {
-  const topProduct = products[0]
+  const displayProducts = products.filter(p => getCleanPhoto(p)).slice(0, 4)
+
+  return (
+    <div className={`${theme.bg} py-16 md:py-24`}>
+      <div className="max-w-[1280px] mx-auto px-5 sm:px-6 text-center">
+        <h2 className={`text-[28px] md:text-[40px] font-semibold ${theme.text} tracking-tight leading-[1.05] mb-2`}>
+          {title}
+        </h2>
+        <p className={`text-[15px] md:text-[17px] ${theme.sub} mb-5`}>
+          {subtitle}
+        </p>
+        <div className="mb-10">
+          <CTAButtons variant={theme.variant} primaryLabel="Ontdek" secondaryLabel="Bekijk alles" />
+        </div>
+
+        {displayProducts.length > 0 ? (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {displayProducts.map((product) => {
+              const imgSrc = getCleanPhoto(product)
+              const name = getLocalizedName(product, locale)
+              const isDark = theme.variant === 'dark'
+              return (
+                <Link
+                  key={product.id}
+                  href={{ pathname: '/producten/[slug]', params: { slug: product.slug } }}
+                  className={`group rounded-apple overflow-hidden p-4 md:p-5 flex flex-col items-center text-center transition-all duration-300 ${
+                    isDark
+                      ? 'bg-white/5 hover:bg-white/10'
+                      : 'bg-white shadow-apple-sm hover:shadow-apple-md'
+                  }`}
+                >
+                  {imgSrc && (
+                    <div className="relative w-full aspect-square mb-3">
+                      <Image
+                        src={getImageSrc(imgSrc)}
+                        alt={name}
+                        fill
+                        className="object-contain group-hover:scale-105 transition-transform duration-500"
+                        sizes="(max-width: 768px) 42vw, 20vw"
+                      />
+                    </div>
+                  )}
+                  <h3 className={`text-sm font-semibold leading-tight line-clamp-2 mb-1 ${isDark ? 'text-white' : 'text-apple-black'}`}>
+                    {name}
+                  </h3>
+                  <p className={`text-xs ${isDark ? 'text-[#86868b]' : 'text-apple-gray'}`}>
+                    {formatLocalPrice(product.price, locale)}
+                  </p>
+                </Link>
+              )
+            })}
+          </div>
+        ) : (
+          <div className="flex items-center justify-center py-12">
+            <span className="text-[80px] md:text-[120px] select-none">{emoji}</span>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+/* ─── Category card (half-width) ─── */
+function CategoryCard({
+  title, subtitle, href, theme, products, locale, emoji,
+}: {
+  title: string; subtitle: string; href: string; theme: Theme
+  products: Product[]; locale: AppLocale; emoji: string
+}) {
+  const topProduct = products.find(p => getCleanPhoto(p))
   const imgSrc = topProduct ? getCleanPhoto(topProduct) : ''
 
   return (
     <a
       href={href}
-      className={`group relative ${theme.bg} rounded-[20px] overflow-hidden flex flex-col items-center justify-between min-h-[480px] md:min-h-[580px] p-8 md:p-10 transition-all duration-500`}
+      className={`group ${theme.bg} rounded-apple overflow-hidden flex flex-col items-center justify-between min-h-[400px] md:min-h-[540px] py-10 px-5 md:py-12 md:px-8 transition-colors`}
     >
       <div className="text-center z-10">
-        <h2 className={`text-[28px] md:text-[40px] font-semibold ${theme.text} tracking-tight leading-[1.1] mb-2`}>
+        <h2 className={`text-[22px] md:text-[32px] font-semibold ${theme.text} tracking-tight leading-[1.1] mb-2`}>
           {title}
         </h2>
-        <p className={`text-[14px] md:text-[17px] ${theme.sub} mb-5`}>
+        <p className={`text-[14px] md:text-[17px] ${theme.sub} mb-4`}>
           {subtitle}
         </p>
-        <div className="flex items-center justify-center gap-3">
-          <span className={`inline-flex items-center text-[14px] font-medium px-5 py-2.5 rounded-full transition-colors ${
-            theme.cta === 'primary'
-              ? 'bg-[#0071e3] text-white hover:bg-[#0077ED]'
-              : 'bg-white text-[#1d1d1f] hover:bg-[#f5f5f7]'
-          }`}>
-            Ontdek
-          </span>
-          <span className={`inline-flex items-center text-[14px] hover:underline ${
-            theme.cta === 'primary' ? 'text-[#0071e3]' : 'text-[#2997ff]'
-          }`}>
-            Bekijk alles <ArrowRight className="w-3.5 h-3.5 ml-1" />
-          </span>
-        </div>
+        <CTAButtons variant={theme.variant} primaryLabel="Ontdek" secondaryLabel="Bekijk alles" />
       </div>
-
-      <div className="relative w-full flex-1 flex items-end justify-center mt-6">
+      <div className="relative flex-1 flex items-end justify-center mt-6 w-full">
         {imgSrc ? (
-          <div className="relative w-[65%] md:w-[55%] aspect-square">
+          <div className="relative w-[60%] md:w-[50%] aspect-square max-w-[240px]">
             <Image
               src={getImageSrc(imgSrc)}
               alt={title}
               fill
               className="object-contain drop-shadow-lg group-hover:scale-105 transition-transform duration-700"
-              sizes="(max-width: 768px) 65vw, 30vw"
+              sizes="(max-width: 768px) 60vw, 25vw"
             />
           </div>
         ) : (
-          <div className="flex items-center justify-center group-hover:scale-110 transition-transform duration-700">
-            <span className="text-[120px] md:text-[160px] drop-shadow-lg select-none">{emoji}</span>
-          </div>
+          <span className="text-[80px] md:text-[120px] drop-shadow-lg select-none group-hover:scale-110 transition-transform duration-700">
+            {emoji}
+          </span>
         )}
       </div>
     </a>
   )
 }
 
-/* ─── Main Apple Grid ──────────────────── */
+/* ═══════════════════════════════════════════════
+   Main Apple Grid
+   ═══════════════════════════════════════════════ */
 export default function AppleGrid({ featuredProducts, allProducts }: Props) {
-  const t = useTranslations('hero')
   const locale = useLocale() as AppLocale
 
-  const catDogs = getProductsByCategory(allProducts, 'honden')
-  const catCats = getProductsByCategory(allProducts, 'katten')
-  const catBirds = getProductsByCategory(allProducts, 'vogels')
-  const catRodents = getProductsByCategory(allProducts, 'knaagdieren')
+  const dogs = getByCategory(allProducts, 'honden')
+  const cats = getByCategory(allProducts, 'katten')
+  const birds = getByCategory(allProducts, 'vogels')
+  const rodents = getByCategory(allProducts, 'knaagdieren')
 
-  // Get unique products with images for the grid
+  // Collect unique products with images
   const usedIds = new Set<string>()
-  const gridProducts: Product[] = []
-
+  const grid: Product[] = []
   for (const p of [...featuredProducts, ...allProducts]) {
     if (!usedIds.has(p.id) && getCleanPhoto(p)) {
       usedIds.add(p.id)
-      gridProducts.push(p)
+      grid.push(p)
     }
-    if (gridProducts.length >= 16) break
+    if (grid.length >= 12) break
   }
 
-  // Find specific highlight product (stoom-verzorgingsborstel)
-  const steamBrush = allProducts.find(p => p.slug?.includes('stoom') || p.slug?.includes('steam') || p.slug?.includes('grooming-brush'))
+  const steamBrush = allProducts.find(p =>
+    p.slug?.includes('stoom') || p.slug?.includes('steam') || p.slug?.includes('grooming')
+  )
 
   return (
     <div className="space-y-3">
 
-      {/* ══════ TOP PRODUCT — Full-width ══════ */}
-      {gridProducts[0] && (
+      {/* Row 1: Hero product — full-width */}
+      {grid[0] && (
         <ScrollReveal animation="fade-up" duration={800}>
-          <AppleFullCard product={gridProducts[0]} theme={CARD_THEMES[0]} locale={locale} />
+          <FullCard product={grid[0]} theme={THEMES.light} locale={locale} />
         </ScrollReveal>
       )}
 
-      {/* ══════ 2 PRODUCTEN ══════ */}
+      {/* Row 2: Two products */}
       <div className="max-w-[1280px] mx-auto px-3">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {gridProducts[1] && (
+          {grid[1] && (
             <ScrollReveal animation="fade-up" duration={800}>
-              <AppleHalfCard product={gridProducts[1]} theme={CARD_THEMES[1]} locale={locale} />
+              <HalfCard product={grid[1]} theme={THEMES.dark} locale={locale} />
             </ScrollReveal>
           )}
-          {gridProducts[2] && (
+          {grid[2] && (
             <ScrollReveal animation="fade-up" duration={800} delay={100}>
-              <AppleHalfCard product={gridProducts[2]} theme={CARD_THEMES[2]} locale={locale} />
+              <HalfCard product={grid[2]} theme={THEMES.gray} locale={locale} />
             </ScrollReveal>
           )}
         </div>
       </div>
 
-      {/* ══════ KATTEN SECTIE — Full-width donker ══════ */}
+      {/* Katten — full-width dark section */}
       <ScrollReveal animation="fade-up" duration={800}>
-        <div className="bg-[#1d1d1f] py-20 md:py-28">
-          <div className="max-w-[1280px] mx-auto px-6 text-center">
-            <h2 className="text-[36px] md:text-[56px] font-semibold text-white tracking-tight leading-[1.05] mb-3">
-              Katten
-            </h2>
-            <p className="text-[17px] md:text-[21px] text-[#a1a1a6] mb-4">
-              Speelgoed, verzorging & accessoires voor je kat
-            </p>
-            <div className="flex items-center justify-center gap-4 mb-12">
-              <a href="/producten?categorie=katten" className="inline-flex items-center text-[14px] font-medium bg-white text-[#1d1d1f] px-5 py-2.5 rounded-full hover:bg-[#f5f5f7] transition-colors">
-                Ontdek
-              </a>
-              <a href="/producten?categorie=katten" className="inline-flex items-center text-[14px] text-[#2997ff] hover:underline">
-                Bekijk alles <ArrowRight className="w-3.5 h-3.5 ml-1" />
-              </a>
-            </div>
-            {/* Cat products grid */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              {catCats.slice(0, 4).map((product) => {
-                const imgSrc = getCleanPhoto(product)
-                const name = getLocalizedName(product, locale)
-                return (
-                  <Link
-                    key={product.id}
-                    href={{ pathname: '/producten/[slug]', params: { slug: product.slug } }}
-                    className="group bg-[#2d2d2f] rounded-[20px] overflow-hidden p-5 md:p-6 flex flex-col items-center text-center transition-all duration-300 hover:bg-[#3a3a3c]"
-                  >
-                    {imgSrc && (
-                      <div className="relative w-full aspect-square mb-4">
-                        <Image
-                          src={getImageSrc(imgSrc)}
-                          alt={name}
-                          fill
-                          className="object-contain drop-shadow-lg group-hover:scale-105 transition-transform duration-500"
-                          sizes="(max-width: 768px) 40vw, 20vw"
-                        />
-                      </div>
-                    )}
-                    <h3 className="text-[14px] md:text-[16px] font-semibold text-white leading-tight line-clamp-2 mb-1">
-                      {name}
-                    </h3>
-                    <p className="text-[13px] text-[#a1a1a6]">
-                      {formatLocalPrice(product.price, locale)}
-                    </p>
-                  </Link>
-                )
-              })}
-            </div>
-          </div>
-        </div>
+        <CategorySection
+          title="Katten" subtitle="Speelgoed, verzorging & accessoires"
+          href="/producten?categorie=katten" theme={THEMES.dark}
+          products={cats} locale={locale} emoji="🐈"
+        />
       </ScrollReveal>
 
-      {/* ══════ 2 PRODUCTEN ══════ */}
+      {/* Row 3: Two products */}
       <div className="max-w-[1280px] mx-auto px-3">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {gridProducts[3] && (
+          {grid[3] && (
             <ScrollReveal animation="fade-up" duration={800}>
-              <AppleHalfCard product={gridProducts[3]} theme={CARD_THEMES[3]} locale={locale} />
+              <HalfCard product={grid[3]} theme={THEMES.warm} locale={locale} />
             </ScrollReveal>
           )}
-          {gridProducts[4] && (
+          {grid[4] && (
             <ScrollReveal animation="fade-up" duration={800} delay={100}>
-              <AppleHalfCard product={gridProducts[4]} theme={CARD_THEMES[4]} locale={locale} />
+              <HalfCard product={grid[4]} theme={THEMES.dark} locale={locale} />
             </ScrollReveal>
           )}
         </div>
       </div>
 
-      {/* ══════ STOOM BORSTEL HIGHLIGHT — Full-width ══════ */}
+      {/* Steam Brush highlight — full-width */}
       {steamBrush && (
         <ScrollReveal animation="fade-up" duration={800}>
-          <AppleFullCard product={steamBrush} theme={CARD_THEMES[1]} locale={locale} />
+          <FullCard product={steamBrush} theme={THEMES.dark} locale={locale} />
         </ScrollReveal>
       )}
 
-      {/* ══════ HONDEN SECTIE — Full-width licht ══════ */}
+      {/* Honden — full-width light section */}
       <ScrollReveal animation="fade-up" duration={800}>
-        <div className="bg-[#fbfbfd] py-20 md:py-28">
-          <div className="max-w-[1280px] mx-auto px-6 text-center">
-            <h2 className="text-[36px] md:text-[56px] font-semibold text-[#1d1d1f] tracking-tight leading-[1.05] mb-3">
-              Honden
-            </h2>
-            <p className="text-[17px] md:text-[21px] text-[#6e6e73] mb-4">
-              Alles voor je trouwe viervoeter
-            </p>
-            <div className="flex items-center justify-center gap-4 mb-12">
-              <a href="/producten?categorie=honden" className="inline-flex items-center text-[14px] font-medium bg-[#0071e3] text-white px-5 py-2.5 rounded-full hover:bg-[#0077ED] transition-colors">
-                Ontdek
-              </a>
-              <a href="/producten?categorie=honden" className="inline-flex items-center text-[14px] text-[#0071e3] hover:underline">
-                Bekijk alles <ArrowRight className="w-3.5 h-3.5 ml-1" />
-              </a>
-            </div>
-            {/* Dog products grid */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              {catDogs.slice(0, 4).map((product) => {
-                const imgSrc = getCleanPhoto(product)
-                const name = getLocalizedName(product, locale)
-                return (
-                  <Link
-                    key={product.id}
-                    href={{ pathname: '/producten/[slug]', params: { slug: product.slug } }}
-                    className="group bg-white rounded-[20px] overflow-hidden p-5 md:p-6 flex flex-col items-center text-center shadow-[0_2px_12px_rgba(0,0,0,0.06)] transition-all duration-300 hover:shadow-[0_8px_30px_rgba(0,0,0,0.1)]"
-                  >
-                    {imgSrc && (
-                      <div className="relative w-full aspect-square mb-4">
-                        <Image
-                          src={getImageSrc(imgSrc)}
-                          alt={name}
-                          fill
-                          className="object-contain group-hover:scale-105 transition-transform duration-500"
-                          sizes="(max-width: 768px) 40vw, 20vw"
-                        />
-                      </div>
-                    )}
-                    <h3 className="text-[14px] md:text-[16px] font-semibold text-[#1d1d1f] leading-tight line-clamp-2 mb-1">
-                      {name}
-                    </h3>
-                    <p className="text-[13px] text-[#6e6e73]">
-                      {formatLocalPrice(product.price, locale)}
-                    </p>
-                  </Link>
-                )
-              })}
-            </div>
-          </div>
-        </div>
+        <CategorySection
+          title="Honden" subtitle="Alles voor je trouwe viervoeter"
+          href="/producten?categorie=honden" theme={THEMES.light}
+          products={dogs} locale={locale} emoji="🐕"
+        />
       </ScrollReveal>
 
-      {/* ══════ 2 PRODUCTEN ══════ */}
+      {/* Row 4: Two products */}
       <div className="max-w-[1280px] mx-auto px-3">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {gridProducts[5] && (
+          {grid[5] && (
             <ScrollReveal animation="fade-up" duration={800}>
-              <AppleHalfCard product={gridProducts[5]} theme={CARD_THEMES[5]} locale={locale} />
+              <HalfCard product={grid[5]} theme={THEMES.green} locale={locale} />
             </ScrollReveal>
           )}
-          {gridProducts[6] && (
+          {grid[6] && (
             <ScrollReveal animation="fade-up" duration={800} delay={100}>
-              <AppleHalfCard product={gridProducts[6]} theme={CARD_THEMES[0]} locale={locale} />
+              <HalfCard product={grid[6]} theme={THEMES.light} locale={locale} />
             </ScrollReveal>
           )}
         </div>
       </div>
 
-      {/* ══════ FEATURED PRODUCT — Full-width ══════ */}
-      {gridProducts[7] && (
+      {/* Featured product — full-width */}
+      {grid[7] && (
         <ScrollReveal animation="fade-up" duration={800}>
-          <AppleFullCard product={gridProducts[7]} theme={CARD_THEMES[4]} locale={locale} />
+          <FullCard product={grid[7]} theme={THEMES.dark} locale={locale} />
         </ScrollReveal>
       )}
 
-      {/* ══════ VOGELS & KNAAGDIEREN ══════ */}
+      {/* Vogels & Knaagdieren */}
       <div className="max-w-[1280px] mx-auto px-3">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <ScrollReveal animation="fade-up" duration={800}>
-            <AppleCategoryCard
-              title="Vogels"
-              subtitle="Speelgoed & accessoires"
-              href="/producten?categorie=vogels"
-              theme={CARD_THEMES[2]}
-              emoji="🦜"
-              products={catBirds}
-              locale={locale}
+            <CategoryCard
+              title="Vogels" subtitle="Speelgoed & accessoires"
+              href="/producten?categorie=vogels" theme={THEMES.gray}
+              products={birds} locale={locale} emoji="🦜"
             />
           </ScrollReveal>
           <ScrollReveal animation="fade-up" duration={800} delay={100}>
-            <AppleCategoryCard
-              title="Knaagdieren"
-              subtitle="Het beste voor kleine vriendjes"
-              href="/producten?categorie=knaagdieren"
-              theme={CARD_THEMES[4]}
-              emoji="🐹"
-              products={catRodents}
-              locale={locale}
+            <CategoryCard
+              title="Knaagdieren" subtitle="Het beste voor kleine vriendjes"
+              href="/producten?categorie=knaagdieren" theme={THEMES.dark}
+              products={rodents} locale={locale} emoji="🐹"
             />
           </ScrollReveal>
         </div>
       </div>
 
-      {/* ══════ MEER PRODUCTEN ══════ */}
+      {/* More products */}
       <div className="max-w-[1280px] mx-auto px-3">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {gridProducts[8] && (
+          {grid[8] && (
             <ScrollReveal animation="fade-up" duration={800}>
-              <AppleHalfCard product={gridProducts[8]} theme={CARD_THEMES[1]} locale={locale} />
+              <HalfCard product={grid[8]} theme={THEMES.dark} locale={locale} />
             </ScrollReveal>
           )}
-          {gridProducts[9] && (
+          {grid[9] && (
             <ScrollReveal animation="fade-up" duration={800} delay={100}>
-              <AppleHalfCard product={gridProducts[9]} theme={CARD_THEMES[3]} locale={locale} />
+              <HalfCard product={grid[9]} theme={THEMES.warm} locale={locale} />
             </ScrollReveal>
           )}
         </div>
       </div>
 
-      {/* ══════ TRUST BAR — Full-width donker ══════ */}
+      {/* Trust bar — full-width dark */}
       <ScrollReveal animation="fade-up" duration={800}>
-        <div className="bg-[#1d1d1f] py-16 md:py-20">
-          <div className="max-w-[1280px] mx-auto px-6">
-            <h2 className="text-[28px] md:text-[36px] font-semibold text-white tracking-tight text-center mb-12">
+        <div className="bg-apple-black py-16 md:py-20">
+          <div className="max-w-[1280px] mx-auto px-5 sm:px-6">
+            <h2 className="text-[24px] md:text-[32px] font-semibold text-white tracking-tight text-center mb-10">
               Waarom PawsNL?
             </h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
               {[
                 { icon: '🚚', title: 'Gratis verzending', sub: 'Vanaf €35' },
                 { icon: '↩️', title: '30 dagen retour', sub: 'Geen gedoe' },
@@ -490,9 +421,9 @@ export default function AppleGrid({ featuredProducts, allProducts }: Props) {
                 { icon: '⭐', title: 'Klanttevredenheid', sub: 'Groeiende community' },
               ].map((item) => (
                 <div key={item.title}>
-                  <span className="text-3xl mb-3 block">{item.icon}</span>
-                  <p className="text-[15px] font-semibold text-white">{item.title}</p>
-                  <p className="text-[13px] text-[#a1a1a6]">{item.sub}</p>
+                  <span className="text-2xl mb-2 block">{item.icon}</span>
+                  <p className="text-sm font-semibold text-white">{item.title}</p>
+                  <p className="text-xs text-[#86868b]">{item.sub}</p>
                 </div>
               ))}
             </div>

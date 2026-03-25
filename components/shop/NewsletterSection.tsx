@@ -43,48 +43,32 @@ export default function NewsletterSection() {
   }
 
   return (
-    <section className="py-20 md:py-28 px-6" style={{ backgroundColor: '#1d1d1f' }}>
-      <div className="max-w-3xl mx-auto text-center">
-        {/* Icon */}
+    <section className="py-16 md:py-24 px-5 sm:px-6 bg-apple-black">
+      <div className="max-w-2xl mx-auto text-center">
         <ScrollReveal animation="fade-up" duration={700}>
           <div className="flex items-center justify-center mb-6">
-            <div
-              className="w-14 h-14 rounded-full flex items-center justify-center"
-              style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}
-            >
-              <Gift className="w-6 h-6" style={{ color: '#ffffff' }} />
+            <div className="w-14 h-14 rounded-full flex items-center justify-center bg-white/10">
+              <Gift className="w-6 h-6 text-white" />
             </div>
           </div>
         </ScrollReveal>
 
-        {/* Headline */}
         <ScrollReveal animation="fade-up" delay={100} duration={700}>
-          <h2
-            className="text-3xl md:text-5xl font-semibold tracking-tight mb-4"
-            style={{ color: '#f5f5f7', letterSpacing: '-0.015em' }}
-          >
+          <h2 className="text-[28px] md:text-[40px] font-semibold tracking-tight mb-4 text-apple-offwhite">
             {t('title')}
           </h2>
         </ScrollReveal>
 
-        {/* Subtitle */}
         <ScrollReveal animation="fade-up" delay={200} duration={700}>
-          <p
-            className="text-lg md:text-xl mb-10"
-            style={{ color: '#a1a1a6', lineHeight: 1.5 }}
-          >
+          <p className="text-[17px] mb-10 text-[#86868b] leading-relaxed">
             {t('description')}
           </p>
         </ScrollReveal>
 
-        {/* Form or Success */}
         <ScrollReveal animation="fade-up" delay={300} duration={700}>
           {success ? (
-            <div
-              className="flex items-center justify-center gap-3 font-medium text-lg py-4"
-              style={{ color: '#f5f5f7' }}
-            >
-              <CheckCircle className="w-6 h-6" style={{ color: '#34c759' }} />
+            <div className="flex items-center justify-center gap-3 font-medium text-[17px] py-4 text-apple-offwhite">
+              <CheckCircle className="w-6 h-6 text-[#34c759]" />
               <span>{t('successMessage')}</span>
             </div>
           ) : (
@@ -93,53 +77,23 @@ export default function NewsletterSection() {
               className="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto items-center"
             >
               <div className="relative flex-1 w-full">
-                <Mail
-                  className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5"
-                  style={{ color: '#86868b' }}
-                />
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#86868b]" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder={t('emailPlaceholder')}
                   required
-                  className="w-full outline-none text-base transition-all duration-300 focus:ring-2"
-                  style={{
-                    padding: '14px 20px 14px 48px',
-                    borderRadius: '980px',
-                    border: '1px solid rgba(255,255,255,0.2)',
-                    backgroundColor: 'rgba(255,255,255,0.08)',
-                    color: '#f5f5f7',
-                    fontSize: '17px',
-                  }}
-                  onFocus={(e) => {
-                    e.currentTarget.style.borderColor = '#0071e3'
-                    e.currentTarget.style.boxShadow = '0 0 0 3px rgba(0, 113, 227, 0.3)'
-                  }}
-                  onBlur={(e) => {
-                    e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)'
-                    e.currentTarget.style.boxShadow = 'none'
-                  }}
+                  className="w-full outline-none text-[15px] py-3 pl-12 pr-5 rounded-full bg-white/[0.08] border border-white/20 text-apple-offwhite placeholder:text-[#86868b] focus:border-apple-blue focus:ring-2 focus:ring-apple-blue/30 transition-all"
                 />
               </div>
               <button
                 type="submit"
                 disabled={loading}
-                className="flex items-center justify-center gap-2 whitespace-nowrap font-medium text-base transition-all duration-300 hover:opacity-80 disabled:opacity-50"
-                style={{
-                  backgroundColor: '#0071e3',
-                  color: '#ffffff',
-                  padding: '14px 28px',
-                  borderRadius: '980px',
-                  border: 'none',
-                  cursor: loading ? 'not-allowed' : 'pointer',
-                  fontSize: '17px',
-                }}
+                className="flex items-center justify-center gap-2 whitespace-nowrap font-medium text-[15px] py-3 px-6 rounded-full bg-apple-blue text-white hover:opacity-90 disabled:opacity-50 transition-opacity"
               >
                 {loading ? (
-                  <div
-                    className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"
-                  />
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                 ) : (
                   <Gift className="w-5 h-5" />
                 )}
@@ -149,15 +103,10 @@ export default function NewsletterSection() {
           )}
 
           {error && (
-            <p className="text-sm mt-4" style={{ color: '#ff3b30' }}>
-              {error}
-            </p>
+            <p className="text-sm mt-4 text-[#ff3b30]">{error}</p>
           )}
 
-          <p
-            className="text-sm mt-5"
-            style={{ color: '#6e6e73' }}
-          >
+          <p className="text-sm mt-5 text-[#48484a]">
             {t('noSpam')}
           </p>
         </ScrollReveal>
