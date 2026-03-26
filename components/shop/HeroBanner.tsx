@@ -51,14 +51,14 @@ export default function HeroBanner({ products = [] }: Props) {
         </ScrollReveal>
       </div>
 
-      {/* Two hero images side by side — cat + dog */}
+      {/* Two hero images side by side */}
       <div className="max-w-[1280px] mx-auto px-3">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <ScrollReveal animation="fade-up" duration={800}>
             <a href="/producten?categorie=katten" className="group block relative rounded-apple overflow-hidden aspect-[4/3]">
               <Image
                 src="/hero-cat.jpg"
-                alt="Kattenproducten - PawsNL"
+                alt={t('cats')}
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-700"
                 sizes="(max-width: 768px) 100vw, 50vw"
@@ -66,9 +66,9 @@ export default function HeroBanner({ products = [] }: Props) {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
               <div className="absolute bottom-5 left-5 md:bottom-8 md:left-8">
-                <h2 className="text-white text-[24px] md:text-[32px] font-semibold tracking-tight">Katten</h2>
+                <h2 className="text-white text-[24px] md:text-[32px] font-semibold tracking-tight">{t('cats')}</h2>
                 <span className="inline-flex items-center text-white/90 text-sm mt-1 group-hover:underline">
-                  Ontdek <ArrowRight className="w-3.5 h-3.5 ml-1" />
+                  {t('discover')} <ArrowRight className="w-3.5 h-3.5 ml-1" />
                 </span>
               </div>
             </a>
@@ -77,7 +77,7 @@ export default function HeroBanner({ products = [] }: Props) {
             <a href="/producten?categorie=honden" className="group block relative rounded-apple overflow-hidden aspect-[4/3]">
               <Image
                 src="/hero-dog.jpg"
-                alt="Hondenproducten - PawsNL"
+                alt={t('dogs')}
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-700"
                 sizes="(max-width: 768px) 100vw, 50vw"
@@ -85,9 +85,9 @@ export default function HeroBanner({ products = [] }: Props) {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
               <div className="absolute bottom-5 left-5 md:bottom-8 md:left-8">
-                <h2 className="text-white text-[24px] md:text-[32px] font-semibold tracking-tight">Honden</h2>
+                <h2 className="text-white text-[24px] md:text-[32px] font-semibold tracking-tight">{t('dogs')}</h2>
                 <span className="inline-flex items-center text-white/90 text-sm mt-1 group-hover:underline">
-                  Ontdek <ArrowRight className="w-3.5 h-3.5 ml-1" />
+                  {t('discover')} <ArrowRight className="w-3.5 h-3.5 ml-1" />
                 </span>
               </div>
             </a>

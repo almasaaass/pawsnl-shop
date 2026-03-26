@@ -4,7 +4,7 @@ import Image from 'next/image'
 import { ArrowRight } from 'lucide-react'
 import { Product, getLocalizedName } from '@/lib/types'
 import { getImageSrc } from '@/lib/utils'
-import { useLocale } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import { formatLocalPrice, type AppLocale } from '@/lib/locale-config'
 import ScrollReveal from '@/components/ui/ScrollReveal'
@@ -63,9 +63,10 @@ function ProductCard({ product, locale, dark = false }: {
 }
 
 /* ─── Category section with product grid ─── */
-function CategorySection({ title, subtitle, href, products, locale, dark = false }: {
+function CategorySection({ title, subtitle, href, products, locale, dark = false, discoverLabel = 'Discover', viewAllLabel = 'View all' }: {
   title: string; subtitle: string; href: string
   products: Product[]; locale: AppLocale; dark?: boolean
+  discoverLabel?: string; viewAllLabel?: string
 }) {
   const displayProducts = products.filter(p => getCleanPhoto(p) && p.price < 500 && p.stock > 0).slice(0, 4)
   if (displayProducts.length === 0) return null
@@ -83,10 +84,10 @@ function CategorySection({ title, subtitle, href, products, locale, dark = false
           <a href={href} className={`inline-flex items-center text-sm font-medium px-5 py-2.5 rounded-full transition-colors ${
             dark ? 'bg-white text-apple-black hover:bg-apple-offwhite' : 'bg-apple-blue text-white hover:bg-[#0077ED]'
           }`}>
-            Ontdek
+            {discoverLabel}
           </a>
           <a href={href} className={`inline-flex items-center text-sm hover:underline ${dark ? 'text-[#2997ff]' : 'text-apple-blue'}`}>
-            Bekijk alles <ArrowRight className="w-3.5 h-3.5 ml-1" />
+            {viewAllLabel} <ArrowRight className="w-3.5 h-3.5 ml-1" />
           </a>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -104,6 +105,7 @@ function CategorySection({ title, subtitle, href, products, locale, dark = false
    ═══════════════════════════════════════════════ */
 export default function AppleGrid({ featuredProducts, allProducts }: Props) {
   const locale = useLocale() as AppLocale
+  const t = useTranslations('hero')
 
   // Filter out absurdly priced products and out of stock
   const validProducts = allProducts.filter(p => p.price < 500 && p.stock > 0)
@@ -137,10 +139,10 @@ export default function AppleGrid({ featuredProducts, allProducts }: Props) {
         <div className="max-w-[1280px] mx-auto px-5 sm:px-6">
           <div className="text-center mb-8">
             <h2 className="text-[22px] md:text-[32px] font-semibold text-apple-black tracking-tight mb-1">
-              Populaire producten
+              {t('popularProducts')}
             </h2>
             <p className="text-[15px] text-apple-gray">
-              Ontdek onze bestsellers
+              {t('discoverBestsellers')}
             </p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -157,9 +159,10 @@ export default function AppleGrid({ featuredProducts, allProducts }: Props) {
       {cats.filter(p => getCleanPhoto(p) && p.price < 500).length >= 2 && (
         <ScrollReveal animation="fade-up" duration={800}>
           <CategorySection
-            title="Katten" subtitle="Speelgoed, verzorging & accessoires"
+            title={t('cats')} subtitle={t('catsSubtitle')}
             href="/producten?categorie=katten"
             products={cats} locale={locale} dark
+            discoverLabel={t('discover')} viewAllLabel={t('viewAll')}
           />
         </ScrollReveal>
       )}
@@ -167,9 +170,10 @@ export default function AppleGrid({ featuredProducts, allProducts }: Props) {
       {dogs.filter(p => getCleanPhoto(p) && p.price < 500).length >= 2 && (
         <ScrollReveal animation="fade-up" duration={800}>
           <CategorySection
-            title="Honden" subtitle="Alles voor je trouwe viervoeter"
+            title={t('dogs')} subtitle={t('dogsSubtitle')}
             href="/producten?categorie=honden"
             products={dogs} locale={locale}
+            discoverLabel={t('discover')} viewAllLabel={t('viewAll')}
           />
         </ScrollReveal>
       )}
@@ -180,10 +184,10 @@ export default function AppleGrid({ featuredProducts, allProducts }: Props) {
           <div className="bg-apple-black py-12 md:py-16">
             <div className="max-w-[1280px] mx-auto px-5 sm:px-6 text-center">
               <h2 className="text-[22px] md:text-[32px] font-semibold text-white tracking-tight mb-1">
-                Slim & Elektrisch
+                {t('smartElectric')}
               </h2>
               <p className="text-[15px] text-[#86868b] mb-8">
-                De nieuwste gadgets voor jouw huisdier
+                {t('smartElectricSub')}
               </p>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {electricProducts.map((product) => (
@@ -200,10 +204,10 @@ export default function AppleGrid({ featuredProducts, allProducts }: Props) {
         <div className="max-w-[1280px] mx-auto px-5 sm:px-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             {[
-              { icon: '🚚', title: 'Gratis verzending', sub: 'Vanaf €35' },
-              { icon: '↩️', title: '30 dagen retour', sub: 'Geen gedoe' },
-              { icon: '🔒', title: 'Veilig betalen', sub: 'iDEAL & Klarna' },
-              { icon: '⭐', title: 'Tevreden klanten', sub: 'Groeiende community' },
+              { icon: '🚚', title: t('freeShipping'), sub: t('freeShippingSub') },
+              { icon: '↩️', title: t('easyReturns'), sub: t('easyReturnsSub') },
+              { icon: '🔒', title: t('securePayment'), sub: t('securePaymentSub') },
+              { icon: '⭐', title: t('happyCustomers'), sub: t('happyCustomersSub') },
             ].map((item) => (
               <div key={item.title}>
                 <span className="text-2xl mb-2 block">{item.icon}</span>
