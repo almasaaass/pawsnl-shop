@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Inter, Poppins } from 'next/font/google'
+import Script from 'next/script'
 import { notFound } from 'next/navigation'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
@@ -11,10 +12,8 @@ import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import AnnouncementBar from '@/components/layout/AnnouncementBar'
 import CookieBanner from '@/components/CookieBanner'
-import PurchaseNotification from '@/components/shop/PurchaseNotification'
 import TikTokPixel from '@/components/TikTokPixel'
 import MetaPixel from '@/components/MetaPixel'
-import ExitIntentPopup from '@/components/shop/ExitIntentPopup'
 
 const inter = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-inter' })
 const poppins = Poppins({
@@ -149,16 +148,16 @@ export default async function LocaleLayout({
                 <main className="flex-1">{children}</main>
                 <Footer />
                 <CookieBanner />
-                <PurchaseNotification />
                 <TikTokPixel />
                 <MetaPixel />
-                <ExitIntentPopup />
               </div>
             </WishlistProvider>
           </CartProvider>
         </NextIntlClientProvider>
-        {/* Tawk.to Live Chat */}
-        <script
+        {/* Tawk.to Live Chat — loaded after page is interactive */}
+        <Script
+          id="tawk-to"
+          strategy="lazyOnload"
           dangerouslySetInnerHTML={{
             __html: `
               var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
