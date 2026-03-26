@@ -51,7 +51,6 @@ async function getAllProducts(): Promise<Product[]> {
   const { data, error } = await supabase
     .from('products')
     .select('*')
-    .gt('stock', 0)
     .order('created_at', { ascending: false })
 
   if (error) {
